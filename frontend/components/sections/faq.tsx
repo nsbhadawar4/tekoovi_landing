@@ -11,7 +11,7 @@ export function FAQ({ faqs }: { faqs: Faq[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <Section id="faq">
+    <Section id="faq" scrollOffset={-480}>
       <Container>
         <SectionHeading
           eyebrow="FAQ"

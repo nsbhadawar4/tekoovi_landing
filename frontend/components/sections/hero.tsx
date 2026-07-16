@@ -50,6 +50,19 @@ export function Hero({ hero }: { hero: HeroContent }) {
       onMouseMove={handleMove}
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-24"
     >
+      {hero.backgroundImage && (
+        <>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${hero.backgroundImage})` }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,6,14,0.52),rgba(6,6,14,0.84))]"
+          />
+        </>
+      )}
       <AuroraBlobs />
       <GridBackdrop />
 

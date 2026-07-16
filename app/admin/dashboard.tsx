@@ -88,9 +88,13 @@ function buildForm(def: SectionDef, record?: Record<string, unknown>): FormState
 function ImageField({
   value,
   onChange,
+  aspect,
+  outputWidth,
 }: {
   value: string;
   onChange: (v: string) => void;
+  aspect?: number;
+  outputWidth?: number;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -125,8 +129,11 @@ function ImageField({
     <div className="mt-2">
       <div className="flex items-center gap-4">
         <div
-          className="relative aspect-[16/10] w-40 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40 bg-cover bg-center"
-          style={value ? { backgroundImage: `url(${value})` } : undefined}
+          className="relative w-40 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40 bg-cover bg-center"
+          style={{
+            aspectRatio: aspect ?? 16 / 10,
+            ...(value ? { backgroundImage: `url(${value})` } : {}),
+          }}
         >
           {!value && (
             <div className="absolute inset-0 grid place-items-center text-[11px] text-white/30">
@@ -164,6 +171,8 @@ function ImageField({
       {cropSrc && (
         <ImageCropper
           src={cropSrc}
+          aspect={aspect}
+          outputWidth={outputWidth}
           onCancel={closeCropper}
           onCrop={handleCrop}
         />
@@ -188,7 +197,12 @@ function Field({
 
   if (field.type === "image") {
     return (
-      <ImageField value={String(value ?? "")} onChange={(v) => onChange(v)} />
+      <ImageField
+        value={String(value ?? "")}
+        aspect={field.aspect}
+        outputWidth={field.outputWidth}
+        onChange={(v) => onChange(v)}
+      />
     );
   }
 

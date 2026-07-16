@@ -25,6 +25,10 @@ export interface FieldDef {
   label: string;
   type: FieldType;
   placeholder?: string;
+  /** Optional crop-frame ratio for image fields. */
+  aspect?: number;
+  /** Optional export width for cropped image fields. */
+  outputWidth?: number;
 }
 
 /** A section is either a list of items (CRUD) or a single record (edit only). */
@@ -59,6 +63,13 @@ export const SECTIONS: SectionDef[] = [
     icon: "Sparkles",
     singular: "Hero",
     fields: [
+      {
+        name: "backgroundImage",
+        label: "Background banner image",
+        type: "image",
+        aspect: 16 / 9,
+        outputWidth: 1920,
+      },
       { name: "badge", label: "Badge text", type: "text" },
       { name: "titleLead", label: "Headline — lead", type: "text" },
       { name: "titleHighlight", label: "Headline — highlight", type: "text" },
@@ -325,6 +336,8 @@ export function isSingleton(key: string): boolean {
 /* --------------------- content shape types -------------------- */
 
 export interface Hero {
+  /** Cropped hero banner stored as a data URL; empty keeps the visual fallback. */
+  backgroundImage: string;
   badge: string;
   titleLead: string;
   titleHighlight: string;

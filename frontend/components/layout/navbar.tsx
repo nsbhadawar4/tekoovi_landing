@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NAV_LINKS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -11,11 +11,37 @@ import { Logo } from "@/components/ui/logo";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeHref, setActiveHref] = useState("#top");
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (y) => {
     setScrolled(y > 24);
   });
+
+  useEffect(() => {
+    const sections = NAV_LINKS.map((link) => ({
+      href: link.href,
+      element: document.querySelector(link.href),
+    })).filter(
+      (section): section is { href: (typeof NAV_LINKS)[number]["href"]; element: Element } =>
+        section.element !== null,
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        const match = sections.find((section) => section.element === visible.target);
+        if (match) setActiveHref(match.href);
+      },
+      { rootMargin: "-18% 0px -58%", threshold: [0.01, 0.2, 0.5] },
+    );
+
+    sections.forEach((section) => observer.observe(section.element));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
@@ -42,7 +68,14 @@ export function Navbar() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="rounded-full px-4 py-2 text-sm font-medium text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
+                  onClick={() => setActiveHref(link.href)}
+                  aria-current={activeHref === link.href ? "page" : undefined}
+                  className={cn(
+                    "rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                    activeHref === link.href
+                      ? "bg-white/[0.09] text-ink"
+                      : "text-ink-2 hover:bg-white/[0.06] hover:text-ink",
+                  )}
                 >
                   {link.label}
                 </a>
@@ -93,8 +126,15 @@ export function Navbar() {
                 >
                   <a
                     href={link.href}
-                    onClick={() => setOpen(false)}
-                    className="font-display text-3xl font-semibold text-ink"
+                    onClick={() => {
+                      setActiveHref(link.href);
+                      setOpen(false);
+                    }}
+                    aria-current={activeHref === link.href ? "page" : undefined}
+                    className={cn(
+                      "font-display text-3xl font-semibold transition-colors",
+                      activeHref === link.href ? "text-brand-3" : "text-ink",
+                    )}
                   >
                     {link.label}
                   </a>

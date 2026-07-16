@@ -7,6 +7,7 @@
 /* -------------------------------------------------------------- */
 
 export const NAV_LINKS = [
+  { label: "Home", href: "#top" },
   { label: "Work", href: "#work" },
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },

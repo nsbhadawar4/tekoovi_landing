@@ -21,13 +21,20 @@ export function Section({
   id,
   children,
   className,
+  scrollOffset,
 }: {
   id?: string;
   children: ReactNode;
   className?: string;
+  /** Override the fixed-header offset used by in-page navigation. */
+  scrollOffset?: number;
 }) {
   return (
-    <section id={id} className={cn("relative py-24 md:py-32", className)}>
+    <section
+      id={id}
+      data-scroll-offset={scrollOffset}
+      className={cn("relative py-24 md:py-32", className)}
+    >
       {children}
     </section>
   );
