@@ -17,7 +17,8 @@ export type FieldType =
   | "number"
   | "boolean"
   | "icon"
-  | "tags"; // comma-separated -> string[]
+  | "tags" // comma-separated -> string[]
+  | "image"; // upload + crop -> stored image URL
 
 export interface FieldDef {
   name: string;
@@ -105,6 +106,7 @@ export const SECTIONS: SectionDef[] = [
     titleField: "name",
     subField: "category",
     fields: [
+      { name: "image", label: "Card image", type: "image" },
       { name: "name", label: "Name", type: "text" },
       { name: "category", label: "Category", type: "text" },
       { name: "description", label: "Description", type: "textarea" },
@@ -348,6 +350,7 @@ export interface Logo {
 
 export interface Project {
   id: string;
+  image: string; // uploaded card image URL ("" = gradient fallback)
   name: string;
   category: string;
   description: string;

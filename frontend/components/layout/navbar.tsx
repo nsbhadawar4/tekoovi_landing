@@ -23,14 +23,14 @@ export function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-        className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4"
+        className="fixed inset-x-0 top-0 z-50 flex justify-center px-4"
       >
         <nav
           className={cn(
-            "flex w-full max-w-6xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-500",
+            "flex w-full max-w-7xl items-center justify-between gap-4 rounded-full border px-3 py-2.5 backdrop-blur-xl transition-all duration-500 sm:px-4",
             scrolled
-              ? "glass shadow-[0_10px_40px_-12px_rgba(0,0,0,0.7)]"
-              : "border border-transparent bg-transparent",
+              ? "border-white/12 bg-bg-2/90 shadow-[0_16px_44px_-14px_rgba(0,0,0,0.85)]"
+              : "border-white/10 bg-bg-2/70 shadow-[0_10px_34px_-18px_rgba(0,0,0,0.7)]",
           )}
         >
           <a href="#top" aria-label="Tekoovi home" className="pl-1">
@@ -42,7 +42,7 @@ export function Navbar() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="rounded-full px-4 py-2 text-sm font-medium text-ink-2 transition-colors hover:text-ink"
+                  className="rounded-full px-4 py-2 text-sm font-medium text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
                 >
                   {link.label}
                 </a>

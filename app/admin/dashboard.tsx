@@ -43,6 +43,7 @@ import {
   type SectionDef,
 } from "@/backend/types";
 import { getIcon, ICON_NAMES } from "@/lib/icons";
+import { ImageCropper } from "@/components/ui/image-cropper";
 
 type AdminItem = { id: string } & Record<string, unknown>;
 type FormState = Record<string, string | boolean>;
@@ -82,6 +83,108 @@ function buildForm(def: SectionDef, record?: Record<string, unknown>): FormState
   return form;
 }
 
+/* ------------------------- image field ------------------------ */
+
+function ImageField({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  function closeCropper() {
+    setCropSrc((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+  }
+
+  function pickFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-picking the same file
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setErr("Please choose an image file.");
+      return;
+    }
+    setErr("");
+    setCropSrc(URL.createObjectURL(file));
+  }
+
+  async function handleCrop(blob: Blob) {
+    setBusy(true);
+    setErr("");
+    const fd = new FormData();
+    fd.append("file", blob, "crop.jpg");
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    setBusy(false);
+    if (!res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      setErr(data.error || "Upload failed.");
+      return;
+    }
+    const data = (await res.json()) as { url: string };
+    onChange(data.url);
+    closeCropper();
+  }
+
+  return (
+    <div className="mt-2">
+      <div className="flex items-center gap-4">
+        <div
+          className="relative aspect-[16/10] w-40 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40 bg-cover bg-center"
+          style={value ? { backgroundImage: `url(${value})` } : undefined}
+        >
+          {!value && (
+            <div className="absolute inset-0 grid place-items-center text-[11px] text-white/30">
+              No image
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5"
+          >
+            {value ? "Change image" : "Upload image"}
+          </button>
+          {value && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="rounded-lg border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        onChange={pickFile}
+        className="hidden"
+      />
+      {err && <p className="mt-2 text-xs text-red-400">{err}</p>}
+      {cropSrc && (
+        <ImageCropper
+          src={cropSrc}
+          busy={busy}
+          onCancel={closeCropper}
+          onCrop={handleCrop}
+        />
+      )}
+    </div>
+  );
+}
+
 /* ---------------------------- field ---------------------------- */
 
 function Field({
@@ -95,6 +198,12 @@ function Field({
 }) {
   const base =
     "mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-white/30";
+
+  if (field.type === "image") {
+    return (
+      <ImageField value={String(value ?? "")} onChange={(v) => onChange(v)} />
+    );
+  }
 
   if (field.type === "boolean") {
     return (
@@ -193,6 +302,11 @@ export default function AdminDashboard() {
   const [section, setSection] = useState<string>(SECTIONS[0].key);
   const def = useMemo(() => getSection(section) as SectionDef, [section]);
   const isSingle = def.kind === "singleton";
+  // If this section has an image field, show a thumbnail in each list row.
+  const imageField = useMemo(
+    () => def.fields.find((f) => f.type === "image")?.name,
+    [def],
+  );
 
   const [items, setItems] = useState<AdminItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -505,40 +619,57 @@ export default function AdminDashboard() {
                   Nothing here yet. Click “Add new”.
                 </p>
               ) : (
-                items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.02] p-4"
-                  >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-white">
-                        {String(
-                          (def.titleField && item[def.titleField]) ??
-                            "(untitled)",
-                        )}
-                      </p>
-                      {def.subField && (
-                        <p className="truncate text-xs text-white/40">
-                          {String(item[def.subField] ?? "")}
-                        </p>
+                items.map((item) => {
+                  const title = String(
+                    (def.titleField && item[def.titleField]) ?? "(untitled)",
+                  );
+                  const img = imageField ? String(item[imageField] ?? "") : "";
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3 sm:gap-4 sm:p-4"
+                    >
+                      {imageField && (
+                        <div
+                          className="relative aspect-[16/10] w-20 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40 bg-cover bg-center sm:w-28"
+                          style={
+                            img ? { backgroundImage: `url(${img})` } : undefined
+                          }
+                        >
+                          {!img && (
+                            <span className="absolute inset-0 grid place-items-center font-display text-xl font-bold text-white/15">
+                              {title.charAt(0)}
+                            </span>
+                          )}
+                        </div>
                       )}
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-white">
+                          {title}
+                        </p>
+                        {def.subField && (
+                          <p className="truncate text-xs text-white/40">
+                            {String(item[def.subField] ?? "")}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex shrink-0 gap-2">
+                        <button
+                          onClick={() => startEdit(item)}
+                          className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => setPendingDelete(item)}
+                          className="rounded-lg border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex shrink-0 gap-2">
-                      <button
-                        onClick={() => startEdit(item)}
-                        className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => setPendingDelete(item)}
-                        className="rounded-lg border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           )}

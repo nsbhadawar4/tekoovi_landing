@@ -81,6 +81,7 @@
   "projects": [
     {
       "id": "p1",
+      "image": "/uploads/projects/p-mrnabqyw-8fspz2.jpg",
       "name": "Lumen Health",
       "category": "AI SaaS · Healthcare",
       "description": "A clinical intelligence platform that turns patient data into real-time care decisions.",
@@ -96,6 +97,7 @@
     },
     {
       "id": "p2",
+      "image": "/uploads/projects/p-mrnacebd-ahw398.jpg",
       "name": "Vaultline",
       "category": "Fintech · Platform",
       "description": "Treasury & payments infrastructure moving eight figures monthly with zero downtime.",
@@ -111,6 +113,7 @@
     },
     {
       "id": "p3",
+      "image": "",
       "name": "Fieldstone",
       "category": "PropTech · Web + Mobile",
       "description": "An end-to-end real estate operating system for listings, tours and closings.",

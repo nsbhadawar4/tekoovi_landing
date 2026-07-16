@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# admin-uploaded images (user content, not source)
+/public/uploads/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

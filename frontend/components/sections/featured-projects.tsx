@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import type { Project } from "@/backend/types";
 import { GlowCard } from "@/components/ui/glow-card";
@@ -15,9 +16,9 @@ export function FeaturedProjects({ projects }: { projects: Project[] }) {
           description="A glimpse of the platforms, apps and systems we've built for founders and teams across the world."
         />
 
-        <div className="mt-16 grid gap-6 md:grid-cols-2">
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, i) => (
-            <Reveal key={project.id} delay={(i % 2) * 0.1}>
+            <Reveal key={project.id} delay={(i % 3) * 0.08}>
               <ProjectCard project={project} />
             </Reveal>
           ))}
@@ -31,50 +32,51 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <GlowCard className="flex h-full flex-col">
       {/* visual */}
-      <div className="relative aspect-[16/10] overflow-hidden rounded-t-2xl border-b border-white/10">
+      <div className="relative aspect-[16/10] overflow-hidden border-b border-white/10">
+        {project.image ? (
+          <Image
+            src={project.image}
+            alt={project.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          />
+        ) : (
+          <div className="absolute inset-0">
+            <div className={cn("absolute inset-0 bg-linear-to-br", project.accent)} />
+            <div className="grid-lines absolute inset-0 opacity-40" />
+            <span className="absolute inset-0 grid place-items-center font-display text-[7rem] font-bold leading-none text-white/[0.06]">
+              {project.name.charAt(0)}
+            </span>
+          </div>
+        )}
+
+        {/* legibility gradient */}
         <div
-          className={cn(
-            "absolute inset-0 bg-linear-to-br",
-            project.accent,
-          )}
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-black/70 via-black/10 to-transparent"
         />
-        <div className="grid-lines absolute inset-0 opacity-40" />
-        {/* faux app chrome */}
-        <div className="absolute inset-5 rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm">
-          <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-3">
-            <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-            <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-            <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
-          </div>
-          <div className="flex flex-col gap-2.5 p-5">
-            <div className="h-2.5 w-1/3 rounded-full bg-white/25" />
-            <div className="h-2 w-2/3 rounded-full bg-white/12" />
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              <div className="h-12 rounded-lg bg-white/[0.07]" />
-              <div className="h-12 rounded-lg bg-white/[0.07]" />
-              <div className="h-12 rounded-lg bg-brand/25" />
-            </div>
-          </div>
-        </div>
-        <span className="absolute right-4 top-4 rounded-full bg-black/40 px-3 py-1 text-[11px] font-medium text-ink backdrop-blur">
+
+        {/* overlays */}
+        <span className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-brand-3 backdrop-blur">
+          {project.category}
+        </span>
+        <span className="absolute right-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[11px] font-medium text-ink backdrop-blur">
           {project.result}
         </span>
       </div>
 
       {/* body */}
       <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-medium uppercase tracking-[0.12em] text-brand-3">
-            {project.category}
-          </p>
-          <span className="inline-flex items-center gap-1 text-xs text-ink-3">
+        <div className="flex items-start justify-between gap-4">
+          <h3 className="font-display text-2xl font-semibold text-ink">
+            {project.name}
+          </h3>
+          <span className="mt-1 inline-flex shrink-0 items-center gap-1 text-xs text-ink-3">
             <MapPin className="h-3.5 w-3.5" /> {project.country}
           </span>
         </div>
 
-        <h3 className="mt-3 font-display text-2xl font-semibold text-ink">
-          {project.name}
-        </h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-2">
           {project.description}
         </p>
@@ -92,7 +94,7 @@ function ProjectCard({ project }: { project: Project }) {
 
         <a
           href="#contact"
-          className="group/link mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-brand-3"
+          className="group/link mt-6 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-ink transition-colors hover:text-brand-3"
         >
           View case study
           <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
