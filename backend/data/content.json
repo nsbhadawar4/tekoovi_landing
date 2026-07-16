@@ -1,6 +1,6 @@
 {
   "hero": {
-    "badge": "Premium Digital Product Studio textskcmskd",
+    "badge": "Premium Digital Product Studio  test",
     "titleLead": "We build digital products that",
     "titleHighlight": "scale businesses.",
     "subtitle": "Tekoovi designs and engineers scalable websites, SaaS platforms, AI solutions and mobile apps — the quiet standard behind ambitious products.",
@@ -81,7 +81,7 @@
   "projects": [
     {
       "id": "p1",
-      "image": "/uploads/projects/p-mrnabqyw-8fspz2.jpg",
+      "image": "",
       "name": "Lumen Health",
       "category": "AI SaaS · Healthcare",
       "description": "A clinical intelligence platform that turns patient data into real-time care decisions.",
@@ -97,7 +97,7 @@
     },
     {
       "id": "p2",
-      "image": "/uploads/projects/p-mrnacebd-ahw398.jpg",
+      "image": "",
       "name": "Vaultline",
       "category": "Fintech · Platform",
       "description": "Treasury & payments infrastructure moving eight figures monthly with zero downtime.",

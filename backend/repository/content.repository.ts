@@ -63,10 +63,20 @@ async function writeAllMongo(data: ContentData): Promise<void> {
 }
 
 async function readAll(): Promise<ContentData> {
-  return USE_MONGO ? readAllMongo() : readAllFile();
+  if (!USE_MONGO) return readAllFile();
+  try {
+    return await readAllMongo();
+  } catch (err) {
+    // Never let a DB hiccup take the public site down — fall back to the seed
+    // content and log loudly so the cause shows in the server logs.
+    console.error("[content] Mongo read failed, serving seed content:", err);
+    return seedContent as unknown as ContentData;
+  }
 }
 
 async function writeAll(data: ContentData): Promise<void> {
+  // Writes deliberately throw on failure so the admin sees a real error
+  // instead of silently losing the edit.
   return USE_MONGO ? writeAllMongo(data) : writeAllFile(data);
 }
 

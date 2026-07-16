@@ -21,7 +21,7 @@ const ContentSchema = new Schema<ContentDoc>(
     key: { type: String, required: true, unique: true },
     data: { type: Schema.Types.Mixed, required: true },
   },
-  { minimize: false, timestamps: true },
+  { minimize: false, timestamps: true, collection: "content" },
 );
 
 export const ContentModel =
