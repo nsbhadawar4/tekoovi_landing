@@ -1,9 +1,10 @@
-import { WHY } from "@/lib/data";
+import type { WhyItem } from "@/backend/types";
+import { getIcon } from "@/lib/icons";
 import { Badge } from "@/components/ui/badge";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Section, Container } from "@/components/ui/section";
 
-export function WhyTekoovi() {
+export function WhyTekoovi({ why }: { why: WhyItem[] }) {
   return (
     <Section id="why" className="bg-bg-2">
       <Container>
@@ -28,10 +29,10 @@ export function WhyTekoovi() {
 
           {/* right — list */}
           <RevealGroup className="grid gap-4 sm:grid-cols-2" stagger={0.07}>
-            {WHY.map((item) => {
-              const Icon = item.icon;
+            {why.map((item) => {
+              const Icon = getIcon(item.icon);
               return (
-                <RevealItem key={item.title} className="h-full">
+                <RevealItem key={item.id} className="h-full">
                   <div className="card-hairline group flex h-full flex-col gap-3 rounded-2xl p-6 transition-colors duration-300 hover:border-white/15">
                     <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/[0.03] text-brand-3">
                       <Icon className="h-[18px] w-[18px]" />

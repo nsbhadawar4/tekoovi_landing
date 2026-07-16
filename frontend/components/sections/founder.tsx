@@ -1,9 +1,15 @@
-import { FOUNDER, CONTACT } from "@/lib/data";
+import type { Founder as FounderContent, Social } from "@/backend/types";
 import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, Container } from "@/components/ui/section";
 
-export function Founder() {
+export function Founder({
+  founder,
+  socials,
+}: {
+  founder: FounderContent;
+  socials: Social[];
+}) {
   return (
     <Section id="founder">
       <Container>
@@ -19,16 +25,16 @@ export function Founder() {
                 <div className="grid-lines absolute inset-0 opacity-30" />
                 <div className="relative flex flex-col items-center text-center">
                   <span className="grid h-28 w-28 place-items-center rounded-full btn-brand font-display text-3xl font-bold text-white">
-                    {FOUNDER.initials}
+                    {founder.initials}
                   </span>
                   <h3 className="mt-5 font-display text-xl font-semibold text-ink">
-                    {FOUNDER.name}
+                    {founder.name}
                   </h3>
-                  <p className="mt-1 text-sm text-brand-3">{FOUNDER.role}</p>
+                  <p className="mt-1 text-sm text-brand-3">{founder.role}</p>
                   <div className="mt-5 flex gap-2">
-                    {CONTACT.socials.slice(0, 3).map((s) => (
+                    {socials.slice(0, 3).map((s) => (
                       <a
-                        key={s.label}
+                        key={s.id}
                         href={s.href}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -50,7 +56,7 @@ export function Founder() {
             </Reveal>
             <Reveal delay={0.06}>
               <blockquote className="mt-6 text-balance font-display text-2xl font-medium leading-snug text-ink md:text-[28px]">
-                “{FOUNDER.story}”
+                “{founder.story}”
               </blockquote>
             </Reveal>
 
@@ -61,7 +67,7 @@ export function Founder() {
                     Mission
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-ink-2">
-                    {FOUNDER.mission}
+                    {founder.mission}
                   </p>
                 </div>
               </Reveal>
@@ -71,7 +77,7 @@ export function Founder() {
                     Vision
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-ink-2">
-                    {FOUNDER.vision}
+                    {founder.vision}
                   </p>
                 </div>
               </Reveal>
@@ -79,7 +85,7 @@ export function Founder() {
 
             <Reveal delay={0.2}>
               <p className="mt-8 font-display text-lg text-ink-3">
-                — {FOUNDER.name.split(" ")[0]}, on why Tekoovi exists
+                — {founder.name.split(" ")[0]}, on why Tekoovi exists
               </p>
             </Reveal>
           </div>

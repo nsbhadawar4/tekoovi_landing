@@ -1,9 +1,18 @@
 import { Mail, MessageCircle } from "lucide-react";
-import { CONTACT, NAV_LINKS, SERVICES } from "@/lib/data";
+import type { Contact, Service, Social } from "@/backend/types";
+import { NAV_LINKS } from "@/lib/data";
 import { Logo } from "@/components/ui/logo";
 import { Container } from "@/components/ui/section";
 
-export function Footer() {
+export function Footer({
+  contact,
+  socials,
+  services,
+}: {
+  contact: Contact;
+  socials: Social[];
+  services: Service[];
+}) {
   const year = new Date().getFullYear();
 
   return (
@@ -21,9 +30,9 @@ export function Footer() {
               AI and mobile products for ambitious founders and teams.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {CONTACT.socials.map((s) => (
+              {socials.map((s) => (
                 <a
-                  key={s.label}
+                  key={s.id}
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -45,8 +54,8 @@ export function Footer() {
           </FooterCol>
 
           <FooterCol title="Services">
-            {SERVICES.slice(0, 6).map((s) => (
-              <FooterLink key={s.title} href="#services">
+            {services.slice(0, 6).map((s) => (
+              <FooterLink key={s.id} href="#services">
                 {s.title}
               </FooterLink>
             ))}
@@ -54,13 +63,13 @@ export function Footer() {
 
           <FooterCol title="Get in touch">
             <a
-              href={`mailto:${CONTACT.email}`}
+              href={`mailto:${contact.email}`}
               className="inline-flex items-center gap-2 text-sm text-ink-2 transition-colors hover:text-ink"
             >
-              <Mail className="h-4 w-4" /> {CONTACT.email}
+              <Mail className="h-4 w-4" /> {contact.email}
             </a>
             <a
-              href={CONTACT.whatsapp}
+              href={contact.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm text-ink-2 transition-colors hover:text-ink"
@@ -68,7 +77,7 @@ export function Footer() {
               <MessageCircle className="h-4 w-4" /> WhatsApp
             </a>
             <a
-              href={CONTACT.calendly}
+              href={contact.calendly}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-ink-2 transition-colors hover:text-ink"

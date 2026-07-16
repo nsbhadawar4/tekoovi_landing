@@ -11,14 +11,13 @@ export function Preloader() {
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce || sessionStorage.getItem("tk_loaded")) {
-      setShow(false);
-      return;
-    }
+    const skip = reduce || Boolean(sessionStorage.getItem("tk_loaded"));
+    // Always hide from an async callback (never synchronously in the effect
+    // body). `skip` cases hide on the next tick; otherwise after the intro.
     const t = setTimeout(() => {
       sessionStorage.setItem("tk_loaded", "1");
       setShow(false);
-    }, 1500);
+    }, skip ? 0 : 1500);
     return () => clearTimeout(t);
   }, []);
 

@@ -1,10 +1,11 @@
-import { TECH_STACK } from "@/lib/data";
+import type { Tech } from "@/backend/types";
 import { Marquee } from "@/components/ui/marquee";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
 
-export function TechStack() {
-  const firstRow = TECH_STACK.slice(0, 8);
-  const secondRow = TECH_STACK.slice(8);
+export function TechStack({ techStack }: { techStack: Tech[] }) {
+  const mid = Math.ceil(techStack.length / 2);
+  const firstRow = techStack.slice(0, mid);
+  const secondRow = techStack.slice(mid);
 
   return (
     <Section id="stack" className="overflow-hidden bg-bg-2">
@@ -19,12 +20,12 @@ export function TechStack() {
       <div className="mt-16 flex flex-col gap-5">
         <Marquee>
           {firstRow.map((tech) => (
-            <TechChip key={tech} name={tech} />
+            <TechChip key={tech.id} name={tech.name} />
           ))}
         </Marquee>
         <Marquee reverse>
           {secondRow.map((tech) => (
-            <TechChip key={tech} name={tech} />
+            <TechChip key={tech.id} name={tech.name} />
           ))}
         </Marquee>
       </div>

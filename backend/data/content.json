@@ -11,22 +11,72 @@
     "note": "Trusted by founders across 18 countries"
   },
   "stats": [
-    { "id": "st1", "label": "Products shipped", "value": 140, "suffix": "+" },
-    { "id": "st2", "label": "Countries served", "value": 18, "suffix": "" },
-    { "id": "st3", "label": "Years of craft", "value": 9, "suffix": "+" },
-    { "id": "st4", "label": "Client satisfaction", "value": 98, "suffix": "%" }
+    {
+      "id": "st1",
+      "label": "Products shipped",
+      "value": 140,
+      "suffix": "+"
+    },
+    {
+      "id": "st2",
+      "label": "Countries served",
+      "value": 18,
+      "suffix": ""
+    },
+    {
+      "id": "st3",
+      "label": "Years of craft",
+      "value": 9,
+      "suffix": "+"
+    },
+    {
+      "id": "st4",
+      "label": "Client satisfaction",
+      "value": 98,
+      "suffix": "%"
+    }
   ],
   "logos": [
-    { "id": "lg1", "name": "Aeronex" },
-    { "id": "lg2", "name": "Northwind" },
-    { "id": "lg3", "name": "Lumen Health" },
-    { "id": "lg4", "name": "Kairo" },
-    { "id": "lg5", "name": "Vaultline" },
-    { "id": "lg6", "name": "Brightpath" },
-    { "id": "lg7", "name": "Meridian" },
-    { "id": "lg8", "name": "Cobalt" },
-    { "id": "lg9", "name": "Fieldstone" },
-    { "id": "lg10", "name": "Novus" }
+    {
+      "id": "lg1",
+      "name": "Aeronex"
+    },
+    {
+      "id": "lg2",
+      "name": "Northwind"
+    },
+    {
+      "id": "lg3",
+      "name": "Lumen Health"
+    },
+    {
+      "id": "lg4",
+      "name": "Kairo"
+    },
+    {
+      "id": "lg5",
+      "name": "Vaultline"
+    },
+    {
+      "id": "lg6",
+      "name": "Brightpath"
+    },
+    {
+      "id": "lg7",
+      "name": "Meridian"
+    },
+    {
+      "id": "lg8",
+      "name": "Cobalt"
+    },
+    {
+      "id": "lg9",
+      "name": "Fieldstone"
+    },
+    {
+      "id": "lg10",
+      "name": "Novus"
+    }
   ],
   "projects": [
     {
@@ -34,7 +84,12 @@
       "name": "Lumen Health",
       "category": "AI SaaS · Healthcare",
       "description": "A clinical intelligence platform that turns patient data into real-time care decisions.",
-      "tech": ["Next.js", "OpenAI", "Supabase", "AWS"],
+      "tech": [
+        "Next.js",
+        "OpenAI",
+        "Supabase",
+        "AWS"
+      ],
       "country": "United States",
       "result": "+63% faster triage",
       "accent": "from-[#6C3BFF]/40 to-[#3a1f8f]/10"
@@ -44,7 +99,12 @@
       "name": "Vaultline",
       "category": "Fintech · Platform",
       "description": "Treasury & payments infrastructure moving eight figures monthly with zero downtime.",
-      "tech": ["Node.js", "PostgreSQL", "Stripe", "Docker"],
+      "tech": [
+        "Node.js",
+        "PostgreSQL",
+        "Stripe",
+        "Docker"
+      ],
       "country": "United Kingdom",
       "result": "$40M+ processed",
       "accent": "from-[#8A5CFF]/40 to-[#1b1b28]/10"
@@ -54,7 +114,11 @@
       "name": "Fieldstone",
       "category": "PropTech · Web + Mobile",
       "description": "An end-to-end real estate operating system for listings, tours and closings.",
-      "tech": ["React Native", "Laravel", "Google Cloud"],
+      "tech": [
+        "React Native",
+        "Laravel",
+        "Google Cloud"
+      ],
       "country": "United Arab Emirates",
       "result": "3.4× lead conversion",
       "accent": "from-[#B388FF]/35 to-[#241a3d]/10"
@@ -105,14 +169,46 @@
     }
   ],
   "industries": [
-    { "id": "in1", "name": "Healthcare", "icon": "HeartPulse" },
-    { "id": "in2", "name": "Real Estate", "icon": "Building2" },
-    { "id": "in3", "name": "Education", "icon": "GraduationCap" },
-    { "id": "in4", "name": "Construction", "icon": "Boxes" },
-    { "id": "in5", "name": "HRTech", "icon": "Users" },
-    { "id": "in6", "name": "Finance", "icon": "Landmark" },
-    { "id": "in7", "name": "Restaurants", "icon": "UtensilsCrossed" },
-    { "id": "in8", "name": "Retail", "icon": "ShoppingBag" }
+    {
+      "id": "in1",
+      "name": "Healthcare",
+      "icon": "HeartPulse"
+    },
+    {
+      "id": "in2",
+      "name": "Real Estate",
+      "icon": "Building2"
+    },
+    {
+      "id": "in3",
+      "name": "Education",
+      "icon": "GraduationCap"
+    },
+    {
+      "id": "in4",
+      "name": "Construction",
+      "icon": "Boxes"
+    },
+    {
+      "id": "in5",
+      "name": "HRTech",
+      "icon": "Users"
+    },
+    {
+      "id": "in6",
+      "name": "Finance",
+      "icon": "Landmark"
+    },
+    {
+      "id": "in7",
+      "name": "Restaurants",
+      "icon": "UtensilsCrossed"
+    },
+    {
+      "id": "in8",
+      "name": "Retail",
+      "icon": "ShoppingBag"
+    }
   ],
   "why": [
     {
@@ -197,22 +293,70 @@
     }
   ],
   "techStack": [
-    { "id": "tc1", "name": "React" },
-    { "id": "tc2", "name": "Next.js" },
-    { "id": "tc3", "name": "Laravel" },
-    { "id": "tc4", "name": "Node.js" },
-    { "id": "tc5", "name": "React Native" },
-    { "id": "tc6", "name": "Flutter" },
-    { "id": "tc7", "name": "Supabase" },
-    { "id": "tc8", "name": "Firebase" },
-    { "id": "tc9", "name": "AWS" },
-    { "id": "tc10", "name": "DigitalOcean" },
-    { "id": "tc11", "name": "Docker" },
-    { "id": "tc12", "name": "OpenAI" },
-    { "id": "tc13", "name": "Stripe" },
-    { "id": "tc14", "name": "Google Cloud" },
-    { "id": "tc15", "name": "PostgreSQL" },
-    { "id": "tc16", "name": "MySQL" }
+    {
+      "id": "tc1",
+      "name": "React"
+    },
+    {
+      "id": "tc2",
+      "name": "Next.js"
+    },
+    {
+      "id": "tc3",
+      "name": "Laravel"
+    },
+    {
+      "id": "tc4",
+      "name": "Node.js"
+    },
+    {
+      "id": "tc5",
+      "name": "React Native"
+    },
+    {
+      "id": "tc6",
+      "name": "Flutter"
+    },
+    {
+      "id": "tc7",
+      "name": "Supabase"
+    },
+    {
+      "id": "tc8",
+      "name": "Firebase"
+    },
+    {
+      "id": "tc9",
+      "name": "AWS"
+    },
+    {
+      "id": "tc10",
+      "name": "DigitalOcean"
+    },
+    {
+      "id": "tc11",
+      "name": "Docker"
+    },
+    {
+      "id": "tc12",
+      "name": "OpenAI"
+    },
+    {
+      "id": "tc13",
+      "name": "Stripe"
+    },
+    {
+      "id": "tc14",
+      "name": "Google Cloud"
+    },
+    {
+      "id": "tc15",
+      "name": "PostgreSQL"
+    },
+    {
+      "id": "tc16",
+      "name": "MySQL"
+    }
   ],
   "caseStudy": {
     "client": "Lumen Health",
@@ -221,14 +365,36 @@
     "research": "We shadowed care teams for two weeks, mapped every data source and identified the 12 signals that actually drive triage.",
     "solution": "A unified, AI-assisted command centre that surfaces the right patient context — and a recommended next action — in real time.",
     "challenges": "HIPAA-grade security, sub-200ms inference at the bedside, and a zero-training-required interface for busy staff.",
-    "tech": ["Next.js", "OpenAI", "Supabase", "AWS", "PostgreSQL"],
+    "tech": [
+      "Next.js",
+      "OpenAI",
+      "Supabase",
+      "AWS",
+      "PostgreSQL"
+    ],
     "outcome": "A pilot that clinicians actually love — and measurable time back at the bedside."
   },
   "caseMetrics": [
-    { "id": "cm1", "value": "63%", "label": "Faster triage decisions" },
-    { "id": "cm2", "value": "4.9/5", "label": "Clinician usability score" },
-    { "id": "cm3", "value": "0", "label": "Critical incidents post-launch" },
-    { "id": "cm4", "value": "3 wks", "label": "From kickoff to first pilot" }
+    {
+      "id": "cm1",
+      "value": "63%",
+      "label": "Faster triage decisions"
+    },
+    {
+      "id": "cm2",
+      "value": "4.9/5",
+      "label": "Clinician usability score"
+    },
+    {
+      "id": "cm3",
+      "value": "0",
+      "label": "Critical incidents post-launch"
+    },
+    {
+      "id": "cm4",
+      "value": "3 wks",
+      "label": "From kickoff to first pilot"
+    }
   ],
   "testimonials": [
     {
@@ -309,9 +475,25 @@
     "calendly": "https://calendly.com/tekoovi/discovery"
   },
   "socials": [
-    { "id": "so1", "label": "X", "href": "https://x.com/tekoovi" },
-    { "id": "so2", "label": "LinkedIn", "href": "https://linkedin.com/company/tekoovi" },
-    { "id": "so3", "label": "Dribbble", "href": "https://dribbble.com/tekoovi" },
-    { "id": "so4", "label": "GitHub", "href": "https://github.com/tekoovi" }
+    {
+      "id": "so1",
+      "label": "X",
+      "href": "https://x.com/tekoovi"
+    },
+    {
+      "id": "so2",
+      "label": "LinkedIn",
+      "href": "https://linkedin.com/company/tekoovi"
+    },
+    {
+      "id": "so3",
+      "label": "Dribbble",
+      "href": "https://dribbble.com/tekoovi"
+    },
+    {
+      "id": "so4",
+      "label": "GitHub",
+      "href": "https://github.com/tekoovi"
+    }
   ]
 }

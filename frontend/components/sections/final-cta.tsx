@@ -1,11 +1,11 @@
 import { CalendarCheck, Mail, MessageCircle } from "lucide-react";
-import { CONTACT } from "@/lib/data";
+import type { Contact } from "@/backend/types";
 import { Button } from "@/components/ui/button";
 import { AuroraBlobs, GridBackdrop } from "@/components/ui/backgrounds";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, Container } from "@/components/ui/section";
 
-export function FinalCTA() {
+export function FinalCTA({ contact }: { contact: Contact }) {
   return (
     <Section id="contact">
       <Container>
@@ -20,20 +20,18 @@ export function FinalCTA() {
 
             <div className="relative mx-auto max-w-3xl">
               <p className="text-xs uppercase tracking-[0.18em] text-brand-3">
-                Let&apos;s talk
+                {contact.eyebrow}
               </p>
               <h2 className="text-ink-gradient mt-5 text-balance text-4xl font-semibold leading-[1.05] sm:text-5xl md:text-6xl">
-                Let&apos;s build something amazing together
+                {contact.title}
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-balance text-lg leading-relaxed text-ink-2">
-                Book a free discovery call. We&apos;ll pressure-test your idea,
-                map the fastest path to launch, and show you exactly how
-                we&apos;d build it.
+                {contact.subtitle}
               </p>
 
               <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Button
-                  href={CONTACT.calendly}
+                  href={contact.calendly}
                   external
                   size="lg"
                   magnetic
@@ -42,7 +40,7 @@ export function FinalCTA() {
                   Book Discovery Call
                 </Button>
                 <Button
-                  href={CONTACT.whatsapp}
+                  href={contact.whatsapp}
                   external
                   size="lg"
                   variant="secondary"
@@ -53,13 +51,13 @@ export function FinalCTA() {
 
               <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-ink-2">
                 <a
-                  href={`mailto:${CONTACT.email}`}
+                  href={`mailto:${contact.email}`}
                   className="inline-flex items-center gap-2 transition-colors hover:text-ink"
                 >
-                  <Mail className="h-4 w-4 text-brand-3" /> {CONTACT.email}
+                  <Mail className="h-4 w-4 text-brand-3" /> {contact.email}
                 </a>
                 <a
-                  href={CONTACT.calendly}
+                  href={contact.calendly}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 transition-colors hover:text-ink"

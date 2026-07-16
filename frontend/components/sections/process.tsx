@@ -2,10 +2,10 @@
 
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { PROCESS } from "@/lib/data";
+import type { ProcessStep } from "@/backend/types";
 import { SectionHeading, Section, Container } from "@/components/ui/section";
 
-export function Process() {
+export function Process({ steps }: { steps: ProcessStep[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -31,8 +31,8 @@ export function Process() {
           />
 
           <div className="flex flex-col gap-10">
-            {PROCESS.map((stage, i) => (
-              <TimelineRow key={stage.step} index={i}>
+            {steps.map((stage, i) => (
+              <TimelineRow key={stage.id} index={i}>
                 <div className="card-hairline rounded-2xl p-6 transition-colors duration-300 hover:border-white/15">
                   <div className="flex items-center gap-3">
                     <span className="font-display text-sm font-bold text-brand-3">

@@ -48,7 +48,7 @@ export async function getAll(): Promise<ContentData> {
 /** All items in one collection section. */
 export async function readSection(section: string): Promise<ContentItem[]> {
   const data = await readAll();
-  return ((data as Record<string, unknown>)[section] as ContentItem[]) ?? [];
+  return ((data as unknown as Record<string, unknown>)[section] as ContentItem[]) ?? [];
 }
 
 /** Append a new item (an `id` is assigned here). */
@@ -58,7 +58,7 @@ export async function addItem(
 ): Promise<ContentItem> {
   const data = await readAll();
   const created = { ...fields, id: genId() } as ContentItem;
-  const store = data as Record<string, unknown>;
+  const store = data as unknown as Record<string, unknown>;
   const list = (store[section] as ContentItem[]) ?? [];
   list.push(created);
   store[section] = list;
@@ -73,7 +73,7 @@ export async function updateItem(
   fields: Record<string, unknown>,
 ): Promise<ContentItem | null> {
   const data = await readAll();
-  const list = (data as Record<string, unknown>)[section] as ContentItem[];
+  const list = (data as unknown as Record<string, unknown>)[section] as ContentItem[];
   if (!Array.isArray(list)) return null;
   const idx = list.findIndex((x) => x.id === id);
   if (idx === -1) return null;
@@ -88,7 +88,7 @@ export async function removeItem(
   id: string,
 ): Promise<boolean> {
   const data = await readAll();
-  const list = (data as Record<string, unknown>)[section] as ContentItem[];
+  const list = (data as unknown as Record<string, unknown>)[section] as ContentItem[];
   if (!Array.isArray(list)) return false;
   const idx = list.findIndex((x) => x.id === id);
   if (idx === -1) return false;
@@ -104,7 +104,7 @@ export async function readSingleton(
   section: string,
 ): Promise<Record<string, unknown>> {
   const data = await readAll();
-  return ((data as Record<string, unknown>)[section] as Record<
+  return ((data as unknown as Record<string, unknown>)[section] as Record<
     string,
     unknown
   >) ?? {};
@@ -116,7 +116,7 @@ export async function updateSingleton(
   fields: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
   const data = await readAll();
-  const store = data as Record<string, unknown>;
+  const store = data as unknown as Record<string, unknown>;
   const current = (store[section] as Record<string, unknown>) ?? {};
   const merged = { ...current, ...fields };
   store[section] = merged;

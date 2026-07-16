@@ -1,6 +1,6 @@
-import { Sparkles } from "lucide-react";
+import { createElement } from "react";
 import type { Service } from "@/backend/types";
-import { SERVICE_ICONS } from "@/lib/icons";
+import { getIcon } from "@/lib/icons";
 import { GlowCard } from "@/components/ui/glow-card";
 import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
@@ -32,7 +32,6 @@ export function Services({ services }: { services: Service[] }) {
 }
 
 function ServiceCard({ service }: { service: Service }) {
-  const Icon = SERVICE_ICONS[service.icon] ?? Sparkles;
   return (
     <GlowCard
       className={cn(
@@ -48,7 +47,7 @@ function ServiceCard({ service }: { service: Service }) {
             : "border-white/10 bg-white/[0.03] text-brand-3",
         )}
       >
-        <Icon className="h-5 w-5" />
+        {createElement(getIcon(service.icon), { className: "h-5 w-5" })}
       </div>
       <div>
         <h3 className="font-display text-lg font-semibold text-ink">

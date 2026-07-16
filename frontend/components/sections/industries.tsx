@@ -1,8 +1,9 @@
-import { INDUSTRIES } from "@/lib/data";
+import type { Industry } from "@/backend/types";
+import { getIcon } from "@/lib/icons";
 import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
 
-export function Industries() {
+export function Industries({ industries }: { industries: Industry[] }) {
   return (
     <Section id="industries">
       <Container>
@@ -16,10 +17,10 @@ export function Industries() {
           className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
           stagger={0.05}
         >
-          {INDUSTRIES.map((industry) => {
-            const Icon = industry.icon;
+          {industries.map((industry) => {
+            const Icon = getIcon(industry.icon);
             return (
-              <RevealItem key={industry.name}>
+              <RevealItem key={industry.id}>
                 <div className="group card-hairline relative flex flex-col items-center gap-3 overflow-hidden rounded-2xl px-6 py-8 text-center transition-all duration-300 hover:-translate-y-1 hover:border-white/15">
                   <div
                     aria-hidden

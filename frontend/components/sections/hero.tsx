@@ -1,8 +1,9 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "motion/react";
-import { ArrowUpRight, Sparkles, TrendingUp } from "lucide-react";
+import { Sparkles, TrendingUp } from "lucide-react";
 import { useRef } from "react";
+import type { Hero as HeroContent } from "@/backend/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AuroraBlobs, GridBackdrop } from "@/components/ui/backgrounds";
@@ -24,7 +25,7 @@ const item = {
   },
 };
 
-export function Hero() {
+export function Hero({ hero }: { hero: HeroContent }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -132,35 +133,33 @@ export function Hero() {
           className="mx-auto flex max-w-4xl flex-col items-center text-center"
         >
           <motion.div variants={item}>
-            <Badge>Premium Digital Product Studio</Badge>
+            <Badge>{hero.badge}</Badge>
           </motion.div>
 
           <motion.h1
             variants={item}
             className="mt-7 text-balance text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl"
           >
-            <span className="text-ink-gradient">We build digital products that </span>
-            <span className="text-brand-gradient">scale businesses.</span>
+            <span className="text-ink-gradient">{hero.titleLead}</span>
+            <span className="text-brand-gradient">{hero.titleHighlight}</span>
           </motion.h1>
 
           <motion.p
             variants={item}
             className="mt-7 max-w-xl text-balance text-lg leading-relaxed text-ink-2"
           >
-            Tekoovi designs and engineers scalable websites, SaaS platforms, AI
-            solutions and mobile apps — the quiet standard behind ambitious
-            products.
+            {hero.subtitle}
           </motion.p>
 
           <motion.div
             variants={item}
             className="mt-10 flex flex-col items-center gap-3 sm:flex-row"
           >
-            <Button href="#contact" size="lg" magnetic withArrow>
-              Book Free Consultation
+            <Button href={hero.primaryHref} size="lg" magnetic withArrow>
+              {hero.primaryLabel}
             </Button>
-            <Button href="#work" size="lg" variant="secondary">
-              View Portfolio
+            <Button href={hero.secondaryHref} size="lg" variant="secondary">
+              {hero.secondaryLabel}
             </Button>
           </motion.div>
 
@@ -168,7 +167,7 @@ export function Hero() {
             variants={item}
             className="mt-8 text-xs uppercase tracking-[0.16em] text-ink-3"
           >
-            Trusted by founders across 18 countries
+            {hero.note}
           </motion.p>
         </motion.div>
       </Container>

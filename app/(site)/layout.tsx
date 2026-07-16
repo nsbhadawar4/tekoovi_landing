@@ -1,7 +1,11 @@
+import { getContent } from "@/backend/controllers/content.controller";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import { Preloader } from "@/components/ui/preloader";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+
+// Footer content is admin-editable, so render on every request.
+export const dynamic = "force-dynamic";
 
 const SITE = {
   name: "Tekoovi",
@@ -29,9 +33,11 @@ const orgSchema = {
   ],
 };
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const content = await getContent();
+
   return (
     <>
       <span className="grain" aria-hidden="true" />
@@ -39,7 +45,11 @@ export default function SiteLayout({
       <SmoothScroll />
       <Navbar />
       <main>{children}</main>
-      <Footer />
+      <Footer
+        contact={content.contact}
+        socials={content.socials}
+        services={content.services}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}

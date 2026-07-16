@@ -21,19 +21,19 @@ export default async function Home() {
 
   return (
     <>
-      <Hero />
-      <TrustedBy />
+      <Hero hero={content.hero} />
+      <TrustedBy stats={content.stats} logos={content.logos} />
       <FeaturedProjects projects={content.projects} />
       <Services services={content.services} />
-      <Industries />
-      <WhyTekoovi />
-      <Process />
-      <TechStack />
-      <CaseStudy />
+      <Industries industries={content.industries} />
+      <WhyTekoovi why={content.why} />
+      <Process steps={content.process} />
+      <TechStack techStack={content.techStack} />
+      <CaseStudy caseStudy={content.caseStudy} metrics={content.caseMetrics} />
       <Testimonials testimonials={content.testimonials} />
-      <Founder />
+      <Founder founder={content.founder} socials={content.socials} />
       <FAQ faqs={content.faqs} />
-      <FinalCTA />
+      <FinalCTA contact={content.contact} />
     </>
   );
 }

@@ -1,102 +1,199 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  createElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
+  BadgeCheck,
+  BarChart3,
+  Building2,
   CheckCircle2,
   CircleAlert,
+  Code2,
   ExternalLink,
+  Factory,
+  FileText,
   FolderKanban,
   HelpCircle,
   type LucideIcon,
   LogOut,
+  Mail,
   MessageSquareQuote,
+  Share2,
+  Sparkles,
+  TrendingUp,
   Trash2,
   TriangleAlert,
+  UserRound,
+  Workflow,
   Wrench,
   X,
 } from "lucide-react";
 import {
-  SECTION_FIELDS,
-  SECTION_KEYS,
-  SECTION_LABELS,
-  type SectionKey,
+  type FieldDef,
+  getSection,
+  SECTIONS,
+  type SectionDef,
 } from "@/backend/types";
-import { SERVICE_ICON_NAMES } from "@/lib/icons";
+import { getIcon, ICON_NAMES } from "@/lib/icons";
 
 type AdminItem = { id: string } & Record<string, unknown>;
 type FormState = Record<string, string | boolean>;
-
-/* Which field to show as the row title / subtitle in each section. */
-const TITLE_FIELD: Record<SectionKey, string> = {
-  projects: "name",
-  services: "title",
-  testimonials: "name",
-  faqs: "q",
-};
-const SUB_FIELD: Record<SectionKey, string> = {
-  projects: "category",
-  services: "description",
-  testimonials: "role",
-  faqs: "a",
-};
-
-const SECTION_ICONS: Record<SectionKey, LucideIcon> = {
-  projects: FolderKanban,
-  services: Wrench,
-  testimonials: MessageSquareQuote,
-  faqs: HelpCircle,
-};
-
-/* Singular names for toast messages, e.g. "Project added". */
-const SECTION_SINGULAR: Record<SectionKey, string> = {
-  projects: "Project",
-  services: "Service",
-  testimonials: "Testimonial",
-  faqs: "FAQ",
-};
-
 type Toast = { id: number; type: "success" | "error"; message: string };
 
-const FIELD_LABELS: Record<string, string> = {
-  q: "Question",
-  a: "Answer",
-  tech: "Tech (comma separated)",
-  accent: "Accent (Tailwind gradient classes)",
-  icon: "Icon",
-  featured: "Featured",
+/* Lucide component for each section's sidebar icon (name -> component). */
+const SIDEBAR_ICONS: Record<string, LucideIcon> = {
+  Sparkles,
+  BarChart3,
+  Building2,
+  FolderKanban,
+  Wrench,
+  Factory,
+  BadgeCheck,
+  Workflow,
+  Code2,
+  FileText,
+  TrendingUp,
+  MessageSquareQuote,
+  UserRound,
+  HelpCircle,
+  Mail,
+  Share2,
 };
 
-const MULTILINE = new Set(["description", "quote", "a"]);
-
-function labelFor(field: string): string {
-  return FIELD_LABELS[field] ?? field.charAt(0).toUpperCase() + field.slice(1);
-}
-
-function emptyForm(section: SectionKey): FormState {
+function buildForm(def: SectionDef, record?: Record<string, unknown>): FormState {
   const form: FormState = {};
-  for (const field of SECTION_FIELDS[section]) {
-    form[field] = field === "featured" ? false : "";
+  for (const field of def.fields) {
+    const value = record?.[field.name];
+    if (field.type === "boolean") form[field.name] = value === true;
+    else if (field.type === "tags")
+      form[field.name] = Array.isArray(value)
+        ? value.join(", ")
+        : String(value ?? "");
+    else form[field.name] = value == null ? "" : String(value);
   }
   return form;
 }
 
-function formFromItem(section: SectionKey, item: AdminItem): FormState {
-  const form: FormState = {};
-  for (const field of SECTION_FIELDS[section]) {
-    const value = item[field];
-    if (field === "featured") form[field] = value === true;
-    else if (field === "tech")
-      form[field] = Array.isArray(value) ? value.join(", ") : String(value ?? "");
-    else form[field] = String(value ?? "");
+/* ---------------------------- field ---------------------------- */
+
+function Field({
+  field,
+  value,
+  onChange,
+}: {
+  field: FieldDef;
+  value: string | boolean;
+  onChange: (v: string | boolean) => void;
+}) {
+  const base =
+    "mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-white/30";
+
+  if (field.type === "boolean") {
+    return (
+      <label className="mt-2 flex items-center gap-2.5 text-sm text-white/80">
+        <input
+          type="checkbox"
+          checked={value === true}
+          onChange={(e) => onChange(e.target.checked)}
+          className="h-4 w-4 accent-brand"
+        />
+        {field.label}
+      </label>
+    );
   }
-  return form;
+
+  if (field.type === "icon") {
+    return (
+      <div className="mt-2 flex items-center gap-2.5">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.03] text-brand-3">
+          {createElement(getIcon(String(value || "")), {
+            className: "h-4 w-4",
+          })}
+        </span>
+        <select
+          value={String(value ?? "")}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-white/30"
+        >
+          <option value="">— pick an icon —</option>
+          {ICON_NAMES.map((name) => (
+            <option key={name} value={name}>
+              {name}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }
+
+  if (field.type === "textarea") {
+    return (
+      <textarea
+        value={String(value ?? "")}
+        onChange={(e) => onChange(e.target.value)}
+        rows={3}
+        placeholder={field.placeholder}
+        className={base}
+      />
+    );
+  }
+
+  return (
+    <input
+      type={field.type === "number" ? "number" : "text"}
+      value={String(value ?? "")}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={field.placeholder}
+      className={base}
+    />
+  );
 }
+
+function FieldRows({
+  def,
+  form,
+  setForm,
+}: {
+  def: SectionDef;
+  form: FormState;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
+}) {
+  return (
+    <>
+      {def.fields.map((field) => (
+        <div key={field.name}>
+          {field.type !== "boolean" && (
+            <label className="block text-xs font-medium text-white/60">
+              {field.label}
+            </label>
+          )}
+          <Field
+            field={field}
+            value={form[field.name] ?? ""}
+            onChange={(v) => setForm((f) => ({ ...f, [field.name]: v }))}
+          />
+        </div>
+      ))}
+    </>
+  );
+}
+
+/* -------------------------- dashboard -------------------------- */
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [section, setSection] = useState<SectionKey>("projects");
+  const [section, setSection] = useState<string>(SECTIONS[0].key);
+  const def = useMemo(() => getSection(section) as SectionDef, [section]);
+  const isSingle = def.kind === "singleton";
+
   const [items, setItems] = useState<AdminItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -120,9 +217,8 @@ export default function AdminDashboard() {
     }, 3200);
   }, []);
 
-  // Manual refresh (used after add / edit / delete). Called from event
-  // handlers, so setting state here is fine.
-  const load = useCallback(async (key: SectionKey) => {
+  // Manual refresh (used after add / edit / delete on a collection).
+  const load = useCallback(async (key: string) => {
     setLoading(true);
     const res = await fetch(`/api/content/${key}`, { cache: "no-store" });
     const data = (await res.json().catch(() => ({}))) as { items?: AdminItem[] };
@@ -135,13 +231,20 @@ export default function AdminDashboard() {
   // pattern), never synchronously in the effect body.
   useEffect(() => {
     let active = true;
+    const d = getSection(section);
+    if (!d) return;
+    // `loading` is already true here — set by selectSection on change, and by
+    // the initial useState on first mount — so we don't set it synchronously.
     fetch(`/api/content/${section}`, { cache: "no-store" })
       .then((r) => r.json())
-      .then((data: { items?: AdminItem[] }) => {
-        if (active) {
+      .then((data: { items?: AdminItem[]; item?: Record<string, unknown> }) => {
+        if (!active) return;
+        if (d.kind === "singleton") {
+          setForm(buildForm(d, data.item ?? {}));
+        } else {
           setItems(data.items ?? []);
-          setLoading(false);
         }
+        setLoading(false);
       })
       .catch(() => {
         if (active) setLoading(false);
@@ -151,21 +254,22 @@ export default function AdminDashboard() {
     };
   }, [section]);
 
-  function selectSection(key: SectionKey) {
+  function selectSection(key: string) {
     if (key === section) return;
     setLoading(true);
     setEditing(null);
+    setError("");
     setSection(key);
   }
 
   function startAdd() {
-    setForm(emptyForm(section));
+    setForm(buildForm(def));
     setError("");
     setEditing("new");
   }
 
   function startEdit(item: AdminItem) {
-    setForm(formFromItem(section, item));
+    setForm(buildForm(def, item));
     setError("");
     setEditing(item.id);
   }
@@ -174,6 +278,7 @@ export default function AdminDashboard() {
     router.replace("/admin/login");
   }
 
+  // Save a collection item (add or edit) via the modal.
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -190,7 +295,6 @@ export default function AdminDashboard() {
     });
 
     setSaving(false);
-
     if (res.status === 401) return unauthorized();
     if (!res.ok) {
       const data = (await res.json().catch(() => ({}))) as { error?: string };
@@ -200,12 +304,33 @@ export default function AdminDashboard() {
       return;
     }
 
-    notify(
-      "success",
-      `${SECTION_SINGULAR[section]} ${isNew ? "added" : "updated"} successfully`,
-    );
+    notify("success", `${def.singular} ${isNew ? "added" : "updated"}`);
     setEditing(null);
     load(section);
+  }
+
+  // Save a singleton section (edit in place).
+  async function saveSingleton(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+
+    const res = await fetch(`/api/content/${section}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    setSaving(false);
+    if (res.status === 401) return unauthorized();
+    if (!res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      const msg = data.error || "Save failed.";
+      setError(msg);
+      notify("error", msg);
+      return;
+    }
+    notify("success", `${def.singular} saved`);
   }
 
   async function confirmDelete() {
@@ -215,7 +340,6 @@ export default function AdminDashboard() {
       method: "DELETE",
     });
     setDeleting(false);
-
     if (res.status === 401) return unauthorized();
 
     setPendingDelete(null);
@@ -223,7 +347,7 @@ export default function AdminDashboard() {
       notify("error", "Could not delete. Please try again.");
       return;
     }
-    notify("success", `${SECTION_SINGULAR[section]} deleted`);
+    notify("success", `${def.singular} deleted`);
     load(section);
   }
 
@@ -235,27 +359,37 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
       {/* sidebar */}
-      <aside className="shrink-0 border-b border-white/10 md:w-60 md:border-b-0 md:border-r">
+      <aside className="shrink-0 border-b border-white/10 md:w-64 md:border-b-0 md:border-r">
         <div className="px-5 py-5">
-          <p className="text-sm font-semibold">Tekoovi Admin</p>
+          <p className="text-sm font-semibold text-white">Tekoovi Admin</p>
           <p className="mt-0.5 text-xs text-white/40">Landing page content</p>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col md:overflow-visible md:pb-4">
-          {SECTION_KEYS.map((key) => {
-            const Icon = SECTION_ICONS[key];
-            const active = key === section;
+        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:max-h-[calc(100vh-88px)] md:flex-col md:overflow-y-auto md:pb-4">
+          {SECTIONS.map((s) => {
+            const Icon = SIDEBAR_ICONS[s.icon] ?? Sparkles;
+            const active = s.key === section;
             return (
               <button
-                key={key}
-                onClick={() => selectSection(key)}
-                className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                key={s.key}
+                onClick={() => selectSection(s.key)}
+                title={s.onPage}
+                className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
                   active
                     ? "bg-white text-black"
                     : "text-white/60 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <Icon className="h-4 w-4" />
-                {SECTION_LABELS[key]}
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate">{s.label}</span>
+                  <span
+                    className={`hidden truncate text-[10px] font-normal md:block ${
+                      active ? "text-black/50" : "text-white/30"
+                    }`}
+                  >
+                    {s.onPage}
+                  </span>
+                </span>
               </button>
             );
           })}
@@ -265,9 +399,9 @@ export default function AdminDashboard() {
       {/* main */}
       <div className="flex-1">
         {/* header */}
-        <header className="flex items-center justify-between gap-4 border-b border-white/10 px-6 py-4">
+        <header className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 md:px-6">
           <div>
-            <h1 className="text-lg font-semibold">Landing page admin</h1>
+            <h1 className="text-lg font-semibold text-white">Landing page admin</h1>
             <p className="mt-0.5 text-xs text-white/40">
               Changes show on the site instantly.
             </p>
@@ -292,141 +426,138 @@ export default function AdminDashboard() {
         </header>
 
         {/* content */}
-        <div className="mx-auto max-w-5xl px-6 py-8">
+        <div className="mx-auto max-w-5xl px-5 py-8 md:px-6">
           {/* toolbar */}
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-medium text-white/80">
-              {SECTION_LABELS[section]}{" "}
-              <span className="text-white/40">({items.length})</span>
-            </h2>
-            <button
-              onClick={startAdd}
-              className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black"
-            >
-              + Add new
-            </button>
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <h2 className="truncate text-base font-medium text-white/90">
+                {def.label}{" "}
+                {!isSingle && (
+                  <span className="text-white/40">({items.length})</span>
+                )}
+              </h2>
+              <p className="mt-0.5 truncate text-xs text-white/40">
+                On page: {def.onPage}
+              </p>
+            </div>
+            {!isSingle && (
+              <button
+                onClick={startAdd}
+                className="shrink-0 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-white/90"
+              >
+                + Add new
+              </button>
+            )}
           </div>
 
-          {/* list */}
-          <div className="mt-4 space-y-2">
-        {loading ? (
-          Array.from({ length: 5 }).map((_, i) => (
-            <div
-              key={`sk-${i}`}
-              className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.02] p-4"
-            >
-              <div className="min-w-0 flex-1 space-y-2.5">
-                <div className="h-3.5 w-1/3 animate-pulse rounded bg-white/10" />
-                <div className="h-3 w-2/3 animate-pulse rounded bg-white/[0.06]" />
-              </div>
-              <div className="flex shrink-0 gap-2">
-                <div className="h-7 w-12 animate-pulse rounded-lg bg-white/[0.06]" />
-                <div className="h-7 w-14 animate-pulse rounded-lg bg-white/[0.06]" />
-              </div>
-            </div>
-          ))
-        ) : items.length === 0 ? (
-          <p className="py-8 text-center text-sm text-white/40">
-            Nothing here yet. Click “Add new”.
-          </p>
-        ) : (
-          items.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.02] p-4"
-            >
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">
-                  {String(item[TITLE_FIELD[section]] ?? "(untitled)")}
-                </p>
-                <p className="truncate text-xs text-white/40">
-                  {String(item[SUB_FIELD[section]] ?? "")}
-                </p>
-              </div>
-              <div className="flex shrink-0 gap-2">
-                <button
-                  onClick={() => startEdit(item)}
-                  className="rounded-lg border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5"
+          {/* ------------------- singleton editor ------------------- */}
+          {isSingle ? (
+            <div className="mt-6">
+              {loading ? (
+                <div className="space-y-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="space-y-2">
+                      <div className="h-3 w-24 animate-pulse rounded bg-white/10" />
+                      <div className="h-9 w-full animate-pulse rounded-lg bg-white/[0.06]" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <form
+                  onSubmit={saveSingleton}
+                  className="max-w-2xl space-y-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6"
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={() => setPendingDelete(item)}
-                  className="rounded-lg border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
-                >
-                  Delete
-                </button>
-              </div>
+                  <FieldRows def={def} form={form} setForm={setForm} />
+                  {error && <p className="text-sm text-red-400">{error}</p>}
+                  <div className="flex justify-end pt-1">
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-black hover:bg-white/90 disabled:opacity-50"
+                    >
+                      {saving ? "Saving…" : "Save changes"}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
-          ))
-        )}
+          ) : (
+            /* ------------------- collection list ------------------- */
+            <div className="mt-4 space-y-2">
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div
+                    key={`sk-${i}`}
+                    className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.02] p-4"
+                  >
+                    <div className="min-w-0 flex-1 space-y-2.5">
+                      <div className="h-3.5 w-1/3 animate-pulse rounded bg-white/10" />
+                      <div className="h-3 w-2/3 animate-pulse rounded bg-white/[0.06]" />
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <div className="h-7 w-12 animate-pulse rounded-lg bg-white/[0.06]" />
+                      <div className="h-7 w-14 animate-pulse rounded-lg bg-white/[0.06]" />
+                    </div>
+                  </div>
+                ))
+              ) : items.length === 0 ? (
+                <p className="py-8 text-center text-sm text-white/40">
+                  Nothing here yet. Click “Add new”.
+                </p>
+              ) : (
+                items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.02] p-4"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-white">
+                        {String(
+                          (def.titleField && item[def.titleField]) ??
+                            "(untitled)",
+                        )}
+                      </p>
+                      {def.subField && (
+                        <p className="truncate text-xs text-white/40">
+                          {String(item[def.subField] ?? "")}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <button
+                        onClick={() => startEdit(item)}
+                        className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setPendingDelete(item)}
+                        className="rounded-lg border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* editor modal */}
-      {editing !== null && (
+      {/* editor modal (collections only) */}
+      {!isSingle && editing !== null && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4">
           <form
             onSubmit={save}
             className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/10 bg-[#0d0d14] p-6"
           >
-            <h3 className="text-lg font-semibold">
-              {editing === "new" ? "Add" : "Edit"} {SECTION_LABELS[section]}
+            <h3 className="text-lg font-semibold text-white">
+              {editing === "new" ? "Add" : "Edit"} {def.singular}
             </h3>
 
             <div className="mt-5 space-y-4">
-              {SECTION_FIELDS[section].map((field) => (
-                <div key={field}>
-                  <label className="block text-xs font-medium text-white/60">
-                    {labelFor(field)}
-                  </label>
-
-                  {field === "featured" ? (
-                    <label className="mt-2 flex items-center gap-2 text-sm text-white/80">
-                      <input
-                        type="checkbox"
-                        checked={form[field] === true}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, [field]: e.target.checked }))
-                        }
-                      />
-                      Highlight this service
-                    </label>
-                  ) : field === "icon" ? (
-                    <select
-                      value={String(form[field] ?? "")}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, [field]: e.target.value }))
-                      }
-                      className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:border-white/30"
-                    >
-                      <option value="">— pick an icon —</option>
-                      {SERVICE_ICON_NAMES.map((name) => (
-                        <option key={name} value={name}>
-                          {name}
-                        </option>
-                      ))}
-                    </select>
-                  ) : MULTILINE.has(field) ? (
-                    <textarea
-                      value={String(form[field] ?? "")}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, [field]: e.target.value }))
-                      }
-                      rows={3}
-                      className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:border-white/30"
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      value={String(form[field] ?? "")}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, [field]: e.target.value }))
-                      }
-                      className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none focus:border-white/30"
-                    />
-                  )}
-                </div>
-              ))}
+              <FieldRows def={def} form={form} setForm={setForm} />
             </div>
 
             {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
@@ -450,8 +581,6 @@ export default function AdminDashboard() {
           </form>
         </div>
       )}
-        </div>
-      </div>
 
       {/* delete confirmation dialog */}
       <AnimatePresence>
@@ -473,12 +602,16 @@ export default function AdminDashboard() {
               <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-red-500/10">
                 <TriangleAlert className="h-6 w-6 text-red-400" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold">
-                Delete this {SECTION_SINGULAR[section].toLowerCase()}?
+              <h3 className="mt-4 text-lg font-semibold text-white">
+                Delete this {def.singular.toLowerCase()}?
               </h3>
               <p className="mt-1 text-sm text-white/50">
-                “{String(pendingDelete[TITLE_FIELD[section]] ?? "this item")}”
-                will be permanently removed. This can&apos;t be undone.
+                “
+                {String(
+                  (def.titleField && pendingDelete[def.titleField]) ??
+                    "this item",
+                )}
+                ” will be permanently removed. This can&apos;t be undone.
               </p>
               <div className="mt-6 flex gap-3">
                 <button
@@ -528,9 +661,7 @@ export default function AdminDashboard() {
               )}
               <p className="flex-1 text-sm text-white/90">{t.message}</p>
               <button
-                onClick={() =>
-                  setToasts((l) => l.filter((x) => x.id !== t.id))
-                }
+                onClick={() => setToasts((l) => l.filter((x) => x.id !== t.id))}
                 className="text-white/40 transition-colors hover:text-white"
                 aria-label="Dismiss"
               >
