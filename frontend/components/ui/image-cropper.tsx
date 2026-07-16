@@ -15,7 +15,8 @@ type Point = { x: number; y: number };
 export function ImageCropper({
   src,
   aspect = 16 / 10,
-  outputWidth = 1200,
+  outputWidth = 1100,
+  quality = 0.82,
   busy = false,
   onCancel,
   onCrop,
@@ -23,9 +24,10 @@ export function ImageCropper({
   src: string;
   aspect?: number;
   outputWidth?: number;
+  quality?: number;
   busy?: boolean;
   onCancel: () => void;
-  onCrop: (blob: Blob) => void;
+  onCrop: (dataUrl: string) => void;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -160,13 +162,9 @@ export function ImageCropper({
     if (!ctx) return;
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outW, outH);
-    canvas.toBlob(
-      (blob) => {
-        if (blob) onCrop(blob);
-      },
-      "image/jpeg",
-      0.9,
-    );
+    // A data URL is stored directly in the content (works on serverless —
+    // no filesystem write needed).
+    onCrop(canvas.toDataURL("image/jpeg", quality));
   }
 
   return (

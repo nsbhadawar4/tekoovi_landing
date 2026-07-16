@@ -5,29 +5,69 @@ import {
   type ContentItem,
   isSingleton,
 } from "@/backend/types";
+import { connectDB } from "@/backend/lib/mongodb";
+import { ContentModel } from "@/backend/models/content.model";
+import seedContent from "@/backend/data/content.json";
 
 /* -------------------------------------------------------------- */
-/*  Content repository — JSON file store.                          */
+/*  Content repository — the ONLY file that knows *where* content   */
+/*  lives.                                                          */
 /*                                                                 */
-/*  This is the ONLY file that knows *where* content lives. When   */
-/*  MongoDB is added, replace the bodies below with Mongoose       */
-/*  queries — the exported function signatures stay the same, so   */
-/*  controllers / API routes / admin UI need no changes.           */
+/*  • Production (Vercel) has a read-only filesystem, so the JSON   */
+/*    file can be READ but never WRITTEN. When MONGODB_URI is set   */
+/*    we persist to MongoDB instead. The whole content object is    */
+/*    stored as one document, seeded from content.json on first     */
+/*    run, so all the section CRUD below stays identical.           */
+/*  • Local dev (no MONGODB_URI) keeps using the JSON file so edits  */
+/*    are visible in the repo and no database is required.          */
 /*                                                                 */
 /*  Sections come in two shapes (see backend/types.ts):            */
 /*   • collection — an array of items with ids (add/edit/delete)   */
 /*   • singleton  — a single object (edit only)                    */
 /* -------------------------------------------------------------- */
 
+const USE_MONGO = Boolean(process.env.MONGODB_URI);
 const FILE = path.join(process.cwd(), "backend", "data", "content.json");
+const DOC_KEY = "landing";
 
-async function readAll(): Promise<ContentData> {
+async function readAllFile(): Promise<ContentData> {
   const raw = await fs.readFile(FILE, "utf-8");
   return JSON.parse(raw) as ContentData;
 }
 
-async function writeAll(data: ContentData): Promise<void> {
+async function writeAllFile(data: ContentData): Promise<void> {
   await fs.writeFile(FILE, JSON.stringify(data, null, 2) + "\n", "utf-8");
+}
+
+async function readAllMongo(): Promise<ContentData> {
+  await connectDB();
+  // Atomic upsert: seed from the bundled content.json on first run, else read
+  // the existing doc. Race-safe if several requests hit a cold deploy at once.
+  const doc = await ContentModel.findOneAndUpdate(
+    { key: DOC_KEY },
+    { $setOnInsert: { data: seedContent as unknown as ContentData } },
+    { upsert: true, new: true, setDefaultsOnInsert: true },
+  ).lean();
+  return (
+    (doc?.data as ContentData) ?? (seedContent as unknown as ContentData)
+  );
+}
+
+async function writeAllMongo(data: ContentData): Promise<void> {
+  await connectDB();
+  await ContentModel.updateOne(
+    { key: DOC_KEY },
+    { $set: { data } },
+    { upsert: true },
+  );
+}
+
+async function readAll(): Promise<ContentData> {
+  return USE_MONGO ? readAllMongo() : readAllFile();
+}
+
+async function writeAll(data: ContentData): Promise<void> {
+  return USE_MONGO ? writeAllMongo(data) : writeAllFile(data);
 }
 
 function genId(): string {

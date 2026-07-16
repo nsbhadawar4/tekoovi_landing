@@ -94,7 +94,6 @@ function ImageField({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
   function closeCropper() {
@@ -116,20 +115,9 @@ function ImageField({
     setCropSrc(URL.createObjectURL(file));
   }
 
-  async function handleCrop(blob: Blob) {
-    setBusy(true);
+  function handleCrop(dataUrl: string) {
     setErr("");
-    const fd = new FormData();
-    fd.append("file", blob, "crop.jpg");
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    setBusy(false);
-    if (!res.ok) {
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
-      setErr(data.error || "Upload failed.");
-      return;
-    }
-    const data = (await res.json()) as { url: string };
-    onChange(data.url);
+    onChange(dataUrl);
     closeCropper();
   }
 
@@ -176,7 +164,6 @@ function ImageField({
       {cropSrc && (
         <ImageCropper
           src={cropSrc}
-          busy={busy}
           onCancel={closeCropper}
           onCrop={handleCrop}
         />

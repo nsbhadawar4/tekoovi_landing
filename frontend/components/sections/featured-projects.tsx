@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import type { Project } from "@/backend/types";
 import { GlowCard } from "@/components/ui/glow-card";
@@ -34,12 +33,13 @@ function ProjectCard({ project }: { project: Project }) {
       {/* visual */}
       <div className="relative aspect-[16/10] overflow-hidden border-b border-white/10">
         {project.image ? (
-          <Image
+          // Images are stored as data URLs in content, which next/image
+          // doesn't support — a plain img renders them directly.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={project.image}
-            alt={project.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            alt={`${project.name} — ${project.category}`}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         ) : (
           <div className="absolute inset-0">
