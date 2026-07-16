@@ -1,15 +1,5 @@
 import mongoose from "mongoose";
 
-/* -------------------------------------------------------------- */
-/*  MongoDB connection — cached for serverless.                    */
-/*                                                                 */
-/*  On Vercel each request may run in a fresh (or warm) lambda.    */
-/*  We cache the connection on globalThis so warm invocations and  */
-/*  Next.js hot-reloads reuse a single connection instead of       */
-/*  opening a new one every time. Nothing runs at import time, so  */
-/*  it's safe to import even when MONGODB_URI is unset (local dev  */
-/*  falls back to the JSON file store).                            */
-/* -------------------------------------------------------------- */
 
 type Cache = {
   conn: typeof mongoose | null;

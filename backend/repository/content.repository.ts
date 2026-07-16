@@ -9,23 +9,6 @@ import { connectDB } from "@/backend/lib/mongodb";
 import { ContentModel } from "@/backend/models/content.model";
 import seedContent from "@/backend/data/content.json";
 
-/* -------------------------------------------------------------- */
-/*  Content repository — the ONLY file that knows *where* content   */
-/*  lives.                                                          */
-/*                                                                 */
-/*  • Production (Vercel) has a read-only filesystem, so the JSON   */
-/*    file can be READ but never WRITTEN. When MONGODB_URI is set   */
-/*    we persist to MongoDB instead. The whole content object is    */
-/*    stored as one document, seeded from content.json on first     */
-/*    run, so all the section CRUD below stays identical.           */
-/*  • Local dev (no MONGODB_URI) keeps using the JSON file so edits  */
-/*    are visible in the repo and no database is required.          */
-/*                                                                 */
-/*  Sections come in two shapes (see backend/types.ts):            */
-/*   • collection — an array of items with ids (add/edit/delete)   */
-/*   • singleton  — a single object (edit only)                    */
-/* -------------------------------------------------------------- */
-
 const USE_MONGO = Boolean(process.env.MONGODB_URI);
 const FILE = path.join(process.cwd(), "backend", "data", "content.json");
 const DOC_KEY = "landing";

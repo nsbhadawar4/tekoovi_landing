@@ -9,10 +9,6 @@ import {
 } from "@/backend/types";
 
 /* -------------------------------------------------------------- */
-/*  Content controller — validation + business logic.             */
-/*  API routes and the landing page call THIS, not the repository  */
-/*  directly.                                                      */
-/* -------------------------------------------------------------- */
 
 export function isSection(value: string): boolean {
   return isSectionKey(value);
