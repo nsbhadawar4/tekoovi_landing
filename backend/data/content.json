@@ -1,0 +1,317 @@
+{
+  "hero": {
+    "badge": "Premium Digital Product Studio",
+    "titleLead": "We build digital products that ",
+    "titleHighlight": "scale businesses.",
+    "subtitle": "Tekoovi designs and engineers scalable websites, SaaS platforms, AI solutions and mobile apps — the quiet standard behind ambitious products.",
+    "primaryLabel": "Book Free Consultation",
+    "primaryHref": "#contact",
+    "secondaryLabel": "View Portfolio",
+    "secondaryHref": "#work",
+    "note": "Trusted by founders across 18 countries"
+  },
+  "stats": [
+    { "id": "st1", "label": "Products shipped", "value": 140, "suffix": "+" },
+    { "id": "st2", "label": "Countries served", "value": 18, "suffix": "" },
+    { "id": "st3", "label": "Years of craft", "value": 9, "suffix": "+" },
+    { "id": "st4", "label": "Client satisfaction", "value": 98, "suffix": "%" }
+  ],
+  "logos": [
+    { "id": "lg1", "name": "Aeronex" },
+    { "id": "lg2", "name": "Northwind" },
+    { "id": "lg3", "name": "Lumen Health" },
+    { "id": "lg4", "name": "Kairo" },
+    { "id": "lg5", "name": "Vaultline" },
+    { "id": "lg6", "name": "Brightpath" },
+    { "id": "lg7", "name": "Meridian" },
+    { "id": "lg8", "name": "Cobalt" },
+    { "id": "lg9", "name": "Fieldstone" },
+    { "id": "lg10", "name": "Novus" }
+  ],
+  "projects": [
+    {
+      "id": "p1",
+      "name": "Lumen Health",
+      "category": "AI SaaS · Healthcare",
+      "description": "A clinical intelligence platform that turns patient data into real-time care decisions.",
+      "tech": ["Next.js", "OpenAI", "Supabase", "AWS"],
+      "country": "United States",
+      "result": "+63% faster triage",
+      "accent": "from-[#6C3BFF]/40 to-[#3a1f8f]/10"
+    },
+    {
+      "id": "p2",
+      "name": "Vaultline",
+      "category": "Fintech · Platform",
+      "description": "Treasury & payments infrastructure moving eight figures monthly with zero downtime.",
+      "tech": ["Node.js", "PostgreSQL", "Stripe", "Docker"],
+      "country": "United Kingdom",
+      "result": "$40M+ processed",
+      "accent": "from-[#8A5CFF]/40 to-[#1b1b28]/10"
+    },
+    {
+      "id": "p3",
+      "name": "Fieldstone",
+      "category": "PropTech · Web + Mobile",
+      "description": "An end-to-end real estate operating system for listings, tours and closings.",
+      "tech": ["React Native", "Laravel", "Google Cloud"],
+      "country": "United Arab Emirates",
+      "result": "3.4× lead conversion",
+      "accent": "from-[#B388FF]/35 to-[#241a3d]/10"
+    }
+  ],
+  "services": [
+    {
+      "id": "s3",
+      "title": "AI Solutions",
+      "description": "LLM copilots, RAG systems and intelligent agents wired into your product.",
+      "icon": "BrainCircuit",
+      "featured": true
+    },
+    {
+      "id": "s4",
+      "title": "Mobile Apps",
+      "description": "Native-grade iOS & Android experiences from a single codebase.",
+      "icon": "Smartphone",
+      "featured": false
+    },
+    {
+      "id": "s5",
+      "title": "Automation",
+      "description": "Internal tools and workflows that quietly remove operational drag.",
+      "icon": "Workflow",
+      "featured": false
+    },
+    {
+      "id": "s6",
+      "title": "UI / UX Design",
+      "description": "Systems, not screens — design languages your team can build on for years.",
+      "icon": "Palette",
+      "featured": false
+    },
+    {
+      "id": "s7",
+      "title": "SEO & Growth",
+      "description": "Technical SEO, Core Web Vitals and funnels tuned for compounding growth.",
+      "icon": "LineChart",
+      "featured": false
+    },
+    {
+      "id": "s8",
+      "title": "Maintenance",
+      "description": "Proactive monitoring, iteration and long-term partnership after launch.",
+      "icon": "Wrench",
+      "featured": false
+    }
+  ],
+  "industries": [
+    { "id": "in1", "name": "Healthcare", "icon": "HeartPulse" },
+    { "id": "in2", "name": "Real Estate", "icon": "Building2" },
+    { "id": "in3", "name": "Education", "icon": "GraduationCap" },
+    { "id": "in4", "name": "Construction", "icon": "Boxes" },
+    { "id": "in5", "name": "HRTech", "icon": "Users" },
+    { "id": "in6", "name": "Finance", "icon": "Landmark" },
+    { "id": "in7", "name": "Restaurants", "icon": "UtensilsCrossed" },
+    { "id": "in8", "name": "Retail", "icon": "ShoppingBag" }
+  ],
+  "why": [
+    {
+      "id": "wy1",
+      "title": "Transparent communication",
+      "description": "Direct access to the people building your product. No account managers, no fog.",
+      "icon": "ScanSearch"
+    },
+    {
+      "id": "wy2",
+      "title": "Business-first thinking",
+      "description": "We optimise for your revenue and outcomes, not our line count.",
+      "icon": "LineChart"
+    },
+    {
+      "id": "wy3",
+      "title": "Scalable architecture",
+      "description": "Foundations that hold at 10 users and 10 million — designed from day one.",
+      "icon": "Boxes"
+    },
+    {
+      "id": "wy4",
+      "title": "Fast, deliberate delivery",
+      "description": "Weekly shippable increments. Momentum you can actually see.",
+      "icon": "Rocket"
+    },
+    {
+      "id": "wy5",
+      "title": "Modern technology",
+      "description": "A battle-tested stack chosen for longevity, not hype cycles.",
+      "icon": "Sparkles"
+    },
+    {
+      "id": "wy6",
+      "title": "Long-term partnership",
+      "description": "Most clients stay for years. We build for the roadmap, not the invoice.",
+      "icon": "ShieldCheck"
+    }
+  ],
+  "process": [
+    {
+      "id": "pr1",
+      "step": "01",
+      "title": "Discover",
+      "description": "We dig into your business, users and goals before a single pixel is drawn."
+    },
+    {
+      "id": "pr2",
+      "step": "02",
+      "title": "Plan",
+      "description": "Scope, architecture and a clear roadmap with milestones you can hold us to."
+    },
+    {
+      "id": "pr3",
+      "step": "03",
+      "title": "Design",
+      "description": "High-fidelity, interactive design systems that feel like the real product."
+    },
+    {
+      "id": "pr4",
+      "step": "04",
+      "title": "Develop",
+      "description": "Clean, tested, scalable code shipped in weekly increments you can review."
+    },
+    {
+      "id": "pr5",
+      "step": "05",
+      "title": "Test",
+      "description": "QA, performance budgets and accessibility audits before anything goes live."
+    },
+    {
+      "id": "pr6",
+      "step": "06",
+      "title": "Launch",
+      "description": "A confident, monitored release — with rollbacks ready if we ever need them."
+    },
+    {
+      "id": "pr7",
+      "step": "07",
+      "title": "Support",
+      "description": "We stay on. Iteration, monitoring and growth long after go-live."
+    }
+  ],
+  "techStack": [
+    { "id": "tc1", "name": "React" },
+    { "id": "tc2", "name": "Next.js" },
+    { "id": "tc3", "name": "Laravel" },
+    { "id": "tc4", "name": "Node.js" },
+    { "id": "tc5", "name": "React Native" },
+    { "id": "tc6", "name": "Flutter" },
+    { "id": "tc7", "name": "Supabase" },
+    { "id": "tc8", "name": "Firebase" },
+    { "id": "tc9", "name": "AWS" },
+    { "id": "tc10", "name": "DigitalOcean" },
+    { "id": "tc11", "name": "Docker" },
+    { "id": "tc12", "name": "OpenAI" },
+    { "id": "tc13", "name": "Stripe" },
+    { "id": "tc14", "name": "Google Cloud" },
+    { "id": "tc15", "name": "PostgreSQL" },
+    { "id": "tc16", "name": "MySQL" }
+  ],
+  "caseStudy": {
+    "client": "Lumen Health",
+    "title": "Cutting clinical triage time by two-thirds with an AI care platform",
+    "problem": "Clinicians were drowning in fragmented patient data across five disconnected systems, delaying critical care decisions.",
+    "research": "We shadowed care teams for two weeks, mapped every data source and identified the 12 signals that actually drive triage.",
+    "solution": "A unified, AI-assisted command centre that surfaces the right patient context — and a recommended next action — in real time.",
+    "challenges": "HIPAA-grade security, sub-200ms inference at the bedside, and a zero-training-required interface for busy staff.",
+    "tech": ["Next.js", "OpenAI", "Supabase", "AWS", "PostgreSQL"],
+    "outcome": "A pilot that clinicians actually love — and measurable time back at the bedside."
+  },
+  "caseMetrics": [
+    { "id": "cm1", "value": "63%", "label": "Faster triage decisions" },
+    { "id": "cm2", "value": "4.9/5", "label": "Clinician usability score" },
+    { "id": "cm3", "value": "0", "label": "Critical incidents post-launch" },
+    { "id": "cm4", "value": "3 wks", "label": "From kickoff to first pilot" }
+  ],
+  "testimonials": [
+    {
+      "id": "t1",
+      "quote": "Tekoovi shipped a product our last two agencies couldn't. The quality is genuinely enterprise-grade — it feels like Vercel built it.",
+      "name": "Sarah Whitfield",
+      "role": "CEO, Lumen Health",
+      "initials": "SW"
+    },
+    {
+      "id": "t2",
+      "quote": "They think like founders. Every decision was tied back to revenue and users. Rare, and worth every cent.",
+      "name": "Daniel Osei",
+      "role": "Founder, Vaultline",
+      "initials": "DO"
+    },
+    {
+      "id": "t3",
+      "quote": "Fast, transparent and obsessive about detail. We went from idea to funded pilot in under a month.",
+      "name": "Amelia Rossi",
+      "role": "COO, Fieldstone",
+      "initials": "AR"
+    },
+    {
+      "id": "t4",
+      "quote": "The most senior engineering partner we've worked with. Zero hand-holding, all signal.",
+      "name": "Marcus Lindqvist",
+      "role": "CTO, Kairo",
+      "initials": "ML"
+    }
+  ],
+  "founder": {
+    "name": "Abhay Pratap",
+    "role": "Founder & Principal Engineer",
+    "initials": "AP",
+    "story": "I started Tekoovi after a decade of watching brilliant businesses get let down by agencies that shipped templates and disappeared. I wanted to build the opposite: a small, senior studio that treats every product like our own.",
+    "mission": "To give founders and teams the kind of product craft usually reserved for the world's best companies — with the honesty and speed of working directly with the maker.",
+    "vision": "A studio known less for what we build and more for how it performs, scales and lasts — the quiet standard behind ambitious products."
+  },
+  "faqs": [
+    {
+      "id": "f1",
+      "q": "What kind of companies do you work with?",
+      "a": "Funded startups and established businesses who treat their software as a core asset — not a checkbox. If you care about craft, speed and outcomes, we'll get along."
+    },
+    {
+      "id": "f2",
+      "q": "How is Tekoovi different from a typical agency?",
+      "a": "We're a product studio, not a feature factory. You work directly with senior designers and engineers who own outcomes, communicate transparently and stay for the long term."
+    },
+    {
+      "id": "f3",
+      "q": "How long does a typical project take?",
+      "a": "A focused MVP usually ships in 4–8 weeks. Larger platforms run in weekly increments so you always have something real to review and never wait months in the dark."
+    },
+    {
+      "id": "f4",
+      "q": "How much does a project cost?",
+      "a": "Every engagement is scoped to your goals, so pricing is bespoke. Most partnerships start in the mid five figures. We'll give you a clear, itemised proposal after the discovery call."
+    },
+    {
+      "id": "f5",
+      "q": "Do you work after launch?",
+      "a": "Always. Most clients stay on for ongoing iteration, monitoring and growth. We build for the roadmap, not the invoice."
+    },
+    {
+      "id": "f6",
+      "q": "Who actually owns the code and IP?",
+      "a": "You do — 100%. Clean, documented, well-architected code handed over in your own repositories from day one."
+    }
+  ],
+  "contact": {
+    "eyebrow": "Let's talk",
+    "title": "Let's build something amazing together",
+    "subtitle": "Book a free discovery call. We'll pressure-test your idea, map the fastest path to launch, and show you exactly how we'd build it.",
+    "email": "hello@tekoovi.com",
+    "whatsapp": "https://wa.me/10000000000",
+    "calendly": "https://calendly.com/tekoovi/discovery"
+  },
+  "socials": [
+    { "id": "so1", "label": "X", "href": "https://x.com/tekoovi" },
+    { "id": "so2", "label": "LinkedIn", "href": "https://linkedin.com/company/tekoovi" },
+    { "id": "so3", "label": "Dribbble", "href": "https://dribbble.com/tekoovi" },
+    { "id": "so4", "label": "GitHub", "href": "https://github.com/tekoovi" }
+  ]
+}
