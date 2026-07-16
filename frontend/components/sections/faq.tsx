@@ -11,7 +11,12 @@ export function FAQ({ faqs }: { faqs: Faq[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <Section id="faq" scrollOffset={-480}>
+    <Section id="faq">
+      <span
+        data-scroll-target
+        aria-hidden
+        className="absolute top-24 md:top-32"
+      />
       <Container>
         <SectionHeading
           eyebrow="FAQ"

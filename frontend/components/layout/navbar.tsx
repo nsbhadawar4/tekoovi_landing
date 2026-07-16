@@ -11,7 +11,7 @@ import { Logo } from "@/components/ui/logo";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [activeHref, setActiveHref] = useState("#top");
+  const [activeHref, setActiveHref] = useState("#home");
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (y) => {
@@ -59,7 +59,7 @@ export function Navbar() {
               : "border-white/10 bg-bg-2/70 shadow-[0_10px_34px_-18px_rgba(0,0,0,0.7)]",
           )}
         >
-          <a href="#top" aria-label="Tekoovi home" className="pl-1">
+          <a href="#home" aria-label="Tekoovi home" className="pl-1">
             <Logo />
           </a>
 

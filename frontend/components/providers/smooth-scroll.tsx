@@ -44,9 +44,13 @@ export function SmoothScroll() {
       const target = document.querySelector(hash);
       if (!target) return;
       e.preventDefault();
-      const customOffset = (target as HTMLElement).dataset.scrollOffset;
-      lenis.scrollTo(target as HTMLElement, {
-        offset: customOffset ? Number(customOffset) : -88,
+      // Preserve the selected section in the URL without triggering native scroll.
+      window.history.pushState(null, "", hash);
+      const scrollTarget =
+        target.querySelector<HTMLElement>("[data-scroll-target]") ??
+        (target as HTMLElement);
+      lenis.scrollTo(scrollTarget, {
+        offset: -88,
         duration: 1.2,
       });
     }

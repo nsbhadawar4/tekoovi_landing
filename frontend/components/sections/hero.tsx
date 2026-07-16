@@ -45,7 +45,7 @@ export function Hero({ hero }: { hero: HeroContent }) {
 
   return (
     <section
-      id="top"
+      id="home"
       ref={ref}
       onMouseMove={handleMove}
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-24"
