@@ -97,7 +97,7 @@ export function Navbar({ calendly }: { calendly: string }) {
         {/* Gradient hairline ring */}
         <div
           className={cn(
-            "rounded-full p-px transition-all duration-500",
+            "rounded-full transition-all duration-500",
             scrolled
               ? "bg-[linear-gradient(120deg,rgba(255,255,255,0.18),rgba(255,255,255,0.04)_38%,rgba(138,92,255,0.32)_64%,rgba(255,255,255,0.12))] shadow-[0_18px_50px_-16px_rgba(0,0,0,0.9)]"
               : "bg-[linear-gradient(120deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02)_50%,rgba(255,255,255,0.08))]",
