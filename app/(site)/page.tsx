@@ -11,29 +11,32 @@ import { CaseStudy } from "@/components/sections/case-study";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Founder } from "@/components/sections/founder";
 import { FAQ } from "@/components/sections/faq";
-import { FinalCTA } from "@/components/sections/final-cta";
 
 // Read fresh content on every request so admin edits show up immediately.
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const content = await getContent();
+  const { calendly } = content.contact;
 
   return (
     <>
       <Hero hero={content.hero} />
       <TrustedBy stats={content.stats} logos={content.logos} />
-      <FeaturedProjects projects={content.projects} />
+      <FeaturedProjects projects={content.projects} calendly={calendly} />
       <Services services={content.services} />
       <Industries industries={content.industries} />
       <WhyTekoovi why={content.why} />
       <Process steps={content.process} />
       <TechStack techStack={content.techStack} />
-      <CaseStudy caseStudy={content.caseStudy} metrics={content.caseMetrics} />
+      <CaseStudy
+        caseStudy={content.caseStudy}
+        metrics={content.caseMetrics}
+        calendly={calendly}
+      />
       <Testimonials testimonials={content.testimonials} />
       <Founder founder={content.founder} socials={content.socials} />
       <FAQ faqs={content.faqs} />
-      <FinalCTA contact={content.contact} />
     </>
   );
 }

@@ -23,6 +23,7 @@ const variants: Record<Variant, string> = {
 type ButtonProps = {
   children: ReactNode;
   href?: string;
+  /** Defaults to true for absolute URLs — several hrefs come from admin content. */
   external?: boolean;
   variant?: Variant;
   size?: Size;
@@ -86,11 +87,12 @@ export function Button({
   };
 
   if (href) {
+    const leavesSite = external ?? /^https?:\/\//i.test(href);
     return (
       <motion.a
         {...motionProps}
         href={href}
-        {...(external
+        {...(leavesSite
           ? { target: "_blank", rel: "noopener noreferrer" }
           : {})}
       >

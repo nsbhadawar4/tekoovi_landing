@@ -17,7 +17,7 @@ import { Logo } from "@/components/ui/logo";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Navbar() {
+export function Navbar({ calendly }: { calendly: string }) {
   const pathname = usePathname();
   // The section anchors only exist on the landing page. Everywhere else (the
   // legal pages) the same links have to navigate home first.
@@ -168,7 +168,7 @@ export function Navbar() {
 
             <div className="flex items-center gap-2">
               <div className="hidden md:block">
-                <Button href={hrefFor("#contact")} size="md" magnetic withArrow>
+                <Button href={calendly} size="md" magnetic withArrow>
                   Book a call
                 </Button>
               </div>
@@ -279,7 +279,7 @@ export function Navbar() {
                         className="mt-2 px-1 pb-1"
                       >
                         <Button
-                          href={hrefFor("#contact")}
+                          href={calendly}
                           size="lg"
                           withArrow
                           className="w-full"

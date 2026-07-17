@@ -6,7 +6,7 @@
     "titleHighlight": "scale businesses.",
     "subtitle": "Tekoovi designs and engineers scalable websites, SaaS platforms, AI solutions and mobile apps — the quiet standard behind ambitious products.",
     "primaryLabel": "Book Free Consultation",
-    "primaryHref": "#contact",
+    "primaryHref": "https://calendly.com/tekoovi/discovery",
     "secondaryLabel": "View Portfolio",
     "secondaryHref": "#work"
   },
@@ -470,9 +470,6 @@
     }
   ],
   "contact": {
-    "eyebrow": "Let's talk",
-    "title": "Let's build something amazing together",
-    "subtitle": "Book a free discovery call. We'll pressure-test your idea, map the fastest path to launch, and show you exactly how we'd build it.",
     "email": "hello@tekoovi.com",
     "whatsapp": "https://wa.me/10000000000",
     "calendly": "https://calendly.com/tekoovi/discovery"

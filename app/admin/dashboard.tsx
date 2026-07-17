@@ -43,6 +43,7 @@ import {
 import {
   type FieldDef,
   getSection,
+  type HeaderDef,
   SECTIONS,
   type SectionDef,
 } from "@/backend/types";
@@ -77,9 +78,12 @@ const SIDEBAR_ICONS: Record<string, LucideIcon> = {
   Gavel,
 };
 
-function buildForm(def: SectionDef, record?: Record<string, unknown>): FormState {
+function buildForm(
+  fields: FieldDef[],
+  record?: Record<string, unknown>,
+): FormState {
   const form: FormState = {};
-  for (const field of def.fields) {
+  for (const field of fields) {
     const value = record?.[field.name];
     if (field.type === "boolean") form[field.name] = value === true;
     else if (field.type === "tags")
@@ -276,17 +280,17 @@ function Field({
 }
 
 function FieldRows({
-  def,
+  fields,
   form,
   setForm,
 }: {
-  def: SectionDef;
+  fields: FieldDef[];
   form: FormState;
   setForm: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
   return (
     <>
-      {def.fields.map((field) => (
+      {fields.map((field) => (
         <div key={field.name}>
           {field.type !== "boolean" && (
             <label className="block text-xs font-medium text-white/60">
@@ -301,6 +305,98 @@ function FieldRows({
         </div>
       ))}
     </>
+  );
+}
+
+/* ------------------------- header form ------------------------- */
+
+/**
+ * The singleton record that sits above a collection (e.g. a legal page's
+ * title/intro above its clauses). It owns its own fetch/save so the parent
+ * dashboard keeps treating the section as a plain collection.
+ */
+function HeaderForm({
+  header,
+  notify,
+  onUnauthorized,
+}: {
+  header: HeaderDef;
+  notify: (type: Toast["type"], message: string) => void;
+  onUnauthorized: () => void;
+}) {
+  const [form, setForm] = useState<FormState>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    fetch(`/api/content/${header.key}`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data: { item?: Record<string, unknown> }) => {
+        if (!active) return;
+        setForm(buildForm(header.fields, data.item ?? {}));
+        setLoading(false);
+      })
+      .catch(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [header.key, header.fields]);
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+
+    const res = await fetch(`/api/content/${header.key}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    setSaving(false);
+    if (res.status === 401) return onUnauthorized();
+    if (!res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      const msg = data.error || "Save failed.";
+      setError(msg);
+      notify("error", msg);
+      return;
+    }
+    notify("success", `${header.singular} saved`);
+  }
+
+  return (
+    <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+      <p className="text-sm font-medium text-white/90">{header.label}</p>
+      {loading ? (
+        <div className="mt-4 space-y-4">
+          {header.fields.map((f) => (
+            <div key={f.name} className="space-y-2">
+              <div className="h-3 w-24 animate-pulse rounded bg-white/10" />
+              <div className="h-9 w-full animate-pulse rounded-lg bg-white/[0.06]" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <form onSubmit={save} className="mt-4 max-w-2xl space-y-4">
+          <FieldRows fields={header.fields} form={form} setForm={setForm} />
+          {error && <p className="text-sm text-red-400">{error}</p>}
+          <div className="flex justify-end pt-1">
+            <button
+              type="submit"
+              disabled={saving}
+              className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-black hover:bg-white/90 disabled:opacity-50"
+            >
+              {saving ? "Saving…" : "Save header"}
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
   );
 }
 
@@ -344,7 +440,9 @@ export default function AdminDashboard() {
   const load = useCallback(async (key: string) => {
     setLoading(true);
     const res = await fetch(`/api/content/${key}`, { cache: "no-store" });
-    const data = (await res.json().catch(() => ({}))) as { items?: AdminItem[] };
+    const data = (await res.json().catch(() => ({}))) as {
+      items?: AdminItem[];
+    };
     setItems(data.items ?? []);
     setLoading(false);
   }, []);
@@ -363,7 +461,7 @@ export default function AdminDashboard() {
       .then((data: { items?: AdminItem[]; item?: Record<string, unknown> }) => {
         if (!active) return;
         if (d.kind === "singleton") {
-          setForm(buildForm(d, data.item ?? {}));
+          setForm(buildForm(d.fields, data.item ?? {}));
         } else {
           setItems(data.items ?? []);
         }
@@ -386,13 +484,13 @@ export default function AdminDashboard() {
   }
 
   function startAdd() {
-    setForm(buildForm(def));
+    setForm(buildForm(def.fields));
     setError("");
     setEditing("new");
   }
 
   function startEdit(item: AdminItem) {
-    setForm(buildForm(def, item));
+    setForm(buildForm(def.fields, item));
     setError("");
     setEditing(item.id);
   }
@@ -524,7 +622,9 @@ export default function AdminDashboard() {
         {/* header */}
         <header className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 md:px-6">
           <div>
-            <h1 className="text-lg font-semibold text-white">Landing page admin</h1>
+            <h1 className="text-lg font-semibold text-white">
+              Landing page admin
+            </h1>
             <p className="mt-0.5 text-xs text-white/40">
               Changes show on the site instantly.
             </p>
@@ -590,7 +690,7 @@ export default function AdminDashboard() {
                   onSubmit={saveSingleton}
                   className="max-w-2xl space-y-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6"
                 >
-                  <FieldRows def={def} form={form} setForm={setForm} />
+                  <FieldRows fields={def.fields} form={form} setForm={setForm} />
                   {error && <p className="text-sm text-red-400">{error}</p>}
                   <div className="flex justify-end pt-1">
                     <button
@@ -606,7 +706,22 @@ export default function AdminDashboard() {
             </div>
           ) : (
             /* ------------------- collection list ------------------- */
-            <div className="mt-4 space-y-2">
+            <>
+              {def.header && (
+                <>
+                  <HeaderForm
+                    key={def.header.key}
+                    header={def.header}
+                    notify={notify}
+                    onUnauthorized={unauthorized}
+                  />
+                  <p className="mt-8 text-sm font-medium text-white/90">
+                    {def.singular}s{" "}
+                    <span className="text-white/40">({items.length})</span>
+                  </p>
+                </>
+              )}
+              <div className={def.header ? "mt-3 space-y-2" : "mt-4 space-y-2"}>
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <div
@@ -680,7 +795,8 @@ export default function AdminDashboard() {
                   );
                 })
               )}
-            </div>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -697,7 +813,7 @@ export default function AdminDashboard() {
             </h3>
 
             <div className="mt-5 space-y-4">
-              <FieldRows def={def} form={form} setForm={setForm} />
+              <FieldRows fields={def.fields} form={form} setForm={setForm} />
             </div>
 
             {error && <p className="mt-4 text-sm text-red-400">{error}</p>}

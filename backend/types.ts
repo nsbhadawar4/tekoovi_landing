@@ -34,6 +34,19 @@ export interface FieldDef {
 /** A section is either a list of items (CRUD) or a single record (edit only). */
 export type SectionKind = "collection" | "singleton";
 
+/**
+ * A singleton record edited *above* a collection, inside the same sidebar
+ * entry — e.g. a legal page's title/intro sitting above its clause list. It is
+ * stored under its own content key and is addressable through the API like any
+ * singleton, but it never gets a sidebar entry of its own.
+ */
+export interface HeaderDef {
+  key: string;
+  label: string;
+  singular: string;
+  fields: FieldDef[];
+}
+
 export interface SectionDef {
   key: string;
   /** Shown in the admin sidebar — matches the on-page section. */
@@ -48,11 +61,34 @@ export interface SectionDef {
   /** Collection only: which field is the row title / subtitle. */
   titleField?: string;
   subField?: string;
+  /** Collection only: a singleton record edited above the list. */
+  header?: HeaderDef;
   fields: FieldDef[];
 }
 
 /* --------------------- the section registry ------------------- */
 /*  Order = top-to-bottom order of the landing page.               */
+
+/* /privacy and /terms are built from the same two shapes. */
+const LEGAL_HEADER_FIELDS: FieldDef[] = [
+  { name: "title", label: "Page title", type: "text" },
+  { name: "intro", label: "Intro paragraph", type: "textarea" },
+  {
+    name: "updated",
+    label: "Last updated",
+    type: "text",
+    placeholder: "17 July 2026",
+  },
+];
+
+const LEGAL_CLAUSE_FIELDS: FieldDef[] = [
+  { name: "heading", label: "Clause heading", type: "text" },
+  {
+    name: "body",
+    label: "Clause body — blank line = new paragraph, line starting with “- ” = bullet",
+    type: "textarea",
+  },
+];
 
 export const SECTIONS: SectionDef[] = [
   {
@@ -283,17 +319,18 @@ export const SECTIONS: SectionDef[] = [
   {
     key: "contact",
     label: "Contact",
-    onPage: "Final CTA + footer",
+    onPage: "Footer, legal pages + every Book a call button",
     kind: "singleton",
     icon: "Mail",
     singular: "Contact",
     fields: [
-      { name: "eyebrow", label: "Eyebrow", type: "text" },
-      { name: "title", label: "Title", type: "textarea" },
-      { name: "subtitle", label: "Subtitle", type: "textarea" },
       { name: "email", label: "Email", type: "text" },
       { name: "whatsapp", label: "WhatsApp link", type: "text" },
-      { name: "calendly", label: "Calendly link", type: "text" },
+      {
+        name: "calendly",
+        label: "Calendly link — every “Book a call” button opens this",
+        type: "text",
+      },
     ],
   },
   {
@@ -311,85 +348,67 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    key: "privacy",
-    label: "Privacy — intro",
-    onPage: "/privacy — header",
-    kind: "singleton",
-    icon: "ShieldCheck",
-    singular: "Privacy header",
-    fields: [
-      { name: "title", label: "Page title", type: "text" },
-      { name: "intro", label: "Intro paragraph", type: "textarea" },
-      {
-        name: "updated",
-        label: "Last updated",
-        type: "text",
-        placeholder: "17 July 2026",
-      },
-    ],
-  },
-  {
     key: "privacyClauses",
-    label: "Privacy — clauses",
-    onPage: "/privacy — body",
+    label: "Privacy Policy",
+    onPage: "/privacy",
     kind: "collection",
-    icon: "ScrollText",
+    icon: "ShieldCheck",
     singular: "Privacy clause",
     titleField: "heading",
     subField: "body",
-    fields: [
-      { name: "heading", label: "Clause heading", type: "text" },
-      {
-        name: "body",
-        label: "Clause body — blank line = new paragraph, line starting with “- ” = bullet",
-        type: "textarea",
-      },
-    ],
-  },
-  {
-    key: "terms",
-    label: "Terms — intro",
-    onPage: "/terms — header",
-    kind: "singleton",
-    icon: "Scale",
-    singular: "Terms header",
-    fields: [
-      { name: "title", label: "Page title", type: "text" },
-      { name: "intro", label: "Intro paragraph", type: "textarea" },
-      {
-        name: "updated",
-        label: "Last updated",
-        type: "text",
-        placeholder: "17 July 2026",
-      },
-    ],
+    header: {
+      key: "privacy",
+      label: "Page header",
+      singular: "Privacy header",
+      fields: LEGAL_HEADER_FIELDS,
+    },
+    fields: LEGAL_CLAUSE_FIELDS,
   },
   {
     key: "termsClauses",
-    label: "Terms — clauses",
-    onPage: "/terms — body",
+    label: "Terms of Service",
+    onPage: "/terms",
     kind: "collection",
-    icon: "Gavel",
+    icon: "Scale",
     singular: "Terms clause",
     titleField: "heading",
     subField: "body",
-    fields: [
-      { name: "heading", label: "Clause heading", type: "text" },
-      {
-        name: "body",
-        label: "Clause body — blank line = new paragraph, line starting with “- ” = bullet",
-        type: "textarea",
-      },
-    ],
+    header: {
+      key: "terms",
+      label: "Page header",
+      singular: "Terms header",
+      fields: LEGAL_HEADER_FIELDS,
+    },
+    fields: LEGAL_CLAUSE_FIELDS,
   },
 ];
 
 /* ----------------------- derived helpers ---------------------- */
 
-export const SECTION_KEYS: string[] = SECTIONS.map((s) => s.key);
+/** A header record behaves exactly like a singleton section to the API. */
+function headerAsSection(parent: SectionDef, header: HeaderDef): SectionDef {
+  return {
+    key: header.key,
+    label: header.label,
+    onPage: parent.onPage,
+    kind: "singleton",
+    icon: parent.icon,
+    singular: header.singular,
+    fields: header.fields,
+  };
+}
+
+/* Every addressable content key. SECTIONS alone drives the sidebar; headers are
+   editable through their parent's entry, so they're resolvable but not listed. */
+const ALL_SECTIONS: SectionDef[] = [
+  ...SECTIONS,
+  ...SECTIONS.flatMap((s) => (s.header ? [headerAsSection(s, s.header)] : [])),
+];
+
+export const SECTION_KEYS: string[] = ALL_SECTIONS.map((s) => s.key);
 
 const SECTION_MAP: Record<string, SectionDef> = Object.fromEntries(
-  SECTIONS.map((s) => [s.key, s]),
+  ALL_SECTIONS.map((s) => [s.key, s]),
 );
 
 export function getSection(key: string): SectionDef | undefined {
@@ -517,9 +536,6 @@ export interface Faq {
 }
 
 export interface Contact {
-  eyebrow: string;
-  title: string;
-  subtitle: string;
   email: string;
   whatsapp: string;
   calendly: string;

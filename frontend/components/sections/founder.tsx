@@ -11,7 +11,7 @@ export function Founder({
   socials: Social[];
 }) {
   return (
-    <Section id="founder">
+    <Section id="studio">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
           {/* portrait */}

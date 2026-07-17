@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getContent } from "@/backend/controllers/content.controller";
 import { Button } from "@/components/ui/button";
 import { AuroraBlobs, GridBackdrop } from "@/components/ui/backgrounds";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function NotFound() {
+export default async function NotFound() {
+  const { contact } = await getContent();
+
   return (
     <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-6">
       <AuroraBlobs />
@@ -26,7 +29,7 @@ export default function NotFound() {
           <Button href="/" size="lg" magnetic withArrow>
             Back to home
           </Button>
-          <Button href="/#contact" size="lg" variant="secondary">
+          <Button href={contact.calendly} size="lg" variant="secondary">
             Book a call
           </Button>
         </div>

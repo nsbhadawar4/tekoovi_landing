@@ -43,7 +43,7 @@ export default async function SiteLayout({
       <span className="grain" aria-hidden="true" />
       <Preloader />
       <SmoothScroll />
-      <Navbar />
+      <Navbar calendly={content.contact.calendly} />
       <main>{children}</main>
       <Footer
         contact={content.contact}

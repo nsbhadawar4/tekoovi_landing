@@ -5,7 +5,13 @@ import { Reveal } from "@/components/ui/reveal";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
 import { cn } from "@/lib/utils";
 
-export function FeaturedProjects({ projects }: { projects: Project[] }) {
+export function FeaturedProjects({
+  projects,
+  calendly,
+}: {
+  projects: Project[];
+  calendly: string;
+}) {
   return (
     <Section id="work">
       <Container>
@@ -18,7 +24,7 @@ export function FeaturedProjects({ projects }: { projects: Project[] }) {
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, i) => (
             <Reveal key={project.id} delay={(i % 3) * 0.08}>
-              <ProjectCard project={project} />
+              <ProjectCard project={project} calendly={calendly} />
             </Reveal>
           ))}
         </div>
@@ -27,7 +33,13 @@ export function FeaturedProjects({ projects }: { projects: Project[] }) {
   );
 }
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({
+  project,
+  calendly,
+}: {
+  project: Project;
+  calendly: string;
+}) {
   return (
     <GlowCard className="flex h-full flex-col">
       {/* visual */}
@@ -93,7 +105,9 @@ function ProjectCard({ project }: { project: Project }) {
         </div>
 
         <a
-          href="#contact"
+          href={calendly}
+          target="_blank"
+          rel="noopener noreferrer"
           className="group/link mt-6 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-ink transition-colors hover:text-brand-3"
         >
           View case study
