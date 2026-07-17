@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Mail, MessageCircle } from "lucide-react";
 import type { Contact, Service, Social } from "@/backend/types";
 import { NAV_LINKS } from "@/lib/data";
@@ -46,16 +47,16 @@ export function Footer({
 
           <FooterCol title="Navigate">
             {NAV_LINKS.map((l) => (
-              <FooterLink key={l.href} href={l.href}>
+              <FooterLink key={l.href} href={`/${l.href}`}>
                 {l.label}
               </FooterLink>
             ))}
-            <FooterLink href="#work">Case studies</FooterLink>
+            <FooterLink href="/#work">Case studies</FooterLink>
           </FooterCol>
 
           <FooterCol title="Services">
             {services.slice(0, 6).map((s) => (
-              <FooterLink key={s.id} href="#services">
+              <FooterLink key={s.id} href="/#services">
                 {s.title}
               </FooterLink>
             ))}
@@ -90,12 +91,12 @@ export function Footer({
         <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-8 text-xs text-ink-3 md:flex-row">
           <p>© {year} Tekoovi. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="transition-colors hover:text-ink-2">
+            <Link href="/privacy" className="transition-colors hover:text-ink-2">
               Privacy
-            </a>
-            <a href="#" className="transition-colors hover:text-ink-2">
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-ink-2">
               Terms
-            </a>
+            </Link>
             <span className="text-ink-3/70">Crafted with intent.</span>
           </div>
         </div>
@@ -129,11 +130,11 @@ function FooterLink({
   children: React.ReactNode;
 }) {
   return (
-    <a
+    <Link
       href={href}
       className="text-sm text-ink-2 transition-colors hover:text-ink"
     >
       {children}
-    </a>
+    </Link>
   );
 }

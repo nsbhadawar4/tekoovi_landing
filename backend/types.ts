@@ -78,7 +78,6 @@ export const SECTIONS: SectionDef[] = [
       { name: "primaryHref", label: "Primary button link", type: "text" },
       { name: "secondaryLabel", label: "Secondary button label", type: "text" },
       { name: "secondaryHref", label: "Secondary button link", type: "text" },
-      { name: "note", label: "Trust note", type: "text" },
     ],
   },
   {
@@ -311,6 +310,78 @@ export const SECTIONS: SectionDef[] = [
       { name: "href", label: "URL", type: "text" },
     ],
   },
+  {
+    key: "privacy",
+    label: "Privacy — intro",
+    onPage: "/privacy — header",
+    kind: "singleton",
+    icon: "ShieldCheck",
+    singular: "Privacy header",
+    fields: [
+      { name: "title", label: "Page title", type: "text" },
+      { name: "intro", label: "Intro paragraph", type: "textarea" },
+      {
+        name: "updated",
+        label: "Last updated",
+        type: "text",
+        placeholder: "17 July 2026",
+      },
+    ],
+  },
+  {
+    key: "privacyClauses",
+    label: "Privacy — clauses",
+    onPage: "/privacy — body",
+    kind: "collection",
+    icon: "ScrollText",
+    singular: "Privacy clause",
+    titleField: "heading",
+    subField: "body",
+    fields: [
+      { name: "heading", label: "Clause heading", type: "text" },
+      {
+        name: "body",
+        label: "Clause body — blank line = new paragraph, line starting with “- ” = bullet",
+        type: "textarea",
+      },
+    ],
+  },
+  {
+    key: "terms",
+    label: "Terms — intro",
+    onPage: "/terms — header",
+    kind: "singleton",
+    icon: "Scale",
+    singular: "Terms header",
+    fields: [
+      { name: "title", label: "Page title", type: "text" },
+      { name: "intro", label: "Intro paragraph", type: "textarea" },
+      {
+        name: "updated",
+        label: "Last updated",
+        type: "text",
+        placeholder: "17 July 2026",
+      },
+    ],
+  },
+  {
+    key: "termsClauses",
+    label: "Terms — clauses",
+    onPage: "/terms — body",
+    kind: "collection",
+    icon: "Gavel",
+    singular: "Terms clause",
+    titleField: "heading",
+    subField: "body",
+    fields: [
+      { name: "heading", label: "Clause heading", type: "text" },
+      {
+        name: "body",
+        label: "Clause body — blank line = new paragraph, line starting with “- ” = bullet",
+        type: "textarea",
+      },
+    ],
+  },
 ];
 
 /* ----------------------- derived helpers ---------------------- */
@@ -346,7 +417,6 @@ export interface Hero {
   primaryHref: string;
   secondaryLabel: string;
   secondaryHref: string;
-  note: string;
 }
 
 export interface Stat {
@@ -461,6 +531,20 @@ export interface Social {
   href: string;
 }
 
+/** Header block for a legal page (/privacy, /terms). */
+export interface LegalMeta {
+  title: string;
+  intro: string;
+  updated: string;
+}
+
+/** One numbered clause on a legal page. */
+export interface LegalClause {
+  id: string;
+  heading: string;
+  body: string;
+}
+
 export interface ContentData {
   hero: Hero;
   stats: Stat[];
@@ -478,6 +562,10 @@ export interface ContentData {
   faqs: Faq[];
   contact: Contact;
   socials: Social[];
+  privacy: LegalMeta;
+  privacyClauses: LegalClause[];
+  terms: LegalMeta;
+  termsClauses: LegalClause[];
 }
 
 export type ContentItem = { id: string } & Record<string, unknown>;

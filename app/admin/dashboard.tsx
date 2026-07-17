@@ -21,12 +21,16 @@ import {
   Factory,
   FileText,
   FolderKanban,
+  Gavel,
   HelpCircle,
   type LucideIcon,
   LogOut,
   Mail,
   MessageSquareQuote,
+  Scale,
+  ScrollText,
   Share2,
+  ShieldCheck,
   Sparkles,
   TrendingUp,
   Trash2,
@@ -67,6 +71,10 @@ const SIDEBAR_ICONS: Record<string, LucideIcon> = {
   HelpCircle,
   Mail,
   Share2,
+  ShieldCheck,
+  ScrollText,
+  Scale,
+  Gavel,
 };
 
 function buildForm(def: SectionDef, record?: Record<string, unknown>): FormState {

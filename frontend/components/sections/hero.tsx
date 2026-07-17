@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "motion/react";
-import { Sparkles, TrendingUp } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useRef } from "react";
 import type { Hero as HeroContent } from "@/backend/types";
 import { Button } from "@/components/ui/button";
@@ -48,14 +48,14 @@ export function Hero({ hero }: { hero: HeroContent }) {
       id="home"
       ref={ref}
       onMouseMove={handleMove}
-      className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-24"
+      className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-12"
     >
       {hero.backgroundImage && (
         <>
           <div
             aria-hidden
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${hero.backgroundImage})` }}
+            className="absolute inset-0 bg-cover bg-center top-[62px] h-[580px]"
+            style={{ backgroundImage: `url(${hero.backgroundImage})`}}
           />
           <div
             aria-hidden
@@ -92,20 +92,6 @@ export function Hero({ hero }: { hero: HeroContent }) {
         </FloatCard>
 
         <FloatCard
-          className="right-[7%] top-[22%]"
-          delay={0.8}
-          floatClass="animate-float-slow"
-        >
-          <div className="flex items-center gap-2 text-[13px] font-medium text-ink">
-            <TrendingUp className="h-4 w-4 text-brand-3" /> Revenue
-          </div>
-          <p className="mt-1 font-display text-lg font-semibold text-ink">
-            3.4× <span className="text-xs font-normal text-ink-3">conversion</span>
-          </p>
-          <Sparkline />
-        </FloatCard>
-
-        <FloatCard
           className="bottom-[16%] right-[12%]"
           delay={1}
           floatClass="animate-float"
@@ -116,23 +102,6 @@ export function Hero({ hero }: { hero: HeroContent }) {
               AI copilot · online
             </span>
           </div>
-        </FloatCard>
-
-        <FloatCard
-          className="bottom-[19%] left-[9%]"
-          delay={1.15}
-          floatClass="animate-float-slow"
-        >
-          <div className="flex -space-x-2">
-            {["#6C3BFF", "#8A5CFF", "#B388FF", "#3a2170"].map((c, i) => (
-              <span
-                key={i}
-                className="h-7 w-7 rounded-full border-2 border-card"
-                style={{ background: c }}
-              />
-            ))}
-          </div>
-          <p className="mt-2 text-xs text-ink-3">140+ products shipped</p>
         </FloatCard>
       </motion.div>
 
@@ -175,26 +144,8 @@ export function Hero({ hero }: { hero: HeroContent }) {
               {hero.secondaryLabel}
             </Button>
           </motion.div>
-
-          <motion.p
-            variants={item}
-            className="mt-8 text-xs uppercase tracking-[0.16em] text-ink-3"
-          >
-            {hero.note}
-          </motion.p>
         </motion.div>
       </Container>
-
-      {/* scroll cue */}
-      <div className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 md:flex">
-        <div className="flex h-9 w-5 items-start justify-center rounded-full border border-white/15 p-1">
-          <motion.span
-            className="h-1.5 w-1 rounded-full bg-brand-3"
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-      </div>
     </section>
   );
 }
@@ -223,25 +174,5 @@ function FloatCard({
         </div>
       </div>
     </motion.div>
-  );
-}
-
-function Sparkline() {
-  return (
-    <svg width="96" height="26" viewBox="0 0 96 26" fill="none" className="mt-2">
-      <path
-        d="M1 22 L16 16 L31 19 L46 10 L61 13 L76 5 L95 2"
-        stroke="url(#g)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="96" y2="0">
-          <stop stopColor="#6C3BFF" />
-          <stop offset="1" stopColor="#B388FF" />
-        </linearGradient>
-      </defs>
-    </svg>
   );
 }

@@ -45,10 +45,24 @@ async function writeAllMongo(data: ContentData): Promise<void> {
   );
 }
 
+/**
+ * Backfill sections the stored content predates.
+ *
+ * The Mongo doc is only ever seeded once ($setOnInsert), and content.json on
+ * disk is whatever was last written, so a section added to the SECTIONS
+ * registry later exists in neither. Without this, every page reading that new
+ * key would crash until someone hand-edited the store. A present key always
+ * wins — including an empty array, which is a real "admin deleted everything"
+ * state and must not be resurrected from the seed.
+ */
+function withSeedDefaults(stored: Partial<ContentData> | undefined): ContentData {
+  return { ...(seedContent as unknown as ContentData), ...(stored ?? {}) };
+}
+
 async function readAll(): Promise<ContentData> {
-  if (!USE_MONGO) return readAllFile();
+  if (!USE_MONGO) return withSeedDefaults(await readAllFile());
   try {
-    return await readAllMongo();
+    return withSeedDefaults(await readAllMongo());
   } catch (err) {
     // Never let a DB hiccup take the public site down — fall back to the seed
     // content and log loudly so the cause shows in the server logs.
