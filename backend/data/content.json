@@ -1,4 +1,7 @@
 {
+  "settings": {
+    "fontFamily": "inter"
+  },
   "hero": {
     "backgroundImage": "",
     "badge": "Premium Digital Product Studio  mmm",

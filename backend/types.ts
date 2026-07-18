@@ -11,6 +11,8 @@
 
 /* ------------------------- field model ------------------------ */
 
+import { FONT_OPTIONS } from "@/lib/fonts";
+
 export type FieldType =
   | "text"
   | "textarea"
@@ -18,6 +20,7 @@ export type FieldType =
   | "boolean"
   | "icon"
   | "tags" // comma-separated -> string[]
+  | "select" // fixed dropdown of {value,label} options
   | "image"; // upload + crop -> stored image URL
 
 export interface FieldDef {
@@ -29,6 +32,10 @@ export interface FieldDef {
   aspect?: number;
   /** Optional export width for cropped image fields. */
   outputWidth?: number;
+  /** Choices for `select` fields. */
+  options?: { value: string; label: string }[];
+  /** Optional helper text shown under the field in the admin. */
+  hint?: string;
 }
 
 /** A section is either a list of items (CRUD) or a single record (edit only). */
@@ -91,6 +98,23 @@ const LEGAL_CLAUSE_FIELDS: FieldDef[] = [
 ];
 
 export const SECTIONS: SectionDef[] = [
+  {
+    key: "settings",
+    label: "Settings",
+    onPage: "Site-wide appearance",
+    kind: "singleton",
+    icon: "SlidersHorizontal",
+    singular: "Settings",
+    fields: [
+      {
+        name: "fontFamily",
+        label: "Font family",
+        type: "select",
+        options: FONT_OPTIONS.map((f) => ({ value: f.value, label: f.label })),
+        hint: "Applies to the whole landing page. Changes show on the next page refresh.",
+      },
+    ],
+  },
   {
     key: "hero",
     label: "Hero",
@@ -561,7 +585,14 @@ export interface LegalClause {
   body: string;
 }
 
+/** Site-wide appearance settings, edited from the admin Settings section. */
+export interface SiteSettings {
+  /** A value from FONT_OPTIONS in @/lib/fonts. */
+  fontFamily: string;
+}
+
 export interface ContentData {
+  settings: SiteSettings;
   hero: Hero;
   stats: Stat[];
   logos: Logo[];

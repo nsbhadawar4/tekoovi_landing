@@ -308,13 +308,6 @@ function FieldRows({
   );
 }
 
-/* ------------------------- header form ------------------------- */
-
-/**
- * The singleton record that sits above a collection (e.g. a legal page's
- * title/intro above its clauses). It owns its own fetch/save so the parent
- * dashboard keeps treating the section as a plain collection.
- */
 function HeaderForm({
   header,
   notify,
@@ -407,7 +400,6 @@ export default function AdminDashboard() {
   const [section, setSection] = useState<string>(SECTIONS[0].key);
   const def = useMemo(() => getSection(section) as SectionDef, [section]);
   const isSingle = def.kind === "singleton";
-  // If this section has an image field, show a thumbnail in each list row.
   const imageField = useMemo(
     () => def.fields.find((f) => f.type === "image")?.name,
     [def],
