@@ -31,6 +31,7 @@ import {
   ScrollText,
   Share2,
   ShieldCheck,
+  SlidersHorizontal,
   Sparkles,
   TrendingUp,
   Trash2,
@@ -56,6 +57,7 @@ type Toast = { id: number; type: "success" | "error"; message: string };
 
 /* Lucide component for each section's sidebar icon (name -> component). */
 const SIDEBAR_ICONS: Record<string, LucideIcon> = {
+  SlidersHorizontal,
   Sparkles,
   BarChart3,
   Building2,
@@ -256,6 +258,22 @@ function Field({
     );
   }
 
+  if (field.type === "select") {
+    return (
+      <select
+        value={String(value ?? "")}
+        onChange={(e) => onChange(e.target.value)}
+        className={base}
+      >
+        {field.options?.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
   if (field.type === "textarea") {
     return (
       <textarea
@@ -302,6 +320,11 @@ function FieldRows({
             value={form[field.name] ?? ""}
             onChange={(v) => setForm((f) => ({ ...f, [field.name]: v }))}
           />
+          {field.hint && (
+            <p className="mt-1.5 text-[11px] leading-relaxed text-ink-3">
+              {field.hint}
+            </p>
+          )}
         </div>
       ))}
     </>

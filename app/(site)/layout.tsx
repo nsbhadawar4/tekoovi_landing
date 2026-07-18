@@ -1,4 +1,6 @@
+import type { CSSProperties } from "react";
 import { getContent } from "@/backend/controllers/content.controller";
+import { DEFAULT_FONT, getFont } from "@/lib/fonts";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import { Preloader } from "@/components/ui/preloader";
 import { Navbar } from "@/components/layout/navbar";
@@ -38,8 +40,24 @@ export default async function SiteLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const content = await getContent();
 
+  // Admin-selectable site font. The default keeps the designed Inter/Jakarta
+  // look untouched; any other choice overrides both the body and heading font
+  // variables for the whole site subtree, so the change is visible everywhere.
+  const font = getFont(content.settings?.fontFamily);
+  const applyFont = font.value !== DEFAULT_FONT;
+  const fontStyle = applyFont
+    ? ({
+        fontFamily: font.stack,
+        "--font-sans": font.stack,
+        "--font-display": font.stack,
+      } as CSSProperties)
+    : undefined;
+
   return (
-    <>
+    <div style={fontStyle}>
+      {applyFont && font.href && (
+        <link rel="stylesheet" href={font.href} />
+      )}
       <span className="grain" aria-hidden="true" />
       <Preloader />
       <SmoothScroll />
@@ -54,6 +72,6 @@ export default async function SiteLayout({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
       />
-    </>
+    </div>
   );
 }
