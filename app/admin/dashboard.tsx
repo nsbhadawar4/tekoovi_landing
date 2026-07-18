@@ -141,14 +141,14 @@ function ImageField({
     <div className="mt-2">
       <div className="flex items-center gap-4">
         <div
-          className="relative w-40 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40 bg-cover bg-center"
+          className="relative w-40 shrink-0 overflow-hidden rounded-xl border border-line bg-bg/50 bg-cover bg-center"
           style={{
             aspectRatio: aspect ?? 16 / 10,
             ...(value ? { backgroundImage: `url(${value})` } : {}),
           }}
         >
           {!value && (
-            <div className="absolute inset-0 grid place-items-center text-[11px] text-white/30">
+            <div className="absolute inset-0 grid place-items-center text-[11px] text-ink-3">
               No image
             </div>
           )}
@@ -157,7 +157,7 @@ function ImageField({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5"
+            className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
           >
             {value ? "Change image" : "Upload image"}
           </button>
@@ -165,7 +165,7 @@ function ImageField({
             <button
               type="button"
               onClick={() => onChange("")}
-              className="rounded-lg border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
+              className="rounded-lg border border-red-500/30 bg-red-500/[0.04] px-3 py-1.5 text-xs text-red-300 transition-colors hover:bg-red-500/10"
             >
               Remove
             </button>
@@ -205,7 +205,7 @@ function Field({
   onChange: (v: string | boolean) => void;
 }) {
   const base =
-    "mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-white/30";
+    "mt-2 w-full rounded-xl border border-line bg-bg/50 px-3.5 py-2.5 text-sm text-ink outline-none transition-shadow placeholder:text-ink-3/70 focus:focus-ring";
 
   if (field.type === "image") {
     return (
@@ -220,7 +220,7 @@ function Field({
 
   if (field.type === "boolean") {
     return (
-      <label className="mt-2 flex items-center gap-2.5 text-sm text-white/80">
+      <label className="mt-2 flex items-center gap-2.5 text-sm text-ink-2">
         <input
           type="checkbox"
           checked={value === true}
@@ -243,7 +243,7 @@ function Field({
         <select
           value={String(value ?? "")}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-white/30"
+          className="w-full rounded-xl border border-line bg-bg/50 px-3.5 py-2.5 text-sm text-ink outline-none transition-shadow focus:focus-ring"
         >
           <option value="">— pick an icon —</option>
           {ICON_NAMES.map((name) => (
@@ -293,7 +293,7 @@ function FieldRows({
       {fields.map((field) => (
         <div key={field.name}>
           {field.type !== "boolean" && (
-            <label className="block text-xs font-medium text-white/60">
+            <label className="block text-xs font-medium text-ink-3">
               {field.label}
             </label>
           )}
@@ -370,8 +370,8 @@ function HeaderForm({
   }
 
   return (
-    <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-      <p className="text-sm font-medium text-white/90">{header.label}</p>
+    <div className="card-hairline mt-6 rounded-2xl p-6">
+      <p className="text-sm font-medium text-ink">{header.label}</p>
       {loading ? (
         <div className="mt-4 space-y-4">
           {header.fields.map((f) => (
@@ -389,7 +389,7 @@ function HeaderForm({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-black hover:bg-white/90 disabled:opacity-50"
+              className="rounded-xl btn-brand px-5 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
             >
               {saving ? "Saving…" : "Save header"}
             </button>
@@ -580,10 +580,17 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
       {/* sidebar */}
-      <aside className="shrink-0 border-b border-white/10 md:w-64 md:border-b-0 md:border-r">
-        <div className="px-5 py-5">
-          <p className="text-sm font-semibold text-white">Tekoovi Admin</p>
-          <p className="mt-0.5 text-xs text-white/40">Landing page content</p>
+      <aside className="shrink-0 border-b border-line bg-bg-2/50 backdrop-blur-xl md:w-64 md:border-b-0 md:border-r">
+        <div className="flex items-center gap-2.5 px-5 py-5">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg btn-brand font-display text-sm font-bold text-white">
+            T
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-ink">
+              Tekoovi Admin
+            </p>
+            <p className="text-[11px] text-ink-3">Content studio</p>
+          </div>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:max-h-[calc(100vh-88px)] md:flex-col md:overflow-y-auto md:pb-4">
           {SECTIONS.map((s) => {
@@ -594,18 +601,20 @@ export default function AdminDashboard() {
                 key={s.key}
                 onClick={() => selectSection(s.key)}
                 title={s.onPage}
-                className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
+                className={`flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm font-medium transition-colors ${
                   active
-                    ? "bg-white text-black"
-                    : "text-white/60 hover:bg-white/5 hover:text-white"
+                    ? "bg-brand/15 text-ink ring-1 ring-inset ring-brand/25"
+                    : "text-ink-3 hover:bg-white/[0.04] hover:text-ink"
                 }`}
               >
-                <Icon className="h-4 w-4 shrink-0" />
+                <Icon
+                  className={`h-4 w-4 shrink-0 ${active ? "text-brand-3" : ""}`}
+                />
                 <span className="flex min-w-0 flex-col">
                   <span className="truncate">{s.label}</span>
                   <span
                     className={`hidden truncate text-[10px] font-normal md:block ${
-                      active ? "text-black/50" : "text-white/30"
+                      active ? "text-brand-3/70" : "text-ink-3/70"
                     }`}
                   >
                     {s.onPage}
@@ -620,12 +629,12 @@ export default function AdminDashboard() {
       {/* main */}
       <div className="flex-1">
         {/* header */}
-        <header className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 md:px-6">
+        <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-line bg-bg/70 px-5 py-4 backdrop-blur-xl md:px-6">
           <div>
-            <h1 className="text-lg font-semibold text-white">
+            <h1 className="text-lg font-semibold text-ink">
               Landing page admin
             </h1>
-            <p className="mt-0.5 text-xs text-white/40">
+            <p className="mt-0.5 text-xs text-ink-3">
               Changes show on the site instantly.
             </p>
           </div>
@@ -633,14 +642,14 @@ export default function AdminDashboard() {
             <a
               href="/"
               target="_blank"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-sm text-white/70 hover:text-white"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
             >
               <ExternalLink className="h-4 w-4" />
               <span className="hidden sm:inline">View site</span>
             </a>
             <button
               onClick={logout}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-sm text-white/70 hover:text-white"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
             >
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Log out</span>
@@ -653,20 +662,20 @@ export default function AdminDashboard() {
           {/* toolbar */}
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <h2 className="truncate text-base font-medium text-white/90">
+              <h2 className="truncate text-base font-medium text-ink">
                 {def.label}{" "}
                 {!isSingle && (
-                  <span className="text-white/40">({items.length})</span>
+                  <span className="text-ink-3">({items.length})</span>
                 )}
               </h2>
-              <p className="mt-0.5 truncate text-xs text-white/40">
+              <p className="mt-0.5 truncate text-xs text-ink-3">
                 On page: {def.onPage}
               </p>
             </div>
             {!isSingle && (
               <button
                 onClick={startAdd}
-                className="shrink-0 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-white/90"
+                className="shrink-0 rounded-xl btn-brand px-4 py-2 text-sm font-semibold text-white transition-[filter] hover:brightness-110"
               >
                 + Add new
               </button>
@@ -677,7 +686,7 @@ export default function AdminDashboard() {
           {isSingle ? (
             <div className="mt-6">
               {loading ? (
-                <div className="space-y-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                <div className="card-hairline space-y-4 rounded-2xl p-6">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i} className="space-y-2">
                       <div className="h-3 w-24 animate-pulse rounded bg-white/10" />
@@ -688,7 +697,7 @@ export default function AdminDashboard() {
               ) : (
                 <form
                   onSubmit={saveSingleton}
-                  className="max-w-2xl space-y-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6"
+                  className="card-hairline max-w-2xl space-y-4 rounded-2xl p-6"
                 >
                   <FieldRows fields={def.fields} form={form} setForm={setForm} />
                   {error && <p className="text-sm text-red-400">{error}</p>}
@@ -696,7 +705,7 @@ export default function AdminDashboard() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-black hover:bg-white/90 disabled:opacity-50"
+                      className="rounded-xl btn-brand px-5 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
                     >
                       {saving ? "Saving…" : "Save changes"}
                     </button>
@@ -715,9 +724,9 @@ export default function AdminDashboard() {
                     notify={notify}
                     onUnauthorized={unauthorized}
                   />
-                  <p className="mt-8 text-sm font-medium text-white/90">
+                  <p className="mt-8 text-sm font-medium text-ink">
                     {def.singular}s{" "}
-                    <span className="text-white/40">({items.length})</span>
+                    <span className="text-ink-3">({items.length})</span>
                   </p>
                 </>
               )}
@@ -726,7 +735,7 @@ export default function AdminDashboard() {
                 Array.from({ length: 5 }).map((_, i) => (
                   <div
                     key={`sk-${i}`}
-                    className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.02] p-4"
+                    className="card-hairline flex items-center justify-between gap-4 rounded-xl p-4"
                   >
                     <div className="min-w-0 flex-1 space-y-2.5">
                       <div className="h-3.5 w-1/3 animate-pulse rounded bg-white/10" />
@@ -739,7 +748,7 @@ export default function AdminDashboard() {
                   </div>
                 ))
               ) : items.length === 0 ? (
-                <p className="py-8 text-center text-sm text-white/40">
+                <p className="py-8 text-center text-sm text-ink-3">
                   Nothing here yet. Click “Add new”.
                 </p>
               ) : (
@@ -751,28 +760,28 @@ export default function AdminDashboard() {
                   return (
                     <div
                       key={item.id}
-                      className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3 sm:gap-4 sm:p-4"
+                      className="card-hairline flex items-center gap-3 rounded-xl p-3 transition-colors hover:border-white/15 sm:gap-4 sm:p-4"
                     >
                       {imageField && (
                         <div
-                          className="relative aspect-[16/10] w-20 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40 bg-cover bg-center sm:w-28"
+                          className="relative aspect-[16/10] w-20 shrink-0 overflow-hidden rounded-lg border border-line bg-bg-2 bg-cover bg-center sm:w-28"
                           style={
                             img ? { backgroundImage: `url(${img})` } : undefined
                           }
                         >
                           {!img && (
-                            <span className="absolute inset-0 grid place-items-center font-display text-xl font-bold text-white/15">
+                            <span className="absolute inset-0 grid place-items-center font-display text-xl font-bold text-ink/15">
                               {title.charAt(0)}
                             </span>
                           )}
                         </div>
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-white">
+                        <p className="truncate text-sm font-medium text-ink">
                           {title}
                         </p>
                         {def.subField && (
-                          <p className="truncate text-xs text-white/40">
+                          <p className="truncate text-xs text-ink-3">
                             {String(item[def.subField] ?? "")}
                           </p>
                         )}
@@ -780,13 +789,13 @@ export default function AdminDashboard() {
                       <div className="flex shrink-0 gap-2">
                         <button
                           onClick={() => startEdit(item)}
-                          className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5"
+                          className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => setPendingDelete(item)}
-                          className="rounded-lg border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
+                          className="rounded-lg border border-red-500/30 bg-red-500/[0.04] px-3 py-1.5 text-xs text-red-300 transition-colors hover:bg-red-500/10"
                         >
                           Delete
                         </button>
@@ -803,12 +812,12 @@ export default function AdminDashboard() {
 
       {/* editor modal (collections only) */}
       {!isSingle && editing !== null && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-bg/80 p-4 backdrop-blur-sm">
           <form
             onSubmit={save}
-            className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/10 bg-[#0d0d14] p-6"
+            className="card-elevated max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl p-6"
           >
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-lg font-semibold text-ink">
               {editing === "new" ? "Add" : "Edit"} {def.singular}
             </h3>
 
@@ -822,14 +831,14 @@ export default function AdminDashboard() {
               <button
                 type="button"
                 onClick={() => setEditing(null)}
-                className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/70 hover:text-white"
+                className="rounded-lg border border-line bg-white/[0.02] px-4 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
+                className="rounded-xl btn-brand px-4 py-2 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
               >
                 {saving ? "Saving…" : "Save"}
               </button>
@@ -842,7 +851,7 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {pendingDelete && (
           <motion.div
-            className="fixed inset-0 z-[70] grid place-items-center bg-black/70 p-4"
+            className="fixed inset-0 z-[70] grid place-items-center bg-bg/80 p-4 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -853,15 +862,15 @@ export default function AdminDashboard() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 8 }}
               transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#0d0d14] p-6 text-center"
+              className="card-elevated w-full max-w-sm rounded-2xl p-6 text-center"
             >
               <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-red-500/10">
                 <TriangleAlert className="h-6 w-6 text-red-400" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-white">
+              <h3 className="mt-4 text-lg font-semibold text-ink">
                 Delete this {def.singular.toLowerCase()}?
               </h3>
-              <p className="mt-1 text-sm text-white/50">
+              <p className="mt-1 text-sm text-ink-3">
                 “
                 {String(
                   (def.titleField && pendingDelete[def.titleField]) ??
@@ -874,7 +883,7 @@ export default function AdminDashboard() {
                   type="button"
                   onClick={() => setPendingDelete(null)}
                   disabled={deleting}
-                  className="flex-1 rounded-lg border border-white/10 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 disabled:opacity-50"
+                  className="flex-1 rounded-lg border border-line bg-white/[0.02] px-4 py-2.5 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -882,7 +891,7 @@ export default function AdminDashboard() {
                   type="button"
                   onClick={confirmDelete}
                   disabled={deleting}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-50"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-50"
                 >
                   <Trash2 className="h-4 w-4" />
                   {deleting ? "Deleting…" : "Delete"}
@@ -915,10 +924,10 @@ export default function AdminDashboard() {
               ) : (
                 <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
               )}
-              <p className="flex-1 text-sm text-white/90">{t.message}</p>
+              <p className="flex-1 text-sm text-ink">{t.message}</p>
               <button
                 onClick={() => setToasts((l) => l.filter((x) => x.id !== t.id))}
-                className="text-white/40 transition-colors hover:text-white"
+                className="text-ink-3 transition-colors hover:text-ink"
                 aria-label="Dismiss"
               >
                 <X className="h-4 w-4" />

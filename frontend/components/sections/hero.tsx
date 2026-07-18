@@ -59,7 +59,7 @@ export function Hero({ hero }: { hero: HeroContent }) {
           />
           <div
             aria-hidden
-            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,6,14,0.52),rgba(6,6,14,0.84))]"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,15,0.55),rgba(8,9,15,0.86))]"
           />
         </>
       )}

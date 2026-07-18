@@ -36,14 +36,25 @@ export default function AdminLogin() {
     <div className="grid min-h-screen place-items-center px-6">
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/[0.03] p-8"
+        className="card-elevated w-full max-w-sm rounded-3xl p-8"
       >
-        <h1 className="text-xl font-semibold">Admin login</h1>
-        <p className="mt-1 text-sm text-white/50">
-          Enter the admin password to manage the landing page.
+        <div className="flex items-center gap-3">
+          <span className="grid h-11 w-11 place-items-center rounded-xl btn-brand font-display text-lg font-bold text-white">
+            T
+          </span>
+          <div>
+            <h1 className="font-display text-xl font-semibold text-ink">
+              Tekoovi Admin
+            </h1>
+            <p className="text-xs text-ink-3">Content management</p>
+          </div>
+        </div>
+
+        <p className="mt-6 text-sm text-ink-2">
+          Sign in to manage your landing page content.
         </p>
 
-        <label className="mt-6 block text-sm text-white/70">
+        <label className="mt-6 block text-xs font-medium text-ink-3">
           Email
           <input
             type="email"
@@ -51,29 +62,33 @@ export default function AdminLogin() {
             onChange={(e) => setEmail(e.target.value)}
             autoFocus
             autoComplete="email"
-            className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-sm outline-none focus:border-white/30"
+            className="mt-2 w-full rounded-xl border border-line bg-bg/60 px-3.5 py-2.5 text-sm text-ink outline-none transition-shadow placeholder:text-ink-3/70 focus:focus-ring"
             placeholder="tekoovi@gmail.com"
           />
         </label>
 
-        <label className="mt-4 block text-sm text-white/70">
+        <label className="mt-4 block text-xs font-medium text-ink-3">
           Password
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
-            className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-sm outline-none focus:border-white/30"
+            className="mt-2 w-full rounded-xl border border-line bg-bg/60 px-3.5 py-2.5 text-sm text-ink outline-none transition-shadow placeholder:text-ink-3/70 focus:focus-ring"
             placeholder="••••••••"
           />
         </label>
 
-        {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+        {error && (
+          <p className="mt-4 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+            {error}
+          </p>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 w-full rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-black transition-opacity disabled:opacity-50"
+          className="mt-6 w-full rounded-xl btn-brand px-4 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
         >
           {loading ? "Signing in…" : "Sign in"}
         </button>

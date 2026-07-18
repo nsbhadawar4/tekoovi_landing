@@ -168,15 +168,15 @@ export function ImageCropper({
   }
 
   return (
-    <div className="fixed inset-0 z-[90] grid place-items-center bg-black/80 p-4">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0d0d14] p-5">
+    <div className="fixed inset-0 z-[90] grid place-items-center bg-bg/80 p-4 backdrop-blur-sm">
+      <div className="card-elevated w-full max-w-md rounded-2xl p-5">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-white">Crop image</h3>
+          <h3 className="text-sm font-semibold text-ink">Crop image</h3>
           <button
             onClick={onCancel}
             disabled={busy}
             aria-label="Close"
-            className="text-white/40 transition-colors hover:text-white disabled:opacity-50"
+            className="text-ink-3 transition-colors hover:text-ink disabled:opacity-50"
           >
             <X className="h-4 w-4" />
           </button>
@@ -198,7 +198,7 @@ export function ImageCropper({
             backgroundPosition: `${offset.x}px ${offset.y}px`,
             touchAction: "none",
           }}
-          className="relative mt-4 w-full cursor-grab touch-none overflow-hidden rounded-xl border border-white/10 bg-black/40 active:cursor-grabbing"
+          className="relative mt-4 w-full cursor-grab touch-none overflow-hidden rounded-xl border border-line bg-bg/50 active:cursor-grabbing"
         >
           {/* grid guides */}
           <div
@@ -210,7 +210,7 @@ export function ImageCropper({
             ))}
           </div>
           {!nat && (
-            <div className="absolute inset-0 grid place-items-center text-xs text-white/40">
+            <div className="absolute inset-0 grid place-items-center text-xs text-ink-3">
               Loading…
             </div>
           )}
@@ -218,7 +218,7 @@ export function ImageCropper({
 
         {/* zoom */}
         <div className="mt-4 flex items-center gap-3">
-          <ZoomIn className="h-4 w-4 shrink-0 text-white/50" />
+          <ZoomIn className="h-4 w-4 shrink-0 text-ink-3" />
           <input
             type="range"
             min={1}
@@ -230,7 +230,7 @@ export function ImageCropper({
           />
         </div>
 
-        <p className="mt-3 text-[11px] text-white/40">
+        <p className="mt-3 text-[11px] text-ink-3">
           Drag to reposition · scroll or use the slider to zoom.
         </p>
 
@@ -239,7 +239,7 @@ export function ImageCropper({
             type="button"
             onClick={onCancel}
             disabled={busy}
-            className="rounded-lg border border-white/10 px-4 py-2 text-sm text-white/70 hover:text-white disabled:opacity-50"
+            className="rounded-lg border border-line bg-white/[0.02] px-4 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50"
           >
             Cancel
           </button>
@@ -247,7 +247,7 @@ export function ImageCropper({
             type="button"
             onClick={handleCrop}
             disabled={busy || !nat}
-            className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-white/90 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl btn-brand px-4 py-2 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
           >
             <Check className="h-4 w-4" />
             {busy ? "Uploading…" : "Apply"}
