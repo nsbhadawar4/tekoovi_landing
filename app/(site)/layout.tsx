@@ -59,14 +59,18 @@ export default async function SiteLayout({
         <link rel="stylesheet" href={font.href} />
       )}
       <span className="grain" aria-hidden="true" />
-      <Preloader />
+      <Preloader logoImage={content.settings?.logoImage} />
       <SmoothScroll />
-      <Navbar calendly={content.contact.calendly} />
+      <Navbar
+        calendly={content.contact.calendly}
+        logoImage={content.settings?.logoImage}
+      />
       <main>{children}</main>
       <Footer
         contact={content.contact}
         socials={content.socials}
         services={content.services}
+        logoImage={content.settings?.logoImage}
       />
       <script
         type="application/ld+json"

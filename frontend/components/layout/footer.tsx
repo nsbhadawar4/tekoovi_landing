@@ -9,10 +9,12 @@ export function Footer({
   contact,
   socials,
   services,
+  logoImage,
 }: {
   contact: Contact;
   socials: Social[];
   services: Service[];
+  logoImage?: string;
 }) {
   const year = new Date().getFullYear();
 
@@ -25,7 +27,7 @@ export function Footer({
       <Container className="relative">
         <div className="grid gap-12 pb-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
-            <Logo />
+            <Logo logoImage={logoImage} />
             <p className="mt-5 text-sm leading-relaxed text-ink-2">
               A premium digital product studio building scalable websites, SaaS,
               AI and mobile products for ambitious founders and teams.

@@ -103,11 +103,13 @@ function ImageField({
   value,
   onChange,
   aspect,
+  fit,
   outputWidth,
 }: {
   value: string;
   onChange: (v: string) => void;
   aspect?: number;
+  fit?: FieldDef["fit"];
   outputWidth?: number;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -143,9 +145,10 @@ function ImageField({
     <div className="mt-2">
       <div className="flex items-center gap-4">
         <div
-          className="relative w-40 shrink-0 overflow-hidden rounded-xl border border-line bg-bg/50 bg-cover bg-center"
+          className="relative w-40 shrink-0 overflow-hidden rounded-xl border border-line bg-bg/50 bg-center bg-no-repeat"
           style={{
             aspectRatio: aspect ?? 16 / 10,
+            backgroundSize: fit === "contain" ? "contain" : "cover",
             ...(value ? { backgroundImage: `url(${value})` } : {}),
           }}
         >
@@ -186,6 +189,7 @@ function ImageField({
         <ImageCropper
           src={cropSrc}
           aspect={aspect}
+          fit={fit}
           outputWidth={outputWidth}
           onCancel={closeCropper}
           onCrop={handleCrop}
@@ -214,6 +218,7 @@ function Field({
       <ImageField
         value={String(value ?? "")}
         aspect={field.aspect}
+        fit={field.fit}
         outputWidth={field.outputWidth}
         onChange={(v) => onChange(v)}
       />

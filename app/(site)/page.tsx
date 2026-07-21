@@ -23,7 +23,7 @@ export default async function Home() {
     <>
       <Hero hero={content.hero} />
       <TrustedBy stats={content.stats} logos={content.logos} />
-      <FeaturedProjects projects={content.projects} calendly={calendly} />
+      <FeaturedProjects projects={content.projects} />
       <Services services={content.services} />
       <Industries industries={content.industries} />
       <WhyTekoovi why={content.why} />

@@ -6,7 +6,7 @@ import { Logo } from "./logo";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Preloader() {
+export function Preloader({ logoImage }: { logoImage?: string }) {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export function Preloader() {
             transition={{ duration: 0.8, ease: EASE }}
             className="relative scale-125"
           >
-            <Logo />
+            <Logo logoImage={logoImage} />
           </motion.div>
           <div className="relative mt-8 h-px w-40 overflow-hidden rounded-full bg-white/10">
             <motion.div

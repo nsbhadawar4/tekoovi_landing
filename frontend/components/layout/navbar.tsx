@@ -17,7 +17,13 @@ import { Logo } from "@/components/ui/logo";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-export function Navbar({ calendly }: { calendly: string }) {
+export function Navbar({
+  calendly,
+  logoImage,
+}: {
+  calendly: string;
+  logoImage?: string;
+}) {
   const pathname = usePathname();
   // The section anchors only exist on the landing page. Everywhere else (the
   // legal pages) the same links have to navigate home first.
@@ -120,7 +126,10 @@ export function Navbar({ calendly }: { calendly: string }) {
               aria-label="Tekoovi home"
               className="group relative pl-1"
             >
-              <Logo className="transition-transform duration-300 group-hover:scale-[1.03]" />
+              <Logo
+                logoImage={logoImage}
+                className="transition-transform duration-300 group-hover:scale-[1.03]"
+              />
             </Link>
 
             <ul

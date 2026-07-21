@@ -1,17 +1,13 @@
+import Link from "next/link";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import type { Project } from "@/backend/types";
 import { GlowCard } from "@/components/ui/glow-card";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
+import { projectHref } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
-export function FeaturedProjects({
-  projects,
-  calendly,
-}: {
-  projects: Project[];
-  calendly: string;
-}) {
+export function FeaturedProjects({ projects }: { projects: Project[] }) {
   return (
     <Section id="work">
       <Container>
@@ -24,7 +20,7 @@ export function FeaturedProjects({
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, i) => (
             <Reveal key={project.id} delay={(i % 3) * 0.08}>
-              <ProjectCard project={project} calendly={calendly} />
+              <ProjectCard project={project} />
             </Reveal>
           ))}
         </div>
@@ -33,13 +29,7 @@ export function FeaturedProjects({
   );
 }
 
-function ProjectCard({
-  project,
-  calendly,
-}: {
-  project: Project;
-  calendly: string;
-}) {
+function ProjectCard({ project }: { project: Project }) {
   return (
     <GlowCard className="flex h-full flex-col">
       {/* visual */}
@@ -104,15 +94,15 @@ function ProjectCard({
           ))}
         </div>
 
-        <a
-          href={calendly}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group/link mt-6 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-ink transition-colors hover:text-brand-3"
+        {/* The pseudo-element stretches the hit area over the whole card, so
+            the visible link stays a single accessible target. */}
+        <Link
+          href={projectHref(project)}
+          className="group/link mt-6 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-ink transition-colors after:absolute after:inset-0 hover:text-brand-3"
         >
           View case study
           <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
-        </a>
+        </Link>
       </div>
     </GlowCard>
   );

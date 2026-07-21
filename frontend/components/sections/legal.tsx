@@ -4,16 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Container } from "@/components/ui/section";
 import { LegalToc } from "@/components/ui/legal-toc";
 import { Reveal } from "@/components/ui/reveal";
+import { slugify } from "@/lib/utils";
 
 /** Anchor id for a clause — stable enough for links, readable in the URL. */
-export function slugify(value: string): string {
-  return (
-    value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "") || "clause"
-  );
-}
+const clauseSlug = (heading: string) => slugify(heading, "clause");
 
 /**
  * Clause bodies are authored in the admin as plain text: a blank line starts a
@@ -67,7 +61,7 @@ export function LegalPage({
 }) {
   const items = clauses.map((c) => ({
     id: c.id,
-    slug: slugify(c.heading),
+    slug: clauseSlug(c.heading),
     heading: c.heading,
   }));
 

@@ -5,16 +5,26 @@ import { Check, X, ZoomIn } from "lucide-react";
 
 /* -------------------------------------------------------------- */
 /*  Image cropper — dependency-free.                               */
-/*  Cover-fits the source into a fixed-aspect frame, lets the user  */
-/*  pan (drag) and zoom (slider / wheel), then exports the visible  */
-/*  region to a JPEG blob at a fixed output width.                 */
+/*  Fits the source into a fixed-aspect frame, lets the user pan    */
+/*  (drag) and zoom (slider / wheel), then exports the visible      */
+/*  region at a fixed output width.                                 */
+/*                                                                  */
+/*  Two fits:                                                       */
+/*   • "cover"   — fills the frame (photos: hero banner, cards).     */
+/*   • "contain" — the whole image is visible at zoom 1 and the      */
+/*                 spare space stays transparent. Logos need this;   */
+/*                 a wide wordmark can never fit a square frame      */
+/*                 under cover, which is why it looked cut off.      */
 /* -------------------------------------------------------------- */
 
 type Point = { x: number; y: number };
 
+export type CropFit = "cover" | "contain";
+
 export function ImageCropper({
   src,
   aspect = 16 / 10,
+  fit = "cover",
   outputWidth = 1100,
   quality = 0.82,
   busy = false,
@@ -23,6 +33,7 @@ export function ImageCropper({
 }: {
   src: string;
   aspect?: number;
+  fit?: CropFit;
   outputWidth?: number;
   quality?: number;
   busy?: boolean;
@@ -46,14 +57,23 @@ export function ImageCropper({
 
   const boxH = boxW / aspect;
 
+  // Scale at zoom 1: cover fills the frame, contain fits the whole image in.
+  const baseScaleFor = useCallback(
+    (bw: number, bh: number, n: { w: number; h: number }) =>
+      fit === "contain"
+        ? Math.min(bw / n.w, bh / n.h)
+        : Math.max(bw / n.w, bh / n.h),
+    [fit],
+  );
+
   // Center the image inside the crop frame for the given geometry.
   const center = useCallback(
     (bw: number, n: { w: number; h: number }, z: number) => {
       const bh = bw / aspect;
-      const s = Math.max(bw / n.w, bh / n.h) * z;
+      const s = baseScaleFor(bw, bh, n) * z;
       setOffset({ x: (bw - n.w * s) / 2, y: (bh - n.h * s) / 2 });
     },
-    [aspect],
+    [aspect, baseScaleFor],
   );
 
   // Load the image to learn its natural size (and keep it for canvas export).
@@ -86,16 +106,23 @@ export function ImageCropper({
     return () => window.removeEventListener("resize", measure);
   }, [center]);
 
-  const coverScale =
-    nat && boxW ? Math.max(boxW / nat.w, boxH / nat.h) : 1;
-  const scale = coverScale * zoom;
+  const baseScale = nat && boxW ? baseScaleFor(boxW, boxH, nat) : 1;
+  const scale = baseScale * zoom;
   const dispW = nat ? nat.w * scale : 0;
   const dispH = nat ? nat.h * scale : 0;
 
+  // An axis smaller than the frame (only possible under "contain") has nothing
+  // to pan — it stays centred instead of being dragged off the edge.
   const clamp = useCallback(
     (o: Point): Point => ({
-      x: Math.min(0, Math.max(boxW - dispW, o.x)),
-      y: Math.min(0, Math.max(boxH - dispH, o.y)),
+      x:
+        dispW <= boxW
+          ? (boxW - dispW) / 2
+          : Math.min(0, Math.max(boxW - dispW, o.x)),
+      y:
+        dispH <= boxH
+          ? (boxH - dispH) / 2
+          : Math.min(0, Math.max(boxH - dispH, o.y)),
     }),
     [boxW, boxH, dispW, dispH],
   );
@@ -129,8 +156,8 @@ export function ImageCropper({
     const z = Math.min(3, Math.max(1, next));
     geom.current.zoom = z;
     if (!nat || !boxW) return setZoom(z);
-    const oldS = coverScale * zoom;
-    const newS = coverScale * z;
+    const oldS = baseScale * zoom;
+    const newS = baseScale * z;
     const cx = boxW / 2;
     const cy = boxH / 2;
     const srcX = (cx - offset.x) / oldS;
@@ -146,12 +173,6 @@ export function ImageCropper({
   function handleCrop() {
     const img = imgRef.current;
     if (!img || !nat || !boxW) return;
-    const s = coverScale * zoom;
-    // Source rectangle currently under the crop frame.
-    const sx = -offset.x / s;
-    const sy = -offset.y / s;
-    const sw = boxW / s;
-    const sh = boxH / s;
 
     const outW = outputWidth;
     const outH = Math.round(outputWidth / aspect);
@@ -161,10 +182,22 @@ export function ImageCropper({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outW, outH);
-    // A data URL is stored directly in the content (works on serverless —
-    // no filesystem write needed).
-    onCrop(canvas.toDataURL("image/jpeg", quality));
+
+    // Paint the image exactly where the preview shows it, scaled from frame
+    // pixels to output pixels. Drawing by destination (rather than by source
+    // rect) keeps working under "contain", where the image is smaller than the
+    // frame and part of the canvas stays empty.
+    const k = outW / boxW;
+    ctx.drawImage(img, offset.x * k, offset.y * k, dispW * k, dispH * k);
+
+    // A data URL is stored directly in the content (works on serverless — no
+    // filesystem write needed). "contain" exports PNG so the padding around a
+    // logo stays transparent instead of turning into black JPEG bars.
+    onCrop(
+      fit === "contain"
+        ? canvas.toDataURL("image/png")
+        : canvas.toDataURL("image/jpeg", quality),
+    );
   }
 
   return (

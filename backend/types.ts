@@ -1,16 +1,3 @@
-/* -------------------------------------------------------------- */
-/*  Shared content types + the single source of truth for every    */
-/*  editable section on the landing page.                          */
-/*                                                                  */
-/*  Safe to import from server AND client — this file holds only    */
-/*  types + plain data (no server-only modules). The admin panel,   */
-/*  API routes, controller and repository are all driven by the     */
-/*  SECTIONS registry below, so adding a new editable section is    */
-/*  a data change here (plus its content in content.json).          */
-/* -------------------------------------------------------------- */
-
-/* ------------------------- field model ------------------------ */
-
 import { FONT_OPTIONS } from "@/lib/fonts";
 
 export type FieldType =
@@ -19,9 +6,9 @@ export type FieldType =
   | "number"
   | "boolean"
   | "icon"
-  | "tags" // comma-separated -> string[]
-  | "select" // fixed dropdown of {value,label} options
-  | "image"; // upload + crop -> stored image URL
+  | "tags"
+  | "select"
+  | "image";
 
 export interface FieldDef {
   name: string;
@@ -30,6 +17,8 @@ export interface FieldDef {
   placeholder?: string;
   /** Optional crop-frame ratio for image fields. */
   aspect?: number;
+  /** Image fields: "contain" keeps the whole image visible (logos). */
+  fit?: "cover" | "contain";
   /** Optional export width for cropped image fields. */
   outputWidth?: number;
   /** Choices for `select` fields. */
@@ -38,15 +27,7 @@ export interface FieldDef {
   hint?: string;
 }
 
-/** A section is either a list of items (CRUD) or a single record (edit only). */
 export type SectionKind = "collection" | "singleton";
-
-/**
- * A singleton record edited *above* a collection, inside the same sidebar
- * entry — e.g. a legal page's title/intro sitting above its clause list. It is
- * stored under its own content key and is addressable through the API like any
- * singleton, but it never gets a sidebar entry of its own.
- */
 export interface HeaderDef {
   key: string;
   label: string;
@@ -73,10 +54,6 @@ export interface SectionDef {
   fields: FieldDef[];
 }
 
-/* --------------------- the section registry ------------------- */
-/*  Order = top-to-bottom order of the landing page.               */
-
-/* /privacy and /terms are built from the same two shapes. */
 const LEGAL_HEADER_FIELDS: FieldDef[] = [
   { name: "title", label: "Page title", type: "text" },
   { name: "intro", label: "Intro paragraph", type: "textarea" },
@@ -92,7 +69,8 @@ const LEGAL_CLAUSE_FIELDS: FieldDef[] = [
   { name: "heading", label: "Clause heading", type: "text" },
   {
     name: "body",
-    label: "Clause body — blank line = new paragraph, line starting with “- ” = bullet",
+    label:
+      "Clause body — blank line = new paragraph, line starting with “- ” = bullet",
     type: "textarea",
   },
 ];
@@ -106,6 +84,15 @@ export const SECTIONS: SectionDef[] = [
     icon: "SlidersHorizontal",
     singular: "Settings",
     fields: [
+      {
+        name: "logoImage",
+        label: "Logo image",
+        type: "image",
+        aspect: 3,
+        fit: "contain",
+        outputWidth: 480,
+        hint: "Wide lockup (3:1). The whole image stays visible — zoom out to fit it, spare space stays transparent.",
+      },
       {
         name: "fontFamily",
         label: "Font family",
@@ -152,7 +139,12 @@ export const SECTIONS: SectionDef[] = [
     fields: [
       { name: "label", label: "Label", type: "text" },
       { name: "value", label: "Value (number)", type: "number" },
-      { name: "suffix", label: "Suffix", type: "text", placeholder: "+  %  etc." },
+      {
+        name: "suffix",
+        label: "Suffix",
+        type: "text",
+        placeholder: "+  %  etc.",
+      },
     ],
   },
   {
@@ -188,6 +180,69 @@ export const SECTIONS: SectionDef[] = [
         label: "Accent (Tailwind gradient classes)",
         type: "text",
         placeholder: "from-[#6C3BFF]/40 to-[#3a1f8f]/10",
+      },
+
+      /* ---- case-study page (/work/[slug]) ---- */
+      {
+        name: "slug",
+        label: "Case study URL",
+        type: "text",
+        placeholder: "lumen-health",
+        hint: "Leave empty to use the name. Changing this breaks old links.",
+      },
+      {
+        name: "year",
+        label: "Year",
+        type: "text",
+        placeholder: "2025",
+        hint: "Everything below shows on the case study page only.",
+      },
+      {
+        name: "duration",
+        label: "Engagement length",
+        type: "text",
+        placeholder: "14 weeks",
+      },
+      { name: "services", label: "Services (comma separated)", type: "tags" },
+      { name: "liveUrl", label: "Live site URL", type: "text" },
+      {
+        name: "gallery1",
+        label: "Gallery image 1",
+        type: "image",
+        aspect: 16 / 10,
+        outputWidth: 1600,
+        hint: "Optional screenshots shown further down the case study page.",
+      },
+      {
+        name: "gallery2",
+        label: "Gallery image 2",
+        type: "image",
+        aspect: 16 / 10,
+        outputWidth: 1600,
+      },
+      {
+        name: "gallery3",
+        label: "Gallery image 3",
+        type: "image",
+        aspect: 16 / 10,
+        outputWidth: 1600,
+      },
+      { name: "overview", label: "Overview", type: "textarea" },
+      { name: "challenge", label: "The challenge", type: "textarea" },
+      { name: "solution", label: "What we built", type: "textarea" },
+      { name: "outcome", label: "The outcome", type: "textarea" },
+      {
+        name: "highlights",
+        label: "Result highlights (comma separated)",
+        type: "tags",
+        placeholder: "63% faster triage, 4.9 App Store rating",
+      },
+      { name: "quote", label: "Client quote", type: "textarea" },
+      {
+        name: "quoteAuthor",
+        label: "Quote author",
+        type: "text",
+        placeholder: "Sara Whitfield, COO",
       },
     ],
   },
@@ -484,6 +539,25 @@ export interface Project {
   country: string;
   result: string;
   accent: string;
+
+  /* Case study page. All optional — a project with none of these still gets a
+     page, it just renders the sections it has content for. */
+  slug?: string;
+  year?: string;
+  duration?: string;
+  services?: string[];
+  liveUrl?: string;
+  /** Optional extra screenshots for the case study gallery. */
+  gallery1?: string;
+  gallery2?: string;
+  gallery3?: string;
+  overview?: string;
+  challenge?: string;
+  solution?: string;
+  outcome?: string;
+  highlights?: string[];
+  quote?: string;
+  quoteAuthor?: string;
 }
 
 export interface Service {
@@ -589,6 +663,8 @@ export interface LegalClause {
 export interface SiteSettings {
   /** A value from FONT_OPTIONS in @/lib/fonts. */
   fontFamily: string;
+  /** Cropped logo stored as a data URL; empty falls back to the default mark. */
+  logoImage: string;
 }
 
 export interface ContentData {
