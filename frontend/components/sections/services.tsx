@@ -17,7 +17,7 @@ export function Services({ services }: { services: Service[] }) {
         />
 
         <RevealGroup
-          className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-10 grid gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5 lg:mt-16 lg:grid-cols-4"
           stagger={0.06}
         >
           {services.map((service) => (
@@ -35,7 +35,7 @@ function ServiceCard({ service }: { service: Service }) {
   return (
     <GlowCard
       className={cn(
-        "flex h-full flex-col gap-4 p-6",
+        "flex h-full flex-col gap-4 p-5 sm:p-6",
         service.featured && "ring-1 ring-brand/25",
       )}
     >

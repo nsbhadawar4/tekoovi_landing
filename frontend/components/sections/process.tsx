@@ -22,7 +22,7 @@ export function Process({ steps }: { steps: ProcessStep[] }) {
           description="Seven deliberate stages that take you from a fuzzy idea to a scaled, supported product — with visibility at every step."
         />
 
-        <div ref={ref} className="relative mx-auto mt-16 max-w-3xl">
+        <div ref={ref} className="relative mx-auto mt-10 max-w-3xl sm:mt-14 md:mt-16">
           {/* rail */}
           <div className="absolute left-4 top-2 bottom-2 w-px bg-white/10 md:left-1/2" />
           <motion.div
@@ -33,7 +33,7 @@ export function Process({ steps }: { steps: ProcessStep[] }) {
           <div className="flex flex-col gap-10">
             {steps.map((stage, i) => (
               <TimelineRow key={stage.id} index={i}>
-                <div className="card-hairline rounded-2xl p-6 transition-colors duration-300 hover:border-white/15">
+            <div className="card-hairline rounded-2xl p-5 sm:p-6 transition-colors duration-300 hover:border-white/15">
                   <div className="flex items-center gap-3">
                     <span className="font-display text-sm font-bold text-brand-3">
                       {stage.step}
@@ -64,9 +64,9 @@ function TimelineRow({
 }) {
   const isLeft = index % 2 === 0;
   return (
-    <div className="relative pl-12 md:grid md:grid-cols-2 md:gap-10 md:pl-0">
+    <div className="relative pl-10 min-[390px]:pl-12 md:grid md:grid-cols-2 md:gap-10 md:pl-0">
       {/* node */}
-      <div className="absolute left-4 top-6 z-10 -translate-x-1/2 md:left-1/2">
+      <div className="absolute left-3 top-6 z-10 -translate-x-1/2 min-[390px]:left-4 md:left-1/2">
         <span className="block h-3.5 w-3.5 rounded-full border-2 border-brand-2 bg-bg shadow-[0_0_14px_2px_rgba(138,92,255,0.55)]" />
       </div>
 

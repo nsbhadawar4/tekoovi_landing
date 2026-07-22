@@ -86,7 +86,7 @@ export function Navbar({
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
-      className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-0"
+      className="fixed inset-x-0 top-0 z-50 flex justify-center px-2 pt-0 min-[390px]:px-4"
     >
       <nav className="relative w-full max-w-7xl">
         {/* Ambient brand glow that fades in once the page is scrolled */}
@@ -111,7 +111,7 @@ export function Navbar({
         >
           <div
             className={cn(
-              "relative flex items-center justify-between gap-3 rounded-full px-2.5 py-2 backdrop-blur-xl transition-colors duration-500 sm:px-3",
+              "relative flex items-center justify-between gap-2 rounded-full px-2 py-2 backdrop-blur-xl transition-colors duration-500 min-[390px]:gap-3 min-[390px]:px-2.5 sm:px-3",
               scrolled ? "bg-bg-2/85 saturate-150" : "bg-bg-2/45",
             )}
           >

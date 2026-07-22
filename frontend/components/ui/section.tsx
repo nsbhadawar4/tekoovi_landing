@@ -11,7 +11,12 @@ export function Container({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-7xl px-6 md:px-8", className)}>
+    <div
+      className={cn(
+        "mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8",
+        className,
+      )}
+    >
       {children}
     </div>
   );
@@ -27,7 +32,10 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section id={id} className={cn("relative py-24 md:py-32", className)}>
+    <section
+      id={id}
+      className={cn("relative py-16 sm:py-20 md:py-24 lg:py-32", className)}
+    >
       {children}
     </section>
   );
@@ -61,7 +69,7 @@ export function SectionHeading({
       <Reveal delay={0.06}>
         <h2
           className={cn(
-            "text-ink-gradient max-w-3xl text-balance text-4xl font-semibold leading-[1.05] md:text-5xl",
+            "text-ink-gradient max-w-3xl text-balance text-3xl font-semibold leading-[1.08] sm:text-4xl md:text-5xl",
             isCenter && "mx-auto",
           )}
         >
@@ -72,7 +80,7 @@ export function SectionHeading({
         <Reveal delay={0.12}>
           <p
             className={cn(
-              "max-w-2xl text-base leading-relaxed text-ink-2 md:text-lg",
+              "max-w-2xl text-[15px] leading-relaxed text-ink-2 sm:text-base md:text-lg",
               isCenter && "mx-auto",
             )}
           >

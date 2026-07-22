@@ -8,14 +8,14 @@ export function WhyTekoovi({ why }: { why: WhyItem[] }) {
   return (
     <Section id="why" className="bg-bg-2">
       <Container>
-        <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div className="grid gap-10 sm:gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           {/* left — sticky heading */}
           <div className="lg:sticky lg:top-28 lg:self-start">
             <Reveal>
               <Badge>Why Tekoovi</Badge>
             </Reveal>
             <Reveal delay={0.06}>
-              <h2 className="text-ink-gradient mt-5 text-balance text-4xl font-semibold leading-[1.05] md:text-5xl">
+              <h2 className="text-ink-gradient mt-5 text-balance text-3xl font-semibold leading-[1.08] sm:text-4xl md:text-5xl">
                 A studio built the way we&apos;d want to be hired
               </h2>
             </Reveal>
@@ -28,12 +28,12 @@ export function WhyTekoovi({ why }: { why: WhyItem[] }) {
           </div>
 
           {/* right — list */}
-          <RevealGroup className="grid gap-4 sm:grid-cols-2" stagger={0.07}>
+          <RevealGroup className="grid gap-3 sm:grid-cols-2 sm:gap-4" stagger={0.07}>
             {why.map((item) => {
               const Icon = getIcon(item.icon);
               return (
                 <RevealItem key={item.id} className="h-full">
-                  <div className="card-hairline group flex h-full flex-col gap-3 rounded-2xl p-6 transition-colors duration-300 hover:border-white/15">
+                  <div className="card-hairline group flex h-full flex-col gap-3 rounded-2xl p-5 sm:p-6 transition-colors duration-300 hover:border-white/15">
                     <div className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 bg-white/[0.03] text-brand-3">
                       <Icon className="h-[18px] w-[18px]" />
                     </div>

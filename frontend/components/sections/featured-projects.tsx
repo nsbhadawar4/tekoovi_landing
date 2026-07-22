@@ -17,7 +17,7 @@ export function FeaturedProjects({ projects }: { projects: Project[] }) {
           description="A glimpse of the platforms, apps and systems we've built for founders and teams across the world."
         />
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5 lg:mt-16 lg:gap-6 lg:grid-cols-3">
           {projects.map((project, i) => (
             <Reveal key={project.id} delay={(i % 3) * 0.08}>
               <ProjectCard project={project} />
@@ -63,18 +63,18 @@ function ProjectCard({ project }: { project: Project }) {
         <span className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-brand-3 backdrop-blur">
           {project.category}
         </span>
-        <span className="absolute right-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[11px] font-medium text-ink backdrop-blur">
+        <span className="absolute right-3 top-3 max-w-[48%] truncate rounded-full border border-white/10 bg-black/40 px-2.5 py-1 text-[11px] font-medium text-ink backdrop-blur sm:right-4 sm:top-4 sm:max-w-[55%] sm:px-3">
           {project.result}
         </span>
       </div>
 
       {/* body */}
-      <div className="flex flex-1 flex-col p-6">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4">
-          <h3 className="font-display text-2xl font-semibold text-ink">
+          <h3 className="min-w-0 font-display text-xl font-semibold text-ink sm:text-2xl">
             {project.name}
           </h3>
-          <span className="mt-1 inline-flex shrink-0 items-center gap-1 text-xs text-ink-3">
+          <span className="mt-1 inline-flex max-w-[42%] shrink-0 items-center gap-1 truncate text-xs text-ink-3">
             <MapPin className="h-3.5 w-3.5" /> {project.country}
           </span>
         </div>

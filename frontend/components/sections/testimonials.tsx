@@ -23,8 +23,8 @@ export function Testimonials({
         />
 
         {/* featured / video */}
-        <Reveal className="mt-16">
-          <GlowCard className="grid gap-8 p-6 md:grid-cols-[0.9fr_1.1fr] md:p-8" radius={520}>
+        <Reveal className="mt-10 sm:mt-14 md:mt-16">
+          <GlowCard className="grid gap-6 p-4 sm:gap-8 sm:p-6 md:grid-cols-[0.9fr_1.1fr] md:p-8" radius={520}>
             <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-brand/30 to-[#1b1226]">
               <div className="grid-lines absolute inset-0 opacity-40" />
               <button
@@ -43,7 +43,7 @@ export function Testimonials({
 
             <div className="flex flex-col justify-center">
               <Quote className="h-8 w-8 text-brand-3/60" />
-              <p className="mt-4 text-balance font-display text-xl font-medium leading-relaxed text-ink md:text-2xl">
+              <p className="mt-4 text-balance font-display text-lg font-medium leading-relaxed text-ink sm:text-xl md:text-2xl">
                 “{featured.quote}”
               </p>
               <div className="mt-6 flex items-center gap-3">
@@ -60,10 +60,10 @@ export function Testimonials({
         </Reveal>
 
         {/* grid */}
-        <RevealGroup className="mt-6 grid gap-6 md:grid-cols-3" stagger={0.08}>
+        <RevealGroup className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 md:grid-cols-3" stagger={0.08}>
           {rest.map((t) => (
             <RevealItem key={t.id} className="h-full">
-              <div className="card-hairline flex h-full flex-col rounded-2xl p-6">
+              <div className="card-hairline flex h-full flex-col rounded-2xl p-5 sm:p-6">
                 <Quote className="h-6 w-6 text-brand-3/50" />
                 <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-2">
                   “{t.quote}”

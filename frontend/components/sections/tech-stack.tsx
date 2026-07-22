@@ -17,7 +17,7 @@ export function TechStack({ techStack }: { techStack: Tech[] }) {
         />
       </Container>
 
-      <div className="mt-16 flex flex-col gap-5">
+      <div className="mt-10 flex flex-col gap-4 sm:mt-14 sm:gap-5 md:mt-16">
         <Marquee>
           {firstRow.map((tech) => (
             <TechChip key={tech.id} name={tech.name} />

@@ -14,14 +14,14 @@ export function Industries({ industries }: { industries: Industry[] }) {
         />
 
         <RevealGroup
-          className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+          className="mt-10 grid grid-cols-2 gap-3 sm:mt-14 sm:grid-cols-3 sm:gap-4 lg:mt-16 lg:grid-cols-4"
           stagger={0.05}
         >
           {industries.map((industry) => {
             const Icon = getIcon(industry.icon);
             return (
               <RevealItem key={industry.id}>
-                <div className="group card-hairline relative flex flex-col items-center gap-3 overflow-hidden rounded-2xl px-6 py-8 text-center transition-all duration-300 hover:-translate-y-1 hover:border-white/15">
+                <div className="group card-hairline relative flex min-h-[156px] flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl px-3 py-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-white/15 sm:min-h-0 sm:px-6 sm:py-8">
                   <div
                     aria-hidden
                     className="absolute inset-x-0 -bottom-10 h-24 bg-brand/20 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100"

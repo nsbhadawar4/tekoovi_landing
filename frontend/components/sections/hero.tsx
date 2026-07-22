@@ -48,13 +48,13 @@ export function Hero({ hero }: { hero: HeroContent }) {
       id="home"
       ref={ref}
       onMouseMove={handleMove}
-      className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-12"
+      className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-12"
     >
       {hero.backgroundImage && (
         <>
           <div
             aria-hidden
-            className="absolute inset-0 bg-cover bg-center top-[62px] h-[580px]"
+            className="absolute inset-x-0 top-0 h-full bg-cover bg-center"
             style={{ backgroundImage: `url(${hero.backgroundImage})`}}
           />
           <div
@@ -120,7 +120,7 @@ export function Hero({ hero }: { hero: HeroContent }) {
 
           <motion.h1
             variants={item}
-            className="mt-7 text-balance text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl"
+            className="mt-7 text-balance text-4xl font-semibold leading-[1.03] tracking-tight min-[390px]:text-5xl sm:text-6xl md:text-7xl"
           >
             <span className="text-ink-gradient">{hero.titleLead}</span>
             <span className="text-brand-gradient">{hero.titleHighlight}</span>
@@ -128,19 +128,19 @@ export function Hero({ hero }: { hero: HeroContent }) {
 
           <motion.p
             variants={item}
-            className="mt-7 max-w-xl text-balance text-lg leading-relaxed text-ink-2"
+            className="mt-6 max-w-xl text-balance text-base leading-relaxed text-ink-2 sm:mt-7 sm:text-lg"
           >
             {hero.subtitle}
           </motion.p>
 
           <motion.div
             variants={item}
-            className="mt-10 flex flex-col items-center gap-3 sm:flex-row"
+            className="mt-8 flex w-full flex-col items-stretch gap-3 min-[390px]:w-auto min-[390px]:items-center sm:mt-10 sm:flex-row"
           >
-            <Button href={hero.primaryHref} size="lg" magnetic withArrow>
+            <Button href={hero.primaryHref} size="lg" magnetic withArrow className="w-full sm:w-auto">
               {hero.primaryLabel}
             </Button>
-            <Button href={hero.secondaryHref} size="lg" variant="secondary">
+            <Button href={hero.secondaryHref} size="lg" variant="secondary" className="w-full sm:w-auto">
               {hero.secondaryLabel}
             </Button>
           </motion.div>

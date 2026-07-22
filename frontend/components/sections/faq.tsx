@@ -24,7 +24,7 @@ export function FAQ({ faqs }: { faqs: Faq[] }) {
           description="The questions founders ask us most, answered plainly."
         />
 
-        <div className="mx-auto mt-14 max-w-3xl">
+        <div className="mx-auto mt-10 max-w-3xl sm:mt-14">
           {faqs.map((faq, i) => {
             const isOpen = open === i;
             return (
@@ -34,9 +34,9 @@ export function FAQ({ faqs }: { faqs: Faq[] }) {
                     type="button"
                     onClick={() => setOpen(isOpen ? null : i)}
                     aria-expanded={isOpen}
-                    className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                    className="flex w-full items-center justify-between gap-3 py-5 text-left sm:gap-6 sm:py-6"
                   >
-                    <span className="font-display text-lg font-medium text-ink">
+                    <span className="font-display text-base font-medium leading-snug text-ink sm:text-lg">
                       {faq.q}
                     </span>
                     <span

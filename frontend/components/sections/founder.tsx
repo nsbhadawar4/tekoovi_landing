@@ -51,7 +51,7 @@ export function Founder({
   return (
     <Section id="studio">
       <Container>
-        <div className="grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+        <div className="grid items-center gap-10 sm:gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
           {/* portrait card */}
           <Reveal>
             <div className="group relative mx-auto w-full max-w-sm">
@@ -61,7 +61,7 @@ export function Founder({
                 className="absolute -inset-6 rounded-[2.5rem] bg-brand/20 opacity-70 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
               />
 
-              <div className="card-hairline glass relative overflow-hidden rounded-[1.75rem] p-8">
+              <div className="card-hairline glass relative overflow-hidden rounded-[1.75rem] p-5 min-[390px]:p-6 sm:p-8">
                 <div
                   aria-hidden
                   className="grid-lines pointer-events-none absolute inset-0 opacity-30"
@@ -142,13 +142,13 @@ export function Founder({
                 >
                   &ldquo;
                 </span>
-                <p className="relative text-balance font-display text-2xl font-medium leading-snug text-ink md:text-[28px]">
+                <p className="relative text-balance font-display text-xl font-medium leading-snug text-ink sm:text-2xl md:text-[28px]">
                   {founder.story}
                 </p>
               </blockquote>
             </Reveal>
 
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4">
               <Reveal delay={0.1}>
                 <div className="card-hairline h-full rounded-2xl p-5">
                   <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-3">

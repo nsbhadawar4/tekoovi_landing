@@ -29,9 +29,9 @@ export function CaseStudy({
           description={`A deep-dive into how we partnered with ${caseStudy.client} — from research to measurable outcome.`}
         />
 
-        <Reveal className="mt-16">
-          <GlowCard className="p-6 md:p-10" radius={520}>
-            <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+        <Reveal className="mt-10 sm:mt-14 md:mt-16">
+          <GlowCard className="p-4 sm:p-6 md:p-10" radius={520}>
+            <div className="grid gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-14">
               {/* narrative */}
               <div className="flex flex-col gap-8">
                 {narrative.map((block) => (

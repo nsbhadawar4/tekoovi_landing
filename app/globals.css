@@ -90,6 +90,7 @@
     font-family: var(--font-sans);
     overflow-x: hidden;
     font-feature-settings: "ss01", "cv01", "cv11";
+    overflow-wrap: break-word;
   }
 
   h1, h2, h3, h4, h5 {
@@ -107,6 +108,10 @@
   /* anchor offset for fixed navbar */
   section[id] {
     scroll-margin-top: 96px;
+  }
+
+  img, svg, video, canvas {
+    max-width: 100%;
   }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }

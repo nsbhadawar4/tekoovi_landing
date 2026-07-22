@@ -19,13 +19,13 @@ export function Footer({
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-bg-2 pt-20">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-bg-2 pt-14 sm:pt-16 md:pt-20">
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[60%] -translate-x-1/2 rounded-full bg-brand/10 blur-[130px]"
       />
       <Container className="relative">
-        <div className="grid gap-12 pb-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid gap-10 pb-12 sm:gap-12 sm:pb-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
             <Logo logoImage={logoImage} />
             <p className="mt-5 text-sm leading-relaxed text-ink-2">
@@ -90,9 +90,9 @@ export function Footer({
           </FooterCol>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-8 text-xs text-ink-3 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-6 text-center text-xs text-ink-3 sm:py-8 md:flex-row md:text-left">
           <p>© {year} Tekoovi. All rights reserved.</p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:gap-6 md:justify-end">
             <Link href="/privacy" className="transition-colors hover:text-ink-2">
               Privacy
             </Link>
