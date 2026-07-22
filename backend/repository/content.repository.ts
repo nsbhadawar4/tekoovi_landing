@@ -24,16 +24,20 @@ async function writeAllFile(data: ContentData): Promise<void> {
 
 async function readAllMongo(): Promise<ContentData> {
   await connectDB();
-  // Atomic upsert: seed from the bundled content.json on first run, else read
-  // the existing doc. Race-safe if several requests hit a cold deploy at once.
+  // Fast path: a plain indexed read. The doc exists on every request after the
+  // one-time seed, so this avoids the write-locking upsert that findOneAndUpdate
+  // performs on every single read (the main source of page-load latency).
+  const existing = await ContentModel.findOne({ key: DOC_KEY }).lean();
+  if (existing?.data) return existing.data as ContentData;
+
+  // First run only: seed from the bundled content.json. Upsert keeps this
+  // race-safe if several requests hit a cold deploy at once.
   const doc = await ContentModel.findOneAndUpdate(
     { key: DOC_KEY },
     { $setOnInsert: { data: seedContent as unknown as ContentData } },
     { upsert: true, new: true, setDefaultsOnInsert: true },
   ).lean();
-  return (
-    (doc?.data as ContentData) ?? (seedContent as unknown as ContentData)
-  );
+  return (doc?.data as ContentData) ?? (seedContent as unknown as ContentData);
 }
 
 async function writeAllMongo(data: ContentData): Promise<void> {

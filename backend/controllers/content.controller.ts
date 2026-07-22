@@ -1,3 +1,4 @@
+import { cache } from "react";
 import * as repo from "@/backend/repository/content.repository";
 import {
   getSection,
@@ -71,10 +72,15 @@ function hasContent(fields: Record<string, unknown>): boolean {
 
 /* --------------------------- reads ---------------------------- */
 
-/** Full content object for the landing page. */
-export async function getContent(): Promise<ContentData> {
-  return repo.getAll();
-}
+/**
+ * Full content object for the landing page.
+ *
+ * Wrapped in React `cache()` so the many callers in a single request — the
+ * site layout, the page, and its generateMetadata — all share ONE database
+ * read instead of each firing their own round trip. Dedup is per-request, so
+ * admin edits still show on the very next request.
+ */
+export const getContent = cache((): Promise<ContentData> => repo.getAll());
 
 /** Collection: list its items. Singleton callers use getSingleton instead. */
 export async function listSection(section: string): Promise<ContentItem[]> {
