@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   ArrowUpRight,
   CalendarDays,
-  ExternalLink,
   MapPin,
   Quote,
   Timer,
@@ -133,7 +132,6 @@ export function CaseStudyDetail({
 
   const highlights = project.highlights?.filter(Boolean) ?? [];
   const services = project.services?.filter(Boolean) ?? [];
-  const liveUrl = project.liveUrl?.trim();
   const gallery = [project.gallery1, project.gallery2, project.gallery3]
     .map((g) => g?.trim())
     .filter((g): g is string => Boolean(g));
@@ -235,12 +233,6 @@ export function CaseStudyDetail({
                 <Button href={contact.calendly} magnetic withArrow>
                   Start a project like this
                 </Button>
-                {liveUrl && (
-                  <Button href={liveUrl} variant="secondary">
-                    Visit live site
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                )}
               </div>
             </div>
           </Reveal>
@@ -409,17 +401,6 @@ export function CaseStudyDetail({
                 </div>
               </div>
 
-              {liveUrl && (
-                <a
-                  href={liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group mt-7 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-brand-3"
-                >
-                  Visit live site
-                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </a>
-              )}
             </div>
 
             <div

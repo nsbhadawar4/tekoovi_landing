@@ -182,14 +182,6 @@ export const SECTIONS: SectionDef[] = [
         placeholder: "from-[#6C3BFF]/40 to-[#3a1f8f]/10",
       },
 
-      /* ---- case-study page (/work/[slug]) ---- */
-      {
-        name: "slug",
-        label: "Case study URL",
-        type: "text",
-        placeholder: "lumen-health",
-        hint: "Leave empty to use the name. Changing this breaks old links.",
-      },
       {
         name: "year",
         label: "Year",
@@ -204,7 +196,6 @@ export const SECTIONS: SectionDef[] = [
         placeholder: "14 weeks",
       },
       { name: "services", label: "Services (comma separated)", type: "tags" },
-      { name: "liveUrl", label: "Live site URL", type: "text" },
       {
         name: "gallery1",
         label: "Gallery image 1",
@@ -542,11 +533,9 @@ export interface Project {
 
   /* Case study page. All optional — a project with none of these still gets a
      page, it just renders the sections it has content for. */
-  slug?: string;
   year?: string;
   duration?: string;
   services?: string[];
-  liveUrl?: string;
   /** Optional extra screenshots for the case study gallery. */
   gallery1?: string;
   gallery2?: string;

@@ -98,7 +98,6 @@
       "country": "United States",
       "result": "+63% faster triage",
       "accent": "from-[#6C3BFF]/40 to-[#3a1f8f]/10",
-      "slug": "lumen-health",
       "year": "2025",
       "duration": "16 weeks",
       "services": [
@@ -107,7 +106,6 @@
         "Full-stack engineering",
         "AI integration"
       ],
-      "liveUrl": "",
       "overview": "Lumen Health runs triage for a network of outpatient clinics in the US. Their care teams were reading the same patient history three times — once in the EHR, once in a spreadsheet, once in a handover call — before anyone could decide who needed to be seen first.\n\nWe rebuilt that flow into a single clinical intelligence surface: every signal a clinician needs, ranked, on one screen.",
       "challenge": "Patient data lived across four systems with no shared identity, and anything touching it had to stay HIPAA-compliant. The old dashboard took eleven seconds to load a single patient — long enough that staff had stopped using it.",
       "solution": "A Next.js app backed by Supabase with row-level security, an ingestion pipeline that normalises records into one patient timeline, and an OpenAI-powered summariser that drafts a triage note a clinician can accept or edit in one click.\n\nEverything is audited, reversible, and degrades to the raw record when the model is unsure.",
@@ -136,7 +134,6 @@
       "country": "United Kingdom",
       "result": "$40M+ processed",
       "accent": "from-[#8A5CFF]/40 to-[#1b1b28]/10",
-      "slug": "vaultline",
       "year": "2024",
       "duration": "22 weeks",
       "services": [
@@ -145,7 +142,6 @@
         "Payments integration",
         "DevOps"
       ],
-      "liveUrl": "",
       "overview": "Vaultline moves treasury and payments for mid-market businesses across the UK and EU. When we came in they were processing real money on a codebase built for a pilot — one region, one currency, one very nervous engineer.",
       "challenge": "Ledger writes and payment calls shared the same transaction, so a slow provider could lock the books. Reconciliation was manual, and a single failed webhook could leave a balance wrong for hours.",
       "solution": "We split the system into an append-only ledger and an idempotent payments layer talking over a queue, with Stripe as one provider behind a common interface rather than the interface itself.\n\nEvery movement is double-entry, every external call is replayable, and reconciliation runs continuously instead of at month end.",
@@ -173,7 +169,6 @@
       "country": "United Arab Emirates",
       "result": "3.4× lead conversion",
       "accent": "from-[#B388FF]/35 to-[#241a3d]/10",
-      "slug": "fieldstone",
       "year": "2025",
       "duration": "18 weeks",
       "services": [
@@ -182,7 +177,6 @@
         "Web platform",
         "Maintenance"
       ],
-      "liveUrl": "",
       "overview": "Fieldstone is a real estate operating system for a Dubai brokerage running listings, viewings and closings across two emirates — previously across WhatsApp, a shared drive and a whiteboard.",
       "challenge": "Agents work from their phones, often with patchy signal between viewings. Anything that needed a stable connection to be useful simply wouldn't get used, and leads went cold while paperwork sat in someone's inbox.",
       "solution": "A React Native app with an offline-first cache that syncs when signal returns, on top of a Laravel platform handling listings, documents and closing workflows.\n\nLeads route to whoever is actually nearby and free, and every viewing writes back to the same timeline the closing team works from.",

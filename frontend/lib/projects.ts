@@ -13,8 +13,7 @@ import { slugify } from "@/lib/utils";
 export const CASE_STUDY_BASE = "/case-study-detail";
 
 export function projectSlug(project: Project): string {
-  const custom = project.slug?.trim();
-  return custom ? slugify(custom, project.id) : slugify(project.name, project.id);
+  return slugify(project.name, project.id);
 }
 
 export function projectHref(project: Project): string {
