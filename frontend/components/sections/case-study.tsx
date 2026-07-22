@@ -7,11 +7,12 @@ import { Section, Container, SectionHeading } from "@/components/ui/section";
 export function CaseStudy({
   caseStudy,
   metrics,
-  calendly,
+  href,
 }: {
   caseStudy: CaseStudyContent;
   metrics: CaseMetric[];
-  calendly: string;
+  /** Link to the full case-study (work-detail) page. */
+  href: string;
 }) {
   const narrative = [
     { label: "Problem", body: caseStudy.problem },
@@ -86,7 +87,7 @@ export function CaseStudy({
                   ))}
                 </div>
 
-                <Button href={calendly} variant="secondary" withArrow>
+                <Button href={href} variant="secondary" withArrow>
                   Read the full case study
                 </Button>
               </div>

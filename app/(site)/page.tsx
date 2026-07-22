@@ -17,7 +17,6 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const content = await getContent();
-  const { calendly } = content.contact;
 
   return (
     <>
@@ -32,7 +31,7 @@ export default async function Home() {
       <CaseStudy
         caseStudy={content.caseStudy}
         metrics={content.caseMetrics}
-        calendly={calendly}
+        href="/case-study-detail"
       />
       <Testimonials testimonials={content.testimonials} />
       <Founder founder={content.founder} socials={content.socials} />
