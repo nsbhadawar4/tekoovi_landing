@@ -25,6 +25,8 @@ export interface FieldDef {
   options?: { value: string; label: string }[];
   /** Optional helper text shown under the field in the admin. */
   hint?: string;
+  /** Singleton editors: fields sharing a group id render inside one card. */
+  group?: string;
 }
 
 export type SectionKind = "collection" | "singleton";
@@ -99,6 +101,24 @@ export const SECTIONS: SectionDef[] = [
         type: "select",
         options: FONT_OPTIONS.map((f) => ({ value: f.value, label: f.label })),
         hint: "Applies to the whole landing page. Changes show on the next page refresh.",
+      },
+      {
+        name: "theme",
+        label: "Default theme",
+        type: "select",
+        group: "theme",
+        options: [
+          { value: "dark", label: "Dark" },
+          { value: "light", label: "Light" },
+        ],
+        hint: "The colour theme visitors see first. If the header toggle is on, their own choice is remembered afterwards.",
+      },
+      {
+        name: "showThemeToggle",
+        label: "Show light/dark toggle in header",
+        type: "boolean",
+        group: "theme",
+        hint: "When on, visitors get a sun/moon button in the header to switch themes themselves.",
       },
     ],
   },
@@ -654,6 +674,10 @@ export interface SiteSettings {
   fontFamily: string;
   /** Cropped logo stored as a data URL; empty falls back to the default mark. */
   logoImage: string;
+  /** Default colour theme for the landing page: "dark" | "light". */
+  theme: string;
+  /** Show the light/dark toggle icon in the landing-page header. */
+  showThemeToggle: boolean;
 }
 
 export interface ContentData {

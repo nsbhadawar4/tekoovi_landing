@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* theme: light/dark support active */
 
 /* ============================================================
    TEKOOVI — DESIGN SYSTEM
@@ -244,3 +245,126 @@ html.lenis body {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ================================================================
+   LIGHT THEME
+   The whole design system is authored dark-first. Setting
+   data-theme="light" on <html> remaps the colour tokens and the
+   dark-specific surfaces to a premium light palette. No attribute
+   (or "dark") leaves the original dark design completely untouched,
+   so this block is purely additive and cannot regress dark mode.
+   ================================================================ */
+:root[data-theme="light"] {
+  /* Surfaces — soft cool white with pure-white elevated cards */
+  --color-bg: #f4f5fa;
+  --color-bg-2: #ffffff;
+  --color-card: #ffffff;
+  --color-card-2: #ffffff;
+
+  /* Text — near-black headings, cool grey body */
+  --color-ink: #0f1117;
+  --color-ink-2: #40465a;
+  --color-ink-3: #6c7186;
+
+  /* Brand — deepened so purple stays legible on white */
+  --color-brand: #6c3bff;
+  --color-brand-2: #6c3bff;
+  --color-brand-3: #6d34d6;
+
+  /* Lines */
+  --color-line: rgba(16, 17, 26, 0.1);
+
+  color-scheme: light;
+}
+
+/* --- utilities re-skinned for light --- */
+:root[data-theme="light"] .glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.62));
+  border: 1px solid rgba(16, 17, 26, 0.08);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.7) inset,
+    0 24px 60px -34px rgba(16, 17, 26, 0.28);
+}
+
+:root[data-theme="light"] .card-hairline {
+  background:
+    linear-gradient(180deg, rgba(16, 17, 26, 0.02), rgba(16, 17, 26, 0)) padding-box,
+    #ffffff;
+  border: 1px solid rgba(16, 17, 26, 0.08);
+  box-shadow: 0 10px 30px -24px rgba(16, 17, 26, 0.22);
+}
+
+:root[data-theme="light"] .card-elevated {
+  background: #ffffff;
+  border: 1px solid rgba(16, 17, 26, 0.08);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.8) inset,
+    0 26px 60px -38px rgba(16, 17, 26, 0.32);
+}
+
+:root[data-theme="light"] .text-ink-gradient {
+  background: linear-gradient(180deg, #0f1117 0%, #0f1117 45%, #494f63 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:root[data-theme="light"] .grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(16, 17, 26, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 17, 26, 0.05) 1px, transparent 1px);
+}
+
+:root[data-theme="light"] .grain {
+  mix-blend-mode: multiply;
+  opacity: 0.03;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-track { background: var(--color-bg); }
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(16, 17, 26, 0.18);
+  border: 2px solid var(--color-bg);
+}
+:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: rgba(16, 17, 26, 0.3); }
+
+/* --- literal white-alpha classes remapped to ink-alpha on light ---
+   These utilities compile to fixed white values, so on a light surface
+   they'd wash out. Higher-specificity, unlayered overrides flip them to
+   subtle dark tints only while the light theme is active. --- */
+
+/* backgrounds */
+:root[data-theme="light"] .bg-white\/\[0\.02\] { background-color: rgba(16, 17, 26, 0.03); }
+:root[data-theme="light"] .bg-white\/\[0\.03\] { background-color: rgba(16, 17, 26, 0.04); }
+:root[data-theme="light"] .bg-white\/\[0\.04\] { background-color: rgba(16, 17, 26, 0.05); }
+:root[data-theme="light"] .bg-white\/\[0\.05\] { background-color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .bg-white\/\[0\.06\] { background-color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .bg-white\/\[0\.07\] { background-color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .bg-white\/\[0\.08\] { background-color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .bg-white\/10 { background-color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .bg-white\/20 { background-color: rgba(16, 17, 26, 0.09); }
+
+/* hover backgrounds */
+:root[data-theme="light"] .hover\:bg-white\/\[0\.03\]:hover { background-color: rgba(16, 17, 26, 0.05); }
+:root[data-theme="light"] .hover\:bg-white\/\[0\.04\]:hover { background-color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .hover\:bg-white\/\[0\.06\]:hover { background-color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .hover\:bg-white\/\[0\.07\]:hover { background-color: rgba(16, 17, 26, 0.08); }
+:root[data-theme="light"] .hover\:bg-white\/\[0\.08\]:hover { background-color: rgba(16, 17, 26, 0.08); }
+:root[data-theme="light"] .hover\:bg-white\/10:hover { background-color: rgba(16, 17, 26, 0.09); }
+
+/* borders */
+:root[data-theme="light"] .border-white\/10 { border-color: rgba(16, 17, 26, 0.12); }
+:root[data-theme="light"] .border-white\/15 { border-color: rgba(16, 17, 26, 0.15); }
+:root[data-theme="light"] .border-white\/20 { border-color: rgba(16, 17, 26, 0.2); }
+:root[data-theme="light"] .border-white\/\[0\.06\] { border-color: rgba(16, 17, 26, 0.1); }
+:root[data-theme="light"] .hover\:border-white\/15:hover { border-color: rgba(16, 17, 26, 0.18); }
+:root[data-theme="light"] .hover\:border-white\/20:hover { border-color: rgba(16, 17, 26, 0.24); }
+
+/* rings */
+:root[data-theme="light"] .ring-white\/10 { --tw-ring-color: rgba(16, 17, 26, 0.12); }
+
+/* faded fallback initial + gradient hairlines */
+:root[data-theme="light"] .text-white\/\[0\.06\] { color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .from-white\/15 { --tw-gradient-from: rgba(16, 17, 26, 0.16); }
+:root[data-theme="light"] .via-white\/10 { --tw-gradient-via: rgba(16, 17, 26, 0.12); }
+:root[data-theme="light"] .via-white\/25 { --tw-gradient-via: rgba(16, 17, 26, 0.22); }
+:root[data-theme="light"] .via-white\/30 { --tw-gradient-via: rgba(16, 17, 26, 0.24); }

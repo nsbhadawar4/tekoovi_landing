@@ -88,7 +88,7 @@ function ContainedImage({ src, alt }: { src: string; alt: string }) {
       <img
         src={src}
         alt={alt}
-        className="absolute inset-0 h-full w-full object-contain"
+        className="absolute inset-0 h-full w-full object-contain top-[60px]"
       />
     </>
   );
@@ -187,7 +187,7 @@ export function WorkDetail({
             />
           )}
           {/* cinematic legibility gradients + blend into the page bg */}
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,15,0.6)_0%,rgba(8,9,15,0.25)_28%,rgba(8,9,15,0.85)_76%,var(--color-bg)_100%)]" />
+          <div className="absolute inset-0 sbg-[linear-gradient(180deg,rgba(8,9,15,0.6)_0%,rgba(8,9,15,0.25)_28%,rgba(8,9,15,0.85)_76%,var(--color-bg)_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,9,15,0.85),rgba(8,9,15,0.2)_58%,transparent)]" />
         </div>
         <AuroraBlobs className="opacity-35" />
@@ -219,7 +219,7 @@ export function WorkDetail({
                 {project.name}
               </h1>
 
-              <p className="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-ink-2 md:text-lg">
+              <p className="mt-5 text-pretty text-base leading-relaxed text-ink-2 md:text-lg">
                 {project.description}
               </p>
 

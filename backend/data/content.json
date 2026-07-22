@@ -1,7 +1,9 @@
 {
   "settings": {
     "fontFamily": "inter",
-    "logoImage": ""
+    "logoImage": "",
+    "theme": "dark",
+    "showThemeToggle": true
   },
   "hero": {
     "backgroundImage": "",

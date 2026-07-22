@@ -306,30 +306,57 @@ function FieldRows({
   fields,
   form,
   setForm,
+  card = false,
 }: {
   fields: FieldDef[];
   form: FormState;
   setForm: React.Dispatch<React.SetStateAction<FormState>>;
+  /** Wrap each field in its own card (used by the singleton editors). */
+  card?: boolean;
 }) {
+  const renderField = (field: FieldDef) => (
+    <div key={field.name}>
+      {field.type !== "boolean" && (
+        <label className="block text-xs font-medium text-ink-3">
+          {field.label}
+        </label>
+      )}
+      <Field
+        field={field}
+        value={form[field.name] ?? ""}
+        onChange={(v) => setForm((f) => ({ ...f, [field.name]: v }))}
+      />
+      {field.hint && (
+        <p className="mt-1.5 text-[11px] leading-relaxed text-ink-3">
+          {field.hint}
+        </p>
+      )}
+    </div>
+  );
+
+  if (!card) return <>{fields.map(renderField)}</>;
+
+  // Card mode: each field gets its own card, except that consecutive fields
+  // sharing a `group` id are wrapped together inside one card.
+  const cards: { key: string; group?: string; fields: FieldDef[] }[] = [];
+  for (const field of fields) {
+    const last = cards[cards.length - 1];
+    if (field.group && last?.group === field.group) {
+      last.fields.push(field);
+    } else {
+      cards.push({
+        key: field.group ? `g:${field.group}` : `f:${field.name}`,
+        group: field.group,
+        fields: [field],
+      });
+    }
+  }
+
   return (
     <>
-      {fields.map((field) => (
-        <div key={field.name}>
-          {field.type !== "boolean" && (
-            <label className="block text-xs font-medium text-ink-3">
-              {field.label}
-            </label>
-          )}
-          <Field
-            field={field}
-            value={form[field.name] ?? ""}
-            onChange={(v) => setForm((f) => ({ ...f, [field.name]: v }))}
-          />
-          {field.hint && (
-            <p className="mt-1.5 text-[11px] leading-relaxed text-ink-3">
-              {field.hint}
-            </p>
-          )}
+      {cards.map((c) => (
+        <div key={c.key} className="card-hairline space-y-5 rounded-xl p-5">
+          {c.fields.map(renderField)}
         </div>
       ))}
     </>
@@ -704,7 +731,7 @@ export default function AdminDashboard() {
 
           {/* ------------------- singleton editor ------------------- */}
           {isSingle ? (
-            <div className="mt-6">
+            <div className="mt-6 card-hairline space-y-5 rounded-xl p-5">
               {loading ? (
                 <div className="card-hairline space-y-4 rounded-2xl p-6">
                   {Array.from({ length: 4 }).map((_, i) => (
@@ -715,11 +742,13 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               ) : (
-                <form
-                  onSubmit={saveSingleton}
-                  className="card-hairline max-w-2xl space-y-4 rounded-2xl p-6"
-                >
-                  <FieldRows fields={def.fields} form={form} setForm={setForm} />
+                <form onSubmit={saveSingleton} className="max-w-2xl space-y-4">
+                  <FieldRows
+                    fields={def.fields}
+                    form={form}
+                    setForm={setForm}
+                    card
+                  />
                   {error && <p className="text-sm text-red-400">{error}</p>}
                   <div className="flex justify-end pt-1">
                     <button
@@ -751,79 +780,83 @@ export default function AdminDashboard() {
                 </>
               )}
               <div className={def.header ? "mt-3 space-y-2" : "mt-4 space-y-2"}>
-              {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <div
-                    key={`sk-${i}`}
-                    className="card-hairline flex items-center justify-between gap-4 rounded-xl p-4"
-                  >
-                    <div className="min-w-0 flex-1 space-y-2.5">
-                      <div className="h-3.5 w-1/3 animate-pulse rounded bg-white/10" />
-                      <div className="h-3 w-2/3 animate-pulse rounded bg-white/[0.06]" />
-                    </div>
-                    <div className="flex shrink-0 gap-2">
-                      <div className="h-7 w-12 animate-pulse rounded-lg bg-white/[0.06]" />
-                      <div className="h-7 w-14 animate-pulse rounded-lg bg-white/[0.06]" />
-                    </div>
-                  </div>
-                ))
-              ) : items.length === 0 ? (
-                <p className="py-8 text-center text-sm text-ink-3">
-                  Nothing here yet. Click “Add new”.
-                </p>
-              ) : (
-                items.map((item) => {
-                  const title = String(
-                    (def.titleField && item[def.titleField]) ?? "(untitled)",
-                  );
-                  const img = imageField ? String(item[imageField] ?? "") : "";
-                  return (
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
                     <div
-                      key={item.id}
-                      className="card-hairline flex items-center gap-3 rounded-xl p-3 transition-colors hover:border-white/15 sm:gap-4 sm:p-4"
+                      key={`sk-${i}`}
+                      className="card-hairline flex items-center justify-between gap-4 rounded-xl p-4"
                     >
-                      {imageField && (
-                        <div
-                          className="relative aspect-[16/10] w-20 shrink-0 overflow-hidden rounded-lg border border-line bg-bg-2 bg-cover bg-center sm:w-28"
-                          style={
-                            img ? { backgroundImage: `url(${img})` } : undefined
-                          }
-                        >
-                          {!img && (
-                            <span className="absolute inset-0 grid place-items-center font-display text-xl font-bold text-ink/15">
-                              {title.charAt(0)}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-ink">
-                          {title}
-                        </p>
-                        {def.subField && (
-                          <p className="truncate text-xs text-ink-3">
-                            {String(item[def.subField] ?? "")}
-                          </p>
-                        )}
+                      <div className="min-w-0 flex-1 space-y-2.5">
+                        <div className="h-3.5 w-1/3 animate-pulse rounded bg-white/10" />
+                        <div className="h-3 w-2/3 animate-pulse rounded bg-white/[0.06]" />
                       </div>
                       <div className="flex shrink-0 gap-2">
-                        <button
-                          onClick={() => startEdit(item)}
-                          className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => setPendingDelete(item)}
-                          className="rounded-lg border border-red-500/30 bg-red-500/[0.04] px-3 py-1.5 text-xs text-red-300 transition-colors hover:bg-red-500/10"
-                        >
-                          Delete
-                        </button>
+                        <div className="h-7 w-12 animate-pulse rounded-lg bg-white/[0.06]" />
+                        <div className="h-7 w-14 animate-pulse rounded-lg bg-white/[0.06]" />
                       </div>
                     </div>
-                  );
-                })
-              )}
+                  ))
+                ) : items.length === 0 ? (
+                  <p className="py-8 text-center text-sm text-ink-3">
+                    Nothing here yet. Click “Add new”.
+                  </p>
+                ) : (
+                  items.map((item) => {
+                    const title = String(
+                      (def.titleField && item[def.titleField]) ?? "(untitled)",
+                    );
+                    const img = imageField
+                      ? String(item[imageField] ?? "")
+                      : "";
+                    return (
+                      <div
+                        key={item.id}
+                        className="card-hairline flex items-center gap-3 rounded-xl p-3 transition-colors hover:border-white/15 sm:gap-4 sm:p-4"
+                      >
+                        {imageField && (
+                          <div
+                            className="relative aspect-[16/10] w-20 shrink-0 overflow-hidden rounded-lg border border-line bg-bg-2 bg-cover bg-center sm:w-28"
+                            style={
+                              img
+                                ? { backgroundImage: `url(${img})` }
+                                : undefined
+                            }
+                          >
+                            {!img && (
+                              <span className="absolute inset-0 grid place-items-center font-display text-xl font-bold text-ink/15">
+                                {title.charAt(0)}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-ink">
+                            {title}
+                          </p>
+                          {def.subField && (
+                            <p className="truncate text-xs text-ink-3">
+                              {String(item[def.subField] ?? "")}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex shrink-0 gap-2">
+                          <button
+                            onClick={() => startEdit(item)}
+                            className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => setPendingDelete(item)}
+                            className="rounded-lg border border-red-500/30 bg-red-500/[0.04] px-3 py-1.5 text-xs text-red-300 transition-colors hover:bg-red-500/10"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </>
           )}

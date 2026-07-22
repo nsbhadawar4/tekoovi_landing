@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { getContent } from "@/backend/controllers/content.controller";
 import { DEFAULT_FONT, getFont } from "@/lib/fonts";
+import { normalizeTheme, themeInitScript } from "@/lib/theme";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import { Preloader } from "@/components/ui/preloader";
 import { Navbar } from "@/components/layout/navbar";
@@ -53,8 +54,18 @@ export default async function SiteLayout({
       } as CSSProperties)
     : undefined;
 
+  // Admin-selectable default theme + whether visitors get a header toggle.
+  const defaultTheme = normalizeTheme(content.settings?.theme);
+  const showThemeToggle = content.settings?.showThemeToggle !== false;
+
   return (
     <div style={fontStyle}>
+      {/* No-flash theme: applied on <html> before the page below paints. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: themeInitScript(defaultTheme, showThemeToggle),
+        }}
+      />
       {applyFont && font.href && (
         <link rel="stylesheet" href={font.href} />
       )}
@@ -64,6 +75,7 @@ export default async function SiteLayout({
       <Navbar
         calendly={content.contact.calendly}
         logoImage={content.settings?.logoImage}
+        showThemeToggle={showThemeToggle}
       />
       <main>{children}</main>
       <Footer

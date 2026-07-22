@@ -14,15 +14,19 @@ import { NAV_LINKS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Navbar({
   calendly,
   logoImage,
+  showThemeToggle = false,
 }: {
   calendly: string;
   logoImage?: string;
+  /** Admin-controlled: show the light/dark toggle in the header. */
+  showThemeToggle?: boolean;
 }) {
   const pathname = usePathname();
   // The section anchors only exist on the landing page. Everywhere else (the
@@ -176,6 +180,7 @@ export function Navbar({
             </ul>
 
             <div className="flex items-center gap-2">
+              {showThemeToggle && <ThemeToggle />}
               <div className="hidden md:block">
                 <Button href={calendly} size="md" magnetic withArrow>
                   Book a call
