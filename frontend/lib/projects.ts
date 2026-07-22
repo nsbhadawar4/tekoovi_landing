@@ -1,16 +1,7 @@
-/* -------------------------------------------------------------- */
-/*  Project URL helpers.                                            */
-/*                                                                  */
-/*  A case study lives at /case-study-detail/<slug>. The slug is     */
-/*  admin-editable but almost never set, so it falls back to the     */
-/*  project name and finally to the id — every project always        */
-/*  resolves to a URL.                                               */
-/* -------------------------------------------------------------- */
-
 import type { Project } from "@/backend/types";
 import { slugify } from "@/lib/utils";
 
-export const CASE_STUDY_BASE = "/case-study-detail";
+export const CASE_STUDY_BASE = "/work-detail";
 
 export function projectSlug(project: Project): string {
   return slugify(project.name, project.id);

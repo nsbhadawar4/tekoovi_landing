@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getContent } from "@/backend/controllers/content.controller";
-import { CaseStudyDetail } from "@/components/sections/case-study-detail";
 import { CASE_STUDY_BASE, findProject, projectSlug } from "@/lib/projects";
+import { WorkDetail } from "@/frontend/components/sections/work-detail";
 
 // Projects are admin-editable, so resolve them on every request like the rest
 // of the site rather than baking them in at build time.
@@ -45,7 +45,7 @@ export default async function ProjectPage({ params }: Params) {
     projects.length > 1 ? projects[(index + 1) % projects.length] : undefined;
 
   return (
-    <CaseStudyDetail
+    <WorkDetail
       project={projects[index]}
       next={next}
       contact={content.contact}

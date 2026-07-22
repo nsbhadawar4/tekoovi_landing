@@ -42,7 +42,7 @@ function ProjectImage({
   project,
   src,
   initialClass = "text-[7rem]",
-  imgClassName = "object-contain top-[50px]",
+  imgClassName = "object-contain top-[60px]",
 }: {
   project: Project;
   src?: string;
@@ -53,7 +53,6 @@ function ProjectImage({
 }) {
   if (src) {
     return (
-      // this is top bg-image for case-study-detail
       <img
         src={src}
         alt={`${project.name} — ${project.category}`}
@@ -103,7 +102,7 @@ function Framed({
   );
 }
 
-export function CaseStudyDetail({
+export function WorkDetail({
   project,
   next,
   contact,
@@ -423,7 +422,7 @@ export function CaseStudyDetail({
 
       {/* ========================= gallery ======================== */}
       {gallery.length > 0 && (
-        <Container className="pb-20 md:pb-28">
+        <Container className="pb-10 md:pb-14">
           <Reveal>
             <div className="flex items-center gap-4">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
@@ -471,7 +470,7 @@ export function CaseStudyDetail({
 
       {/* ======================= next project ===================== */}
       {next && (
-        <Container className="pb-24 md:pb-32">
+        <Container className="pb-12 md:pb-16">
           <Reveal>
             <Link href={projectHref(next)} className="block">
               <GlowCard className="p-5 md:p-7" radius={520}>
