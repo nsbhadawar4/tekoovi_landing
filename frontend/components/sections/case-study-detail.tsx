@@ -18,16 +18,6 @@ import { Container } from "@/components/ui/section";
 import { projectHref } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
-/* -------------------------------------------------------------- */
-/*  /case-study-detail/[slug] — one project, told properly.         */
-/*                                                                  */
-/*  Same visual language as the landing page: aurora + grid ambient, */
-/*  gradient display type, glass surfaces, staggered reveals.        */
-/*  Every block below the title is optional in the admin, so each    */
-/*  renders only when it has content — a project that was never      */
-/*  expanded still gets a complete-looking page from its card data.  */
-/* -------------------------------------------------------------- */
-
 /** Blank-line-separated paragraphs, same authoring rules as the legal pages. */
 function Paragraphs({ text }: { text: string }) {
   return (
@@ -37,7 +27,10 @@ function Paragraphs({ text }: { text: string }) {
         .map((p) => p.trim())
         .filter(Boolean)
         .map((p, i) => (
-          <p key={i} className="text-[15px] leading-relaxed text-ink-2 md:text-base">
+          <p
+            key={i}
+            className="text-[15px] leading-relaxed text-ink-2 md:text-base"
+          >
             {p}
           </p>
         ))}
@@ -45,28 +38,26 @@ function Paragraphs({ text }: { text: string }) {
   );
 }
 
-/**
- * Project imagery is stored as a data URL by the admin cropper, which
- * next/image can't optimise — a plain img renders it directly. The accent
- * gradient stands in until a project has an image.
- */
 function ProjectImage({
   project,
   src,
   initialClass = "text-[7rem]",
+  imgClassName = "object-contain top-[50px]",
 }: {
   project: Project;
   src?: string;
   /** Font size of the fallback initial. */
   initialClass?: string;
+  /** Extra classes for the <img> — e.g. object-fit / positioning. */
+  imgClassName?: string;
 }) {
   if (src) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
+      // this is top bg-image for case-study-detail
       <img
         src={src}
         alt={`${project.name} — ${project.category}`}
-        className="absolute inset-0 h-full w-full object-cover"
+        className={cn("absolute inset-0 h-full w-full", imgClassName)}
       />
     );
   }
@@ -118,13 +109,14 @@ export function CaseStudyDetail({
   contact,
 }: {
   project: Project;
-  /** The following project in the list — powers the bottom "next" card. */
   next?: Project;
   contact: Contact;
 }) {
-  // Overview falls back to the card description so the narrative is never empty.
   const chapters = [
-    { label: "Overview", body: project.overview?.trim() || project.description },
+    {
+      label: "Overview",
+      body: project.overview?.trim() || project.description,
+    },
     { label: "The challenge", body: project.challenge?.trim() },
     { label: "What we built", body: project.solution?.trim() },
     { label: "The outcome", body: project.outcome?.trim() },
@@ -135,9 +127,6 @@ export function CaseStudyDetail({
   const gallery = [project.gallery1, project.gallery2, project.gallery3]
     .map((g) => g?.trim())
     .filter((g): g is string => Boolean(g));
-
-  // Only the fallback overview and nothing else — not enough copy to hold a
-  // column next to the sidebar. Drives the single-column body layout below.
   const thinStory = chapters.length < 2 && !project.quote?.trim();
 
   const facts = [
@@ -151,8 +140,6 @@ export function CaseStudyDetail({
 
   return (
     <article className="relative">
-      {/* The project image, blown up and blurred, tints the whole upper page so
-          the palette matches the banner instead of fighting it. */}
       {project.image && (
         <div
           aria-hidden
@@ -168,15 +155,20 @@ export function CaseStudyDetail({
 
       {/* ========================= banner ========================= */}
       <section className="relative flex min-h-[76svh] items-end overflow-hidden pb-16 pt-28 md:min-h-[86svh] md:pb-24 md:pt-24">
-        {/* the real cover image, full-bleed */}
         <div aria-hidden className="absolute inset-0">
+          {project.image && (
+            <div
+              className="absolute inset-0 scale-110 bg-cover bg-center blur-2xl saturate-125"
+              style={{ backgroundImage: `url(${project.image})` }}
+            />
+          )}
           <ProjectImage
             project={project}
             src={project.image}
             initialClass="text-[16rem]"
           />
           {/* legibility + blend into the page background */}
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,15,0.7)_0%,rgba(8,9,15,0.3)_30%,rgba(8,9,15,0.85)_78%,var(--color-bg)_100%)]" />
+          <div className="absolute inset-0 sbg-[linear-gradient(180deg,rgba(8,9,15,0.7)_0%,rgba(8,9,15,0.3)_30%,rgba(8,9,15,0.85)_78%,var(--color-bg)_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,9,15,0.7),rgba(8,9,15,0.15)_60%,transparent)]" />
         </div>
         <AuroraBlobs className="opacity-40" />
@@ -193,10 +185,8 @@ export function CaseStudyDetail({
             </Link>
           </Reveal>
 
-          {/* The copy sits on its own frosted panel — over a photo, plain text
-              has no edge to hold on to and the contrast changes per project. */}
           <Reveal delay={0.05} y={28}>
-            <div className="glass mt-7 max-w-2xl rounded-[28px] p-7 md:mt-9 md:p-10">
+            <div className="glass mt-7 rounded-[28px] p-7 md:mt-9 md:p-10">
               <Badge>{project.category}</Badge>
 
               <h1 className="text-ink-gradient mt-6 text-balance text-4xl font-semibold leading-[1.04] tracking-tight sm:text-5xl md:text-6xl">
@@ -240,7 +230,6 @@ export function CaseStudyDetail({
       </section>
 
       {/* ======================= fact strip ======================= */}
-      {/* Lifted over the banner edge so the two read as one composition. */}
       {facts.length > 0 && (
         <Container className="relative z-10 -mt-10 md:-mt-14">
           <Reveal>
@@ -400,7 +389,6 @@ export function CaseStudyDetail({
                   ))}
                 </div>
               </div>
-
             </div>
 
             <div
@@ -457,16 +445,21 @@ export function CaseStudyDetail({
               <Reveal
                 key={i}
                 delay={(i % 2) * 0.08}
-                // A lone third shot spans the row so the grid never ends ragged.
-                className={cn(gallery.length === 3 && i === 2 && "md:col-span-2")}
+                className={cn(
+                  gallery.length === 3 && i === 2 && "md:col-span-2",
+                )}
               >
                 <Framed>
-                  <div className="relative aspect-[16/10] w-full">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <div className="relative aspect-[16/10] max-h-125 w-full">
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 scale-110 bg-cover bg-center blur-2xl saturate-125"
+                      style={{ backgroundImage: `url(${src})` }}
+                    />
                     <img
                       src={src}
                       alt={`${project.name} — screenshot ${i + 1}`}
-                      className="absolute inset-0 h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-contain"
                     />
                   </div>
                 </Framed>
@@ -489,6 +482,7 @@ export function CaseStudyDetail({
                         project={next}
                         src={next.image}
                         initialClass="text-5xl"
+                        imgClassName="object-cover"
                       />
                     </div>
                     <div className="min-w-0">
@@ -498,7 +492,9 @@ export function CaseStudyDetail({
                       <p className="mt-2.5 font-display text-3xl font-semibold text-ink md:text-4xl">
                         {next.name}
                       </p>
-                      <p className="mt-1.5 text-sm text-ink-2">{next.category}</p>
+                      <p className="mt-1.5 text-sm text-ink-2">
+                        {next.category}
+                      </p>
                     </div>
                   </div>
                   <span className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-ink transition-colors group-hover:text-brand-3 md:pr-2">
