@@ -90,6 +90,11 @@ function genId(): string {
 }
 
 /** Whole content object (used by the landing page). */
+/** Replace the entire content document (used by the image migration). */
+export async function saveAll(data: ContentData): Promise<void> {
+  return writeAll(data);
+}
+
 export async function getAll(): Promise<ContentData> {
   return readAll();
 }

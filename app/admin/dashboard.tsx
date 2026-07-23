@@ -115,6 +115,7 @@ function ImageField({
   const inputRef = useRef<HTMLInputElement>(null);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [err, setErr] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   function closeCropper() {
     setCropSrc((prev) => {
@@ -135,10 +136,32 @@ function ImageField({
     setCropSrc(URL.createObjectURL(file));
   }
 
-  function handleCrop(dataUrl: string) {
+  async function handleCrop(dataUrl: string) {
     setErr("");
-    onChange(dataUrl);
     closeCropper();
+    setUploading(true);
+    try {
+      // Upload to the media store and keep only the small URL in the content —
+      // never the multi-MB base64, which would bloat every page that renders it.
+      const res = await fetch("/api/media", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dataUrl }),
+      });
+      const json = (await res.json().catch(() => ({}))) as {
+        url?: string;
+        error?: string;
+      };
+      if (!res.ok || !json.url) throw new Error(json.error || "Upload failed");
+      onChange(json.url);
+    } catch (e) {
+      // Don't lose the edit if the upload fails — fall back to the inline data
+      // URL so the image still saves (just less efficiently).
+      setErr(e instanceof Error ? e.message : "Upload failed");
+      onChange(dataUrl);
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
@@ -162,9 +185,14 @@ function ImageField({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
+            disabled={uploading}
+            className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50"
           >
-            {value ? "Change image" : "Upload image"}
+            {uploading
+              ? "Uploading…"
+              : value
+                ? "Change image"
+                : "Upload image"}
           </button>
           {value && (
             <button
@@ -624,6 +652,31 @@ export default function AdminDashboard() {
     router.replace("/admin/login");
   }
 
+  const [optimizing, setOptimizing] = useState(false);
+  async function optimizeImages() {
+    if (optimizing) return;
+    setOptimizing(true);
+    try {
+      const res = await fetch("/api/media/migrate", { method: "POST" });
+      if (res.status === 401) return unauthorized();
+      const json = (await res.json().catch(() => ({}))) as {
+        replaced?: number;
+        error?: string;
+      };
+      if (!res.ok) throw new Error(json.error || "Migration failed");
+      notify(
+        "success",
+        json.replaced
+          ? `Optimised ${json.replaced} image${json.replaced === 1 ? "" : "s"}. Refresh the site to see faster loads.`
+          : "All images are already optimised.",
+      );
+    } catch (e) {
+      notify("error", e instanceof Error ? e.message : "Migration failed");
+    } finally {
+      setOptimizing(false);
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
       {/* sidebar */}
@@ -686,6 +739,17 @@ export default function AdminDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={optimizeImages}
+              disabled={optimizing}
+              title="Move inline images into the cached media store for faster page loads"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span className="hidden sm:inline">
+                {optimizing ? "Optimising…" : "Optimize images"}
+              </span>
+            </button>
             <a
               href="/"
               target="_blank"
