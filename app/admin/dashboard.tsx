@@ -688,7 +688,6 @@ export default function AdminDashboard() {
       if (!res.ok) throw new Error(json.error || "Migration failed");
       notify(
         "success",
-        
         json.replaced
           ? `Optimised ${json.replaced} image${json.replaced === 1 ? "" : "s"}. Refresh the site to see faster loads.`
           : "All images are already optimised.",
