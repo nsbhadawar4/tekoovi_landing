@@ -8,6 +8,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -79,6 +80,20 @@ const SIDEBAR_ICONS: Record<string, LucideIcon> = {
   Scale,
   Gavel,
 };
+
+/* The active section is kept in the URL hash (e.g. /admin#projects) so a
+   refresh or shared link lands back on the same section instead of the default.
+   Read reactively via useSyncExternalStore — no setState-in-effect, no
+   hydration mismatch (server always renders the first section). */
+function subscribeHash(onChange: () => void): () => void {
+  window.addEventListener("hashchange", onChange);
+  return () => window.removeEventListener("hashchange", onChange);
+}
+function sectionFromHash(): string {
+  if (typeof window === "undefined") return SECTIONS[0].key;
+  const key = window.location.hash.replace(/^#/, "");
+  return key && getSection(key) ? key : SECTIONS[0].key;
+}
 
 function buildForm(
   fields: FieldDef[],
@@ -480,7 +495,11 @@ function HeaderForm({
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [section, setSection] = useState<string>(SECTIONS[0].key);
+  const section = useSyncExternalStore(
+    subscribeHash,
+    sectionFromHash,
+    () => SECTIONS[0].key,
+  );
   const def = useMemo(() => getSection(section) as SectionDef, [section]);
   const isSingle = def.kind === "singleton";
   const imageField = useMemo(
@@ -555,7 +574,10 @@ export default function AdminDashboard() {
     setLoading(true);
     setEditing(null);
     setError("");
-    setSection(key);
+    // Drives `section` via the hash store above; also survives a refresh.
+    // assign() with a hash-only URL just updates the hash (fires hashchange,
+    // no reload) — a method call, unlike a direct `location.hash =` assignment.
+    window.location.assign(`#${key}`);
   }
 
   function startAdd() {
