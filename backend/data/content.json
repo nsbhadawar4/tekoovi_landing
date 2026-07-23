@@ -695,5 +695,52 @@
       "heading": "Changes and governing law",
       "body": "We may update these terms as the studio evolves, and the date at the top of the page always reflects the current version. Continuing to use the site after a change means you accept it.\n\nThese terms are governed by the laws of India, and the courts of Bengaluru have exclusive jurisdiction over any dispute."
     }
+  ],
+  "blogs": [
+    {
+      "id": "blog-1",
+      "title": "Shipping AI features without breaking trust",
+      "category": "Engineering",
+      "author": "Tekoovi Team",
+      "date": "23 July 2026",
+      "readTime": "6 min read",
+      "excerpt": "How we wire LLMs into products with guardrails, evals and graceful fallbacks — so the magic never becomes a liability.",
+      "coverImage": "",
+      "image1": "",
+      "image2": "",
+      "image3": "",
+      "tags": ["AI", "LLM", "Product"],
+      "content": "Everyone wants an AI feature. Fewer teams think about what happens when the model is confidently wrong in front of a paying customer.\n\nWe start every AI build with an eval harness — a fixed set of real inputs and expected behaviours. Before a single prompt ships, we know how often it succeeds, and we watch that number like we watch uptime.\n\nGuardrails come next: strict output schemas, retries with backoff, and a deterministic fallback path for when the model is unavailable or off-target. The user should never see a raw stack trace or an empty screen.\n\nThe result is AI that feels magical on the good days and simply feels normal on the bad ones — which is exactly the bar for something people rely on."
+    },
+    {
+      "id": "blog-2",
+      "title": "The design system is the product",
+      "category": "Design",
+      "author": "Tekoovi Team",
+      "date": "10 July 2026",
+      "readTime": "5 min read",
+      "excerpt": "Why we invest in tokens, components and motion rules on day one — and how it pays back across every screen you ship after.",
+      "coverImage": "",
+      "image1": "",
+      "image2": "",
+      "image3": "",
+      "tags": ["Design", "Systems", "UI"],
+      "content": "A design system is not a nice-to-have you bolt on later. It is the grammar of the product, and the earlier you write it, the faster everything downstream moves.\n\nWe start with tokens — colour, type, spacing, motion — as CSS variables, not hard-coded values. One change updates the whole surface, light and dark, without hunting through files.\n\nComponents are built once, accessibly, and reused everywhere. Motion is codified into a small set of easings and durations so the whole app moves with one personality.\n\nThe payoff shows up around week three, when new screens take hours instead of days and still look like they belong."
+    },
+    {
+      "id": "blog-3",
+      "title": "Scaling to a million users from day one",
+      "category": "Architecture",
+      "author": "Tekoovi Team",
+      "date": "28 June 2026",
+      "readTime": "7 min read",
+      "excerpt": "Foundations that hold under load without over-engineering the MVP — the pragmatic middle path we take on every build.",
+      "coverImage": "",
+      "image1": "",
+      "image2": "",
+      "image3": "",
+      "tags": ["Architecture", "Scale", "Backend"],
+      "content": "Premature scaling kills startups as surely as no scaling does. The trick is building foundations that can grow without paying for capacity you don't need yet.\n\nWe design the data model and API contracts for the shape of a million users, but we deploy the smallest infrastructure that serves the first thousand. Stateless services, indexed queries and cache-friendly reads mean the same code scales by turning a dial, not by a rewrite.\n\nObservability goes in on day one — logs, traces and a couple of dashboards — so the first sign of strain is a graph, not an outage.\n\nWhen growth comes, and it does, the system bends instead of breaking."
+    }
   ]
 }

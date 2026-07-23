@@ -32,7 +32,10 @@ export function Navbar({
   // The section anchors only exist on the landing page. Everywhere else (the
   // legal pages) the same links have to navigate home first.
   const isHome = pathname === "/";
-  const hrefFor = (hash: string) => (isHome ? hash : `/${hash}`);
+  // Hash links point at landing-page sections (prefixed with the home path when
+  // we're elsewhere); route links (e.g. "/blog") are used as-is.
+  const hrefFor = (href: string) =>
+    href.startsWith("#") ? (isHome ? href : `/${href}`) : href;
 
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -49,13 +52,17 @@ export function Navbar({
     // Off the landing page the anchors don't exist, so there is nothing to spy on.
     if (!isHome) return;
 
-    const sections = NAV_LINKS.map((link) => ({
-      href: link.href,
-      element: document.querySelector(link.href),
-    })).filter(
-      (section): section is { href: (typeof NAV_LINKS)[number]["href"]; element: Element } =>
-        section.element !== null,
-    );
+    const sections = NAV_LINKS.filter((link) => link.href.startsWith("#"))
+      .map((link) => ({
+        href: link.href,
+        element: document.querySelector(link.href),
+      }))
+      .filter(
+        (section): section is {
+          href: (typeof NAV_LINKS)[number]["href"];
+          element: Element;
+        } => section.element !== null,
+      );
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -80,9 +87,14 @@ export function Navbar({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // `activeHref` is only ever written by the landing-page scroll spy, so ignore
-  // whatever it last held once we've navigated away.
-  const currentHref = isHome ? activeHref : "";
+  // On the landing page the scroll spy owns the active state; on any other
+  // route (e.g. /blog, /blog/x) the matching route link is active instead.
+  const activeRouteHref = NAV_LINKS.find(
+    (l) =>
+      !l.href.startsWith("#") &&
+      (pathname === l.href || pathname.startsWith(`${l.href}/`)),
+  )?.href;
+  const currentHref = isHome ? activeHref : (activeRouteHref ?? "");
   const indicatorHref = hoveredHref ?? currentHref;
 
   return (

@@ -471,6 +471,65 @@ export const SECTIONS: SectionDef[] = [
     },
     fields: LEGAL_CLAUSE_FIELDS,
   },
+  {
+    key: "blogs",
+    label: "Blog",
+    onPage: "/blog",
+    kind: "collection",
+    icon: "Newspaper",
+    singular: "Blog post",
+    titleField: "title",
+    subField: "category",
+    fields: [
+      {
+        name: "coverImage",
+        label: "Cover image",
+        type: "image",
+        aspect: 16 / 9,
+        outputWidth: 1600,
+        hint: "Shown on the blog card and first in the detail-page slider.",
+      },
+      { name: "title", label: "Title", type: "text" },
+      { name: "category", label: "Category", type: "text", placeholder: "Engineering" },
+      {
+        name: "excerpt",
+        label: "Excerpt / summary",
+        type: "textarea",
+        hint: "One or two lines shown on the blog card.",
+      },
+      { name: "author", label: "Author", type: "text", placeholder: "Tekoovi Team" },
+      { name: "date", label: "Date", type: "text", placeholder: "23 July 2026" },
+      { name: "readTime", label: "Read time", type: "text", placeholder: "5 min read" },
+      { name: "tags", label: "Tags (comma separated)", type: "tags" },
+      {
+        name: "content",
+        label: "Body — blank line = new paragraph",
+        type: "textarea",
+      },
+      {
+        name: "image1",
+        label: "Slider image 1",
+        type: "image",
+        aspect: 16 / 9,
+        outputWidth: 1600,
+        hint: "The cover + these appear in the detail-page image slider.",
+      },
+      {
+        name: "image2",
+        label: "Slider image 2",
+        type: "image",
+        aspect: 16 / 9,
+        outputWidth: 1600,
+      },
+      {
+        name: "image3",
+        label: "Slider image 3",
+        type: "image",
+        aspect: 16 / 9,
+        outputWidth: 1600,
+      },
+    ],
+  },
 ];
 
 /* ----------------------- derived helpers ---------------------- */
@@ -680,6 +739,27 @@ export interface SiteSettings {
   showThemeToggle: boolean;
 }
 
+/** A blog post — listed on /blog, opened at /blog/[slug]. */
+export interface Blog {
+  id: string;
+  title: string;
+  category: string;
+  author: string;
+  /** Display date, e.g. "23 July 2026". */
+  date: string;
+  /** e.g. "5 min read". */
+  readTime: string;
+  excerpt: string;
+  coverImage: string;
+  /** Extra images — cover + these feed the detail-page slider. */
+  image1?: string;
+  image2?: string;
+  image3?: string;
+  /** Body: blank-line-separated paragraphs. */
+  content: string;
+  tags: string[];
+}
+
 export interface ContentData {
   settings: SiteSettings;
   hero: Hero;
@@ -696,6 +776,7 @@ export interface ContentData {
   testimonials: Testimonial[];
   founder: Founder;
   faqs: Faq[];
+  blogs: Blog[];
   contact: Contact;
   socials: Social[];
   privacy: LegalMeta;
