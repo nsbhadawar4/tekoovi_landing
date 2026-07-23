@@ -28,11 +28,7 @@ export default async function Home() {
       <WhyTekoovi why={content.why} />
       <Process steps={content.process} />
       <TechStack techStack={content.techStack} />
-      <CaseStudy
-        caseStudy={content.caseStudy}
-        metrics={content.caseMetrics}
-        href="/case-study-detail"
-      />
+      <CaseStudy projects={content.projects} />
       <Testimonials testimonials={content.testimonials} />
       <Founder founder={content.founder} socials={content.socials} />
       <FAQ faqs={content.faqs} />
