@@ -57,7 +57,23 @@ export async function getMedia(
   await connectDB();
   const doc = await MediaModel.findById(id).lean();
   if (!doc?.data) return null;
-  // A Buffer schema field comes back from .lean() as a Node Buffer at runtime;
-  // the driver types it as Binary, hence the cast through unknown.
-  return { contentType: doc.contentType, data: doc.data as unknown as Buffer };
+  return { contentType: doc.contentType, data: toBuffer(doc.data) };
+}
+
+/**
+ * `.lean()` returns a binary field as a BSON `Binary` object, not a Node
+ * Buffer — feeding that straight to the Response produces garbage bytes (a
+ * broken image). Normalise every shape (Buffer, BSON Binary, ArrayBuffer) to a
+ * real Buffer here.
+ */
+function toBuffer(raw: unknown): Buffer {
+  if (Buffer.isBuffer(raw)) return raw;
+  const bin = raw as { buffer?: unknown; value?: (asRaw?: boolean) => unknown };
+  if (bin?.buffer && Buffer.isBuffer(bin.buffer)) return bin.buffer;
+  if (typeof bin?.value === "function") {
+    const v = bin.value(true);
+    if (Buffer.isBuffer(v)) return v;
+    if (typeof v === "string") return Buffer.from(v, "binary");
+  }
+  return Buffer.from(raw as ArrayBuffer);
 }

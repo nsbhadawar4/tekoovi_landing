@@ -1,13 +1,17 @@
-# Models (Phase C — MongoDB)
+# Models — Mongoose schemas
 
-Mongoose schemas will live here once MongoDB is connected, e.g.:
+MongoDB is connected. Two schemas live here:
 
-- `project.model.ts`
-- `service.model.ts`
-- `testimonial.model.ts`
-- `faq.model.ts`
+- `content.model.ts` — the single landing-content document
+  (`{ key: "landing", data: {...all sections...} }`, collection `content`).
+- `media.model.ts` — uploaded images as their own documents
+  (`{ contentType, data }`, collection `media`), served via `/api/media/<id>`.
 
-Until then, content is stored in `backend/data/content.json` via
-`backend/repository/content.repository.ts`. Only that repository file needs to
-change to switch the store to MongoDB — the controllers, API routes, admin panel
-and landing page stay the same.
+The store is chosen at runtime in `backend/repository/`: MongoDB when
+`MONGODB_URI` is set, otherwise the local `backend/data/content.json` file. Only
+the repository layer knows which — controllers, API routes, admin, and the
+landing page are unaware.
+
+There is intentionally **no** per-section model (`project.model.ts`, etc.). All
+sections are fields of the one content document; the whole page is read in a
+single round trip. See the root `README.md` (Content & data model) for why.
