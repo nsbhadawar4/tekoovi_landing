@@ -1,11 +1,8 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { isAuthed } from "@/backend/lib/auth";
 import { saveMedia } from "@/backend/repository/media.repository";
 
-// Uploads are small binary writes — never cache, always run server-side.
-export const dynamic = "force-dynamic";
-
-// POST /api/media — store a cropped image (admin only), return its public URL.
 export async function POST(request: Request) {
   if (!(await isAuthed())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

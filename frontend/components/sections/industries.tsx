@@ -21,15 +21,28 @@ export function Industries({ industries }: { industries: Industry[] }) {
             const Icon = getIcon(industry.icon);
             return (
               <RevealItem key={industry.id}>
-                <div className="group card-hairline relative flex min-h-[156px] flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl px-3 py-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-white/15 sm:min-h-0 sm:px-6 sm:py-8">
+                <div className="group relative flex h-full min-h-[150px] flex-col justify-between gap-8 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0)_60%)] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-brand-2/40 sm:min-h-[172px] sm:p-6">
+                  {/* oversized ghost watermark of the icon */}
+                  <Icon
+                    aria-hidden
+                    className="pointer-events-none absolute -bottom-5 -right-4 h-28 w-28 text-white/[0.04] transition-all duration-500 ease-out group-hover:-rotate-6 group-hover:scale-110 group-hover:text-brand-3/15"
+                  />
+                  {/* brand wash rising from the corner on hover */}
                   <div
                     aria-hidden
-                    className="absolute inset-x-0 -bottom-10 h-24 bg-brand/20 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(150px_circle_at_15%_115%,rgba(138,92,255,0.2),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   />
-                  <div className="relative grid h-12 w-12 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-brand-3 transition-colors duration-300 group-hover:text-brand-2">
+                  {/* top sheen */}
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent"
+                  />
+
+                  <div className="relative grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-brand-3 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-brand-2/40 group-hover:text-brand-2">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <span className="relative text-sm font-medium text-ink">
+
+                  <span className="relative text-[15px] font-semibold text-ink">
                     {industry.name}
                   </span>
                 </div>

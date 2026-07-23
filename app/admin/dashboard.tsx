@@ -81,10 +81,6 @@ const SIDEBAR_ICONS: Record<string, LucideIcon> = {
   Gavel,
 };
 
-/* The active section is kept in the URL hash (e.g. /admin#projects) so a
-   refresh or shared link lands back on the same section instead of the default.
-   Read reactively via useSyncExternalStore — no setState-in-effect, no
-   hydration mismatch (server always renders the first section). */
 function subscribeHash(onChange: () => void): () => void {
   window.addEventListener("hashchange", onChange);
   return () => window.removeEventListener("hashchange", onChange);
@@ -156,8 +152,6 @@ function ImageField({
     closeCropper();
     setUploading(true);
     try {
-      // Upload to the media store and keep only the small URL in the content —
-      // never the multi-MB base64, which would bloat every page that renders it.
       const res = await fetch("/api/media", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -170,8 +164,6 @@ function ImageField({
       if (!res.ok || !json.url) throw new Error(json.error || "Upload failed");
       onChange(json.url);
     } catch (e) {
-      // Don't lose the edit if the upload fails — fall back to the inline data
-      // URL so the image still saves (just less efficiently).
       setErr(e instanceof Error ? e.message : "Upload failed");
       onChange(dataUrl);
     } finally {
@@ -196,18 +188,14 @@ function ImageField({
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex gap-2">
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
             className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50"
           >
-            {uploading
-              ? "Uploading…"
-              : value
-                ? "Change image"
-                : "Upload image"}
+            {uploading ? "Uploading…" : value ? "Change image" : "Upload image"}
           </button>
           {value && (
             <button

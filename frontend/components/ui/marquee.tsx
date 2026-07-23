@@ -19,8 +19,13 @@ export function Marquee({
       : "animate-marquee";
 
   return (
-    <div className={cn("mask-fade-x flex w-full overflow-hidden", className)}>
-      <div className={cn("flex shrink-0 items-center", speed)}>
+    <div className={cn("mask-fade-x group flex w-full overflow-hidden", className)}>
+      <div
+        className={cn(
+          "flex shrink-0 items-center group-hover:[animation-play-state:paused]",
+          speed,
+        )}
+      >
         <div className="flex shrink-0 items-center gap-4 pr-4">{children}</div>
         <div
           aria-hidden
