@@ -10,6 +10,7 @@ import { TechStack } from "@/components/sections/tech-stack";
 import { CaseStudy } from "@/components/sections/case-study";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Founder } from "@/components/sections/founder";
+import { BlogSection } from "@/components/sections/blog-section";
 import { FAQ } from "@/components/sections/faq";
 
 // Read fresh content on every request so admin edits show up immediately.
@@ -31,6 +32,7 @@ export default async function Home() {
       <CaseStudy projects={content.projects} />
       <Testimonials testimonials={content.testimonials} />
       <Founder founder={content.founder} socials={content.socials} />
+      <BlogSection blogs={content.blogs ?? []} />
       <FAQ faqs={content.faqs} />
     </>
   );

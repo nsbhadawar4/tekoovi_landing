@@ -12,7 +12,6 @@ export const NAV_LINKS = [
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
   { label: "Studio", href: "#studio" },
+  { label: "Blog", href: "#blog" },
   { label: "FAQ", href: "#faq" },
-  // Route link (not a section anchor) — opens the blog page.
-  { label: "Blog", href: "/blog" },
 ] as const;

@@ -31,8 +31,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function BlogDetailPage({ params }: Params) {
   const { slug } = await params;
-  const { blogs } = await getContent();
-  const list = blogs ?? [];
+  const content = await getContent();
+  const list = content.blogs ?? [];
 
   const index = list.findIndex(
     (b) => blogSlug(b) === slug || b.id === slug,
@@ -44,6 +44,7 @@ export default async function BlogDetailPage({ params }: Params) {
       blog={list[index]}
       prev={index > 0 ? list[index - 1] : undefined}
       next={index < list.length - 1 ? list[index + 1] : undefined}
+      contact={content.contact}
     />
   );
 }
