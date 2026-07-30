@@ -33,10 +33,18 @@ export function Footer({
   const showServices = isBlockVisible(pageSections, "services");
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-bg-2 pt-14 sm:pt-16 md:pt-20">
+    <footer className="relative overflow-hidden border-t border-line bg-bg-2 pt-16 md:pt-20">
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[60%] -translate-x-1/2 rounded-full bg-brand/10 blur-[130px]"
+      />
+      <div
+        aria-hidden
+        className="dot-grid mask-radial-fade pointer-events-none absolute inset-0 opacity-50"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-24 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent"
       />
       <Container className="relative">
         <div className="grid gap-10 pb-12 sm:gap-12 sm:pb-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
@@ -55,7 +63,7 @@ export function Footer({
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium text-ink-2 transition-colors hover:border-white/20 hover:text-ink"
+                    className="rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium text-ink-2 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-2/40 hover:bg-brand/10 hover:text-ink"
                   >
                     {s.label}
                   </a>

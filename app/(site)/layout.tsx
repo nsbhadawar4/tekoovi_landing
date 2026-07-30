@@ -7,6 +7,9 @@ import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import { Preloader } from "@/components/ui/preloader";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { BackToTop } from "@/components/ui/back-to-top";
+import { CtaBand } from "@/components/ui/cta-band";
+import { StickyCta } from "@/components/ui/sticky-cta";
 
 // Footer content is admin-editable, so render on every request.
 export const dynamic = "force-dynamic";
@@ -80,6 +83,12 @@ export default async function SiteLayout({
         links={visibleNavLinks(content.pageSections)}
       />
       <main>{children}</main>
+      {/* Closing conversion panel — shows on every page that has somewhere to
+          send people; both halves come from the admin Contact section. */}
+      <CtaBand
+        calendly={content.contact.calendly}
+        email={content.contact.email}
+      />
       <Footer
         contact={content.contact}
         socials={content.socials}
@@ -87,6 +96,8 @@ export default async function SiteLayout({
         logoImage={content.settings?.logoImage}
         pageSections={content.pageSections}
       />
+      <StickyCta calendly={content.contact.calendly} />
+      <BackToTop />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}

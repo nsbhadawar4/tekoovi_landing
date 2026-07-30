@@ -11,10 +11,14 @@ export function TechStack({ techStack }: { techStack: Tech[] }) {
 
   return (
     <Section id="stack" className="relative overflow-hidden bg-bg-2">
-      {/* ambient brand glow behind the conveyor */}
+      {/* ambient glow behind the conveyor */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-1/2 mx-auto h-64 w-3/4 max-w-4xl -translate-y-1/4 rounded-full bg-brand/8 blur-[120px]"
+        className="pointer-events-none absolute inset-x-0 top-1/2 mx-auto h-72 w-3/4 max-w-4xl -translate-y-1/4 rounded-full bg-brand/10 blur-[130px]"
+      />
+      <div
+        aria-hidden
+        className="dot-grid mask-radial-fade pointer-events-none absolute inset-0 opacity-50"
       />
 
       <Container className="relative">
@@ -25,7 +29,7 @@ export function TechStack({ techStack }: { techStack: Tech[] }) {
         />
       </Container>
 
-      <div className="relative mt-10 flex flex-col gap-4 sm:mt-14 sm:gap-5 md:mt-16">
+      <div className="relative mt-14 flex flex-col gap-4 sm:gap-5">
         <Marquee>
           {firstRow.map((tech) => (
             <TechChip key={tech.id} name={tech.name} />
@@ -43,11 +47,15 @@ export function TechStack({ techStack }: { techStack: Tech[] }) {
 
 function TechChip({ name }: { name: string }) {
   return (
-    <div className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3.5 backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-2/40 hover:bg-white/[0.05]">
-      <span className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 bg-white/[0.04] font-display text-sm font-bold text-brand-3 transition-all duration-300 group-hover:border-transparent group-hover:bg-brand group-hover:text-white group-hover:shadow-[0_6px_16px_-6px_rgba(108,59,255,0.75)]">
+    <div className="group card-lux relative flex items-center gap-3.5 overflow-hidden rounded-2xl px-5 py-3.5 transition-all duration-500 ease-out-expo hover:-translate-y-1.5 hover:border-brand-2/40">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120px_circle_at_20%_120%,rgba(138,92,255,0.22),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+      />
+      <span className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.04] font-display text-sm font-bold text-brand-3 transition-all duration-500 group-hover:border-transparent group-hover:bg-brand group-hover:text-white group-hover:shadow-[var(--shadow-brand)]">
         {name.charAt(0)}
       </span>
-      <span className="whitespace-nowrap font-display text-base font-semibold text-ink">
+      <span className="relative whitespace-nowrap font-display text-base font-semibold text-ink">
         {name}
       </span>
     </div>

@@ -1,14 +1,25 @@
 import { createElement } from "react";
+import { ArrowUpRight } from "lucide-react";
 import type { Service } from "@/backend/types";
 import { getIcon } from "@/lib/icons";
 import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
 import { cn } from "@/lib/utils";
 
+/**
+ * Bento grid: the highlighted service takes a double-width tile, the rest fill
+ * in around it. Every tile carries the same anatomy — icon, index, title, copy,
+ * hover reveal — so the layout can vary without the design feeling loose.
+ */
 export function Services({ services }: { services: Service[] }) {
   return (
-    <Section id="services" className="bg-bg-2">
-      <Container>
+    <Section id="services" className="relative overflow-hidden bg-bg-2">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -left-40 top-24 h-[460px] w-[460px] rounded-full bg-brand/10 blur-[140px]"
+      />
+
+      <Container className="relative">
         <SectionHeading
           eyebrow="What we do"
           title={<>Everything a product needs, under one roof</>}
@@ -16,11 +27,14 @@ export function Services({ services }: { services: Service[] }) {
         />
 
         <RevealGroup
-          className="mt-10 grid gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5 lg:mt-16 lg:grid-cols-3"
+          className="mt-14 grid auto-rows-[minmax(0,1fr)] gap-4 sm:grid-cols-2 sm:gap-5 lg:mt-16 lg:grid-cols-3"
           stagger={0.06}
         >
           {services.map((service, i) => (
-            <RevealItem key={service.id} className="h-full">
+            <RevealItem
+              key={service.id}
+              className={cn("h-full", service.featured && "sm:col-span-2")}
+            >
               <ServiceCard service={service} index={i} />
             </RevealItem>
           ))}
@@ -34,90 +48,77 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
   const Icon = getIcon(service.icon);
 
   return (
-    <div className="group h-full min-h-[15.5rem] perspective-[1800px]">
-      <div className="relative h-full min-h-[15.5rem] transform-3d transition-transform duration-700 ease-out-expo will-change-transform group-hover:rotate-y-180">
-        {/* ---------------- FRONT ---------------- */}
+    <article
+      className={cn(
+        "group card-lux border-glow lift sheen relative flex h-full min-h-[15.5rem] flex-col gap-6 overflow-hidden rounded-[24px] p-6 sm:p-8",
+        service.featured && "sm:flex-row sm:items-center sm:gap-10",
+      )}
+    >
+      {/* wash that fades up on hover */}
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100",
+          "bg-[radial-gradient(420px_circle_at_15%_110%,rgba(138,92,255,0.16),transparent_70%)]",
+        )}
+      />
+      {service.featured && (
         <div
-          className={cn(
-            "card-hairline absolute inset-0 flex flex-col gap-5 overflow-hidden rounded-2xl p-6 backface-hidden sm:p-7",
-            service.featured && "ring-1 ring-brand/30",
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(150deg,rgba(138,92,255,0.14),transparent_58%)]"
+        />
+      )}
+
+      <div className="relative flex items-start justify-between gap-4 sm:flex-col sm:items-start">
+        {service.icon && (
+          <span
+            className={cn(
+              "grid h-14 w-14 shrink-0 place-items-center rounded-2xl border transition-all duration-500 group-hover:-translate-y-1",
+              service.featured
+                ? "btn-brand border-transparent text-white"
+                : "border-white/10 bg-white/[0.03] text-brand-3 group-hover:border-transparent group-hover:bg-brand group-hover:text-white group-hover:shadow-[var(--shadow-brand)]",
+            )}
+          >
+            {createElement(Icon, { className: "h-6 w-6" })}
+          </span>
+        )}
+        <span className="ml-auto font-mono text-xs tabular-nums text-ink-3/50 sm:ml-0 sm:hidden">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      </div>
+
+      <div className="relative flex flex-1 flex-col">
+        <div className="flex items-baseline gap-3">
+          {service.title && (
+            <h3 className="font-display text-xl font-semibold text-ink transition-colors duration-300 group-hover:text-brand-3">
+              {service.title}
+            </h3>
           )}
-        >
-          {service.featured && (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[linear-gradient(160deg,rgba(138,92,255,0.12),transparent_55%)]"
-            />
-          )}
+          <span className="ml-auto hidden font-mono text-xs tabular-nums text-ink-3/50 sm:block">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+        </div>
 
-          <div className="relative flex items-start justify-between">
-            {service.icon && (
-              <div
-                className={cn(
-                  "grid h-12 w-12 place-items-center rounded-2xl border",
-                  service.featured
-                    ? "btn-brand border-transparent text-white"
-                    : "border-white/10 bg-white/[0.03] text-brand-3",
-                )}
-              >
-                {createElement(Icon, { className: "h-5 w-5" })}
-              </div>
+        {service.description && (
+          <p
+            className={cn(
+              "mt-3 text-sm leading-relaxed text-ink-2",
+              service.featured && "max-w-xl text-[15px]",
             )}
-            <span className="ml-auto font-mono text-xs tabular-nums text-ink-3/50">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-          </div>
+          >
+            {service.description}
+          </p>
+        )}
 
-          <div className="relative flex-1">
-            {service.title && (
-              <h3 className="font-display text-lg font-semibold text-ink">
-                {service.title}
-              </h3>
-            )}
-            {service.description && (
-              <p className="mt-2 text-sm leading-relaxed text-ink-2">
-                {service.description}
-              </p>
-            )}
-          </div>
-
+        <span className="mt-auto flex items-center gap-2 pt-6 text-xs font-semibold uppercase tracking-[0.14em] text-ink-3 transition-colors duration-300 group-hover:text-brand-3">
           <span
             aria-hidden
-            className="relative h-px w-8 rounded-full bg-linear-to-r from-brand-2/70 to-transparent"
+            className="h-px w-8 bg-linear-to-r from-brand-2/70 to-transparent transition-all duration-500 group-hover:w-14"
           />
-        </div>
-
-        {/* ---------------- BACK ---------------- */}
-        <div className="absolute inset-0 flex flex-col justify-between overflow-hidden rounded-2xl border border-brand-2/30 bg-[linear-gradient(150deg,rgba(138,92,255,0.28),rgba(20,21,31,0.94))] p-6 backface-hidden rotate-y-180 sm:p-7">
-          <div
-            aria-hidden
-            className="grid-lines pointer-events-none absolute inset-0 opacity-30"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand/30 blur-3xl"
-          />
-
-          <div className="relative">
-            {service.icon && (
-              <div className="grid h-12 w-12 place-items-center rounded-2xl btn-brand text-white shadow-[0_8px_24px_-8px_rgba(108,59,255,0.7)]">
-                {createElement(Icon, { className: "h-5 w-5" })}
-              </div>
-            )}
-            {service.title && (
-              <h3 className="mt-5 font-display text-xl font-semibold text-ink">
-                {service.title}
-              </h3>
-            )}
-          </div>
-
-          {service.description && (
-            <p className="relative text-sm leading-relaxed text-ink-2">
-              {service.description}
-            </p>
-          )}
-        </div>
+          Learn more
+          <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </span>
       </div>
-    </div>
+    </article>
   );
 }

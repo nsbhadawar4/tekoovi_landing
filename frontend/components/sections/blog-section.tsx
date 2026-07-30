@@ -1,6 +1,6 @@
 import type { Blog } from "@/backend/types";
 import { Button } from "@/components/ui/button";
-import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
+import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
 import { BlogCard } from "@/components/sections/blog";
 
@@ -10,16 +10,27 @@ export function BlogSection({ blogs }: { blogs: Blog[] }) {
   if (latest.length === 0) return null;
 
   return (
-    <Section id="blog" className="bg-bg-2">
-      <Container>
+    <Section id="blog" className="relative overflow-hidden bg-bg-2">
+      <div
+        aria-hidden
+        className="dot-grid mask-radial-fade pointer-events-none absolute inset-0 opacity-60"
+      />
+
+      <Container className="relative">
         <SectionHeading
+          align="left"
           eyebrow="Blog"
           title={<>Insights from the studio</>}
           description="Field notes on design, engineering and shipping AI products — written by the people who build them."
+          action={
+            <Button href="/blog" variant="secondary" withArrow>
+              Read the blog
+            </Button>
+          }
         />
 
         <RevealGroup
-          className="mt-10 grid gap-6 sm:mt-14 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3"
+          className="mt-12 grid gap-5 sm:mt-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6"
           stagger={0.07}
         >
           {latest.map((blog) => (
@@ -28,14 +39,6 @@ export function BlogSection({ blogs }: { blogs: Blog[] }) {
             </RevealItem>
           ))}
         </RevealGroup>
-
-        <Reveal>
-          <div className="mt-12 flex justify-center">
-            <Button href="/blog" variant="secondary" withArrow>
-              Read the blog
-            </Button>
-          </div>
-        </Reveal>
       </Container>
     </Section>
   );

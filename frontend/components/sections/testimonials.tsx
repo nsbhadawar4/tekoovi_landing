@@ -1,109 +1,112 @@
-import { Play, Quote } from "lucide-react";
+import { Quote } from "lucide-react";
 import type { Testimonial } from "@/backend/types";
-import { GlowCard } from "@/components/ui/glow-card";
-import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
+import { Carousel } from "@/components/ui/carousel";
+import { Reveal } from "@/components/ui/reveal";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
+import { Stars } from "@/components/ui/stars";
 
+/**
+ * Testimonials as an auto-advancing rail.
+ *
+ * Every quote gets the same generous card instead of one hero quote and a row
+ * of small ones — it reads as a body of proof, and nothing is buried.
+ */
 export function Testimonials({
   testimonials,
 }: {
   testimonials: Testimonial[];
 }) {
-  const [featured, ...rest] = testimonials;
-
-  if (!featured) return null;
+  const quotes = testimonials.filter(
+    (t) => t.quote || t.name || t.role || t.initials,
+  );
+  if (quotes.length === 0) return null;
 
   return (
-    <Section id="testimonials" className="bg-bg-2">
-      <Container>
+    <Section id="testimonials" className="relative overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 mx-auto h-72 w-2/3 max-w-3xl rounded-full bg-brand/10 blur-[130px]"
+      />
+
+      <Container className="relative">
         <SectionHeading
+          align="left"
           eyebrow="Testimonials"
           title={<>Founders don&apos;t hold back about us</>}
           description="The partnerships we're proudest of — in the words of the people who lived them."
+          action={
+            <span className="hidden items-center gap-3 rounded-2xl border border-line bg-white/[0.02] px-4 py-3 md:inline-flex">
+              <Stars />
+              <span className="text-sm text-ink-2">
+                <span className="font-semibold text-ink">5.0</span> average from{" "}
+                {quotes.length} client{quotes.length === 1 ? "" : "s"}
+              </span>
+            </span>
+          }
         />
 
-        {/* featured / video */}
-        <Reveal className="mt-10 sm:mt-14 md:mt-16">
-          <GlowCard className="grid gap-6 p-4 sm:gap-8 sm:p-6 md:grid-cols-[0.9fr_1.1fr] md:p-8" radius={520}>
-            <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-brand/30 to-[#1b1226]">
-              <div className="grid-lines absolute inset-0 opacity-40" />
-              <button
-                type="button"
-                aria-label="Play video testimonial"
-                className="group/play absolute inset-0 grid place-items-center"
-              >
-                <span className="grid h-16 w-16 place-items-center rounded-full glass transition-transform duration-300 group-hover/play:scale-110">
-                  <Play className="h-6 w-6 translate-x-0.5 fill-white text-white" />
-                </span>
-              </button>
-              <span className="absolute bottom-4 left-4 rounded-full bg-black/40 px-3 py-1 text-[11px] font-medium text-ink backdrop-blur">
-                2:14 · Client story
-              </span>
-            </div>
-
-            <div className="flex flex-col justify-center">
-              <Quote className="h-8 w-8 text-brand-3/60" />
-              {featured.quote && (
-                <p className="mt-4 text-balance font-display text-lg font-medium leading-relaxed text-ink sm:text-xl md:text-2xl">
-                  “{featured.quote}”
-                </p>
-              )}
-              {(featured.initials || featured.name || featured.role) && (
-                <div className="mt-6 flex items-center gap-3">
-                  {featured.initials && <Avatar initials={featured.initials} />}
-                  <div>
-                    {featured.name && (
-                      <p className="text-sm font-semibold text-ink">
-                        {featured.name}
-                      </p>
-                    )}
-                    {featured.role && (
-                      <p className="text-xs text-ink-3">{featured.role}</p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </GlowCard>
+        <Reveal className="mt-12 sm:mt-14">
+          <Carousel
+            label="Client testimonials"
+            slideClass="basis-full sm:basis-[62%] lg:basis-[42%]"
+            autoPlay
+            intervalMs={6500}
+            showProgress
+            slides={quotes.map((t) => (
+              <QuoteCard key={t.id} testimonial={t} />
+            ))}
+          />
         </Reveal>
-
-        {/* grid */}
-        <RevealGroup className="mt-4 grid gap-4 sm:mt-6 sm:gap-6 md:grid-cols-3" stagger={0.08}>
-          {rest.map((t) => (
-            <RevealItem key={t.id} className="h-full">
-              <div className="card-hairline flex h-full flex-col rounded-2xl p-5 sm:p-6">
-                <Quote className="h-6 w-6 text-brand-3/50" />
-                {t.quote && (
-                  <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-2">
-                    “{t.quote}”
-                  </p>
-                )}
-                {(t.initials || t.name || t.role) && (
-                  <div className="mt-6 flex items-center gap-3">
-                    {t.initials && <Avatar initials={t.initials} />}
-                    <div>
-                      {t.name && (
-                        <p className="text-sm font-semibold text-ink">
-                          {t.name}
-                        </p>
-                      )}
-                      {t.role && <p className="text-xs text-ink-3">{t.role}</p>}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </RevealItem>
-          ))}
-        </RevealGroup>
       </Container>
     </Section>
   );
 }
 
-function Avatar({ initials }: { initials: string }) {
+function QuoteCard({ testimonial: t }: { testimonial: Testimonial }) {
   return (
-    <span className="grid h-10 w-10 place-items-center rounded-full btn-brand text-xs font-bold text-white">
-      {initials}
-    </span>
+    <figure className="card-lux border-glow group relative flex h-full flex-col gap-6 overflow-hidden rounded-[26px] p-7 sm:p-9">
+      {/* watermark quote */}
+      <Quote
+        aria-hidden
+        className="pointer-events-none absolute -right-4 -top-3 h-28 w-28 text-white/[0.04] transition-colors duration-500 group-hover:text-brand-3/15"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(360px_circle_at_20%_0%,rgba(138,92,255,0.14),transparent_65%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+      />
+
+      <div className="relative flex items-center gap-3">
+        <Stars />
+        <span className="text-xs font-medium uppercase tracking-[0.14em] text-ink-3">
+          Verified client
+        </span>
+      </div>
+
+      {t.quote && (
+        <blockquote className="relative flex-1 text-pretty font-display text-lg font-medium leading-relaxed text-ink sm:text-xl">
+          &ldquo;{t.quote}&rdquo;
+        </blockquote>
+      )}
+
+      {(t.initials || t.name || t.role) && (
+        <figcaption className="relative flex items-center gap-3.5 border-t border-line pt-6">
+          {t.initials && (
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full btn-brand text-sm font-bold text-white">
+              {t.initials}
+            </span>
+          )}
+          <span className="min-w-0">
+            {t.name && (
+              <span className="block truncate text-sm font-semibold text-ink">
+                {t.name}
+              </span>
+            )}
+            {t.role && (
+              <span className="block truncate text-xs text-ink-3">{t.role}</span>
+            )}
+          </span>
+        </figcaption>
+      )}
+    </figure>
   );
 }

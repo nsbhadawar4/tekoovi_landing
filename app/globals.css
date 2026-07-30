@@ -40,9 +40,21 @@
   --animate-shimmer: shimmer 3s linear infinite;
   --animate-spin-slow: spin 26s linear infinite;
   --animate-pulse-glow: pulse-glow 5s ease-in-out infinite;
+  --animate-border-spin: border-spin 6s linear infinite;
+  --animate-scroll-cue: scroll-cue 2.2s ease-in-out infinite;
+  --animate-rise: rise 0.9s var(--ease-out-expo) both;
 
   /* Easing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Elevation — layered, tinted shadows. Flat drop shadows read cheap; each
+     level pairs a tight contact shadow with a wide ambient one. */
+  --shadow-e1: 0 1px 2px -1px rgba(4, 5, 12, 0.6), 0 8px 24px -12px rgba(4, 5, 12, 0.7);
+  --shadow-e2: 0 2px 4px -2px rgba(4, 5, 12, 0.7), 0 18px 44px -20px rgba(4, 5, 12, 0.85);
+  --shadow-e3: 0 4px 8px -4px rgba(4, 5, 12, 0.75), 0 34px 80px -34px rgba(4, 5, 12, 0.95);
+  --shadow-brand: 0 18px 50px -24px rgba(108, 59, 255, 0.75);
+  --shadow-brand-lg: 0 30px 90px -36px rgba(108, 59, 255, 0.85);
 }
 
 @keyframes marquee {
@@ -69,6 +81,25 @@
 @keyframes pulse-glow {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
+}
+@keyframes border-spin {
+  to { --angle: 360deg; }
+}
+@keyframes scroll-cue {
+  0% { transform: translateY(0); opacity: 0; }
+  35% { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Registered so the conic gradient angle can actually animate. */
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
 }
 
 /* ----------------------------------------------------------------
@@ -223,6 +254,147 @@
     0 2px 8px -2px rgba(108, 59, 255, 0.4);
 }
 
+/* Dotted grid — softer than the ruled grid, used behind feature blocks */
+@utility dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Fade top and bottom edges (scrolling rails, sticky columns) */
+@utility mask-fade-y {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 88%, transparent);
+}
+
+/* Fade the right edge only (horizontal rails that run off-canvas) */
+@utility mask-fade-r {
+  -webkit-mask-image: linear-gradient(to right, #000 82%, transparent);
+  mask-image: linear-gradient(to right, #000 82%, transparent);
+}
+
+/* ----------------------------------------------------------------
+   PREMIUM SURFACES
+   Compound classes (not @utility) so they can react to `.group:hover`
+   and carry pseudo-elements. Every one has a light-theme counterpart
+   further down.
+   ---------------------------------------------------------------- */
+
+/* The house card: tinted glass over the card token, layered elevation. */
+.card-lux {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012) 45%)
+      padding-box,
+    var(--color-card);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-e1), 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
+  transition:
+    transform 0.55s var(--ease-out-expo),
+    box-shadow 0.55s var(--ease-out-expo),
+    border-color 0.4s ease;
+}
+.card-lux:hover,
+.group:hover > .card-lux {
+  border-color: rgba(255, 255, 255, 0.17);
+  box-shadow: var(--shadow-e3), 0 1px 0 0 rgba(255, 255, 255, 0.07) inset;
+}
+
+/* Pair with .card-lux to raise the card under the pointer. */
+.lift {
+  transition: transform 0.55s var(--ease-out-expo);
+}
+.lift:hover,
+.group:hover .lift {
+  transform: translateY(-6px);
+}
+
+/* 1px gradient frame — wrap content in a child with its own radius. */
+.frame-gradient {
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.04) 42%,
+    rgba(138, 92, 255, 0.38)
+  );
+  padding: 1px;
+  box-shadow: var(--shadow-e2);
+}
+
+/* Conic border that lights up and rotates while the group is hovered. */
+.border-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 0deg,
+    var(--color-brand-2) 80deg,
+    var(--color-brand-3) 150deg,
+    transparent 250deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+  animation: var(--animate-border-spin);
+}
+.border-glow:hover::before,
+.group:hover .border-glow::before {
+  opacity: 0.95;
+}
+
+/* Diagonal light sweep — the detail that reads as "expensive". */
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.13) 48%,
+    transparent 64%
+  );
+  transform: translateX(-130%);
+  transition: transform 1.15s var(--ease-out-expo);
+}
+.sheen:hover::after,
+.group:hover .sheen::after {
+  transform: translateX(130%);
+}
+
+/* Sliders stay swipeable without a visible scrollbar. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Underline that draws itself in on hover. */
+.link-underline {
+  background-image: linear-gradient(90deg, var(--color-brand-2), var(--color-brand-3));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.45s var(--ease-out-expo);
+}
+.link-underline:hover,
+.group:hover .link-underline {
+  background-size: 100% 1.5px;
+}
+
 /* Lenis smooth scroll */
 html.lenis,
 html.lenis body {
@@ -302,6 +474,42 @@ html.lenis body {
     0 26px 60px -38px rgba(16, 17, 26, 0.32);
 }
 
+:root[data-theme="light"] .card-lux {
+  background:
+    linear-gradient(180deg, rgba(16, 17, 26, 0.022), rgba(16, 17, 26, 0)) padding-box,
+    #ffffff;
+  border: 1px solid rgba(16, 17, 26, 0.08);
+  box-shadow: 0 1px 2px -1px rgba(16, 17, 26, 0.08), 0 14px 34px -22px rgba(16, 17, 26, 0.26);
+}
+:root[data-theme="light"] .card-lux:hover,
+:root[data-theme="light"] .group:hover > .card-lux {
+  border-color: rgba(16, 17, 26, 0.16);
+  box-shadow: 0 2px 6px -2px rgba(16, 17, 26, 0.1), 0 30px 64px -30px rgba(16, 17, 26, 0.3);
+}
+
+:root[data-theme="light"] .frame-gradient {
+  background: linear-gradient(
+    140deg,
+    rgba(16, 17, 26, 0.14),
+    rgba(16, 17, 26, 0.05) 42%,
+    rgba(108, 59, 255, 0.4)
+  );
+  box-shadow: 0 20px 46px -30px rgba(16, 17, 26, 0.32);
+}
+
+:root[data-theme="light"] .sheen::after {
+  background: linear-gradient(
+    110deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.55) 48%,
+    transparent 64%
+  );
+}
+
+:root[data-theme="light"] .dot-grid {
+  background-image: radial-gradient(rgba(16, 17, 26, 0.09) 1px, transparent 1px);
+}
+
 :root[data-theme="light"] .text-ink-gradient {
   background: linear-gradient(180deg, #0f1117 0%, #0f1117 45%, #494f63 100%);
   -webkit-background-clip: text;
@@ -362,9 +570,17 @@ html.lenis body {
 /* rings */
 :root[data-theme="light"] .ring-white\/10 { --tw-ring-color: rgba(16, 17, 26, 0.12); }
 
+/* group-hover variants used by the redesigned cards */
+:root[data-theme="light"] .group:hover .group-hover\:bg-white\/10 { background-color: rgba(16, 17, 26, 0.08); }
+:root[data-theme="light"] .group:hover .group-hover\:border-white\/20 { border-color: rgba(16, 17, 26, 0.22); }
+
 /* faded fallback initial + gradient hairlines */
+:root[data-theme="light"] .text-white\/\[0\.04\] { color: rgba(16, 17, 26, 0.06); }
 :root[data-theme="light"] .text-white\/\[0\.06\] { color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .text-white\/\[0\.08\] { color: rgba(16, 17, 26, 0.09); }
 :root[data-theme="light"] .from-white\/15 { --tw-gradient-from: rgba(16, 17, 26, 0.16); }
 :root[data-theme="light"] .via-white\/10 { --tw-gradient-via: rgba(16, 17, 26, 0.12); }
+:root[data-theme="light"] .via-white\/12 { --tw-gradient-via: rgba(16, 17, 26, 0.14); }
+:root[data-theme="light"] .via-white\/20 { --tw-gradient-via: rgba(16, 17, 26, 0.18); }
 :root[data-theme="light"] .via-white\/25 { --tw-gradient-via: rgba(16, 17, 26, 0.22); }
 :root[data-theme="light"] .via-white\/30 { --tw-gradient-via: rgba(16, 17, 26, 0.24); }

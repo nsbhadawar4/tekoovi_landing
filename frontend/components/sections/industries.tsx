@@ -5,8 +5,13 @@ import { Section, Container, SectionHeading } from "@/components/ui/section";
 
 export function Industries({ industries }: { industries: Industry[] }) {
   return (
-    <Section id="industries">
-      <Container>
+    <Section id="industries" className="relative overflow-hidden">
+      <div
+        aria-hidden
+        className="dot-grid mask-radial-fade pointer-events-none absolute inset-0 opacity-70"
+      />
+
+      <Container className="relative">
         <SectionHeading
           eyebrow="Industries"
           title={<>We speak your industry&apos;s language</>}
@@ -14,40 +19,40 @@ export function Industries({ industries }: { industries: Industry[] }) {
         />
 
         <RevealGroup
-          className="mt-10 grid grid-cols-2 gap-3 sm:mt-14 sm:grid-cols-3 sm:gap-4 lg:mt-16 lg:grid-cols-4"
+          className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:mt-16 lg:grid-cols-4"
           stagger={0.05}
         >
-          {industries.map((industry) => {
+          {industries.map((industry, i) => {
             const Icon = getIcon(industry.icon);
             return (
-              <RevealItem key={industry.id}>
-                <div className="group relative flex h-full min-h-[150px] flex-col justify-between gap-8 overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0)_60%)] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-brand-2/40 sm:min-h-[172px] sm:p-6">
+              <RevealItem key={industry.id} className="h-full">
+                <div className="group card-lux lift sheen relative flex h-full min-h-[168px] flex-col justify-between gap-8 overflow-hidden rounded-[22px] p-5 sm:min-h-[186px] sm:p-6">
                   {/* oversized ghost watermark of the icon */}
                   {industry.icon && (
                     <Icon
                       aria-hidden
-                      className="pointer-events-none absolute -bottom-5 -right-4 h-28 w-28 text-white/[0.04] transition-all duration-500 ease-out group-hover:-rotate-6 group-hover:scale-110 group-hover:text-brand-3/15"
+                      className="pointer-events-none absolute -bottom-6 -right-5 h-32 w-32 text-white/[0.04] transition-all duration-700 ease-out-expo group-hover:-rotate-6 group-hover:scale-110 group-hover:text-brand-3/20"
                     />
                   )}
-                  {/* brand wash rising from the corner on hover */}
+                  {/* brand wash rising from the corner */}
                   <div
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(150px_circle_at_15%_115%,rgba(138,92,255,0.2),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  />
-                  {/* top sheen */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent"
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(180px_circle_at_12%_118%,rgba(138,92,255,0.24),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   />
 
-                  {industry.icon && (
-                    <div className="relative grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-brand-3 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-brand-2/40 group-hover:text-brand-2">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                  )}
+                  <div className="relative flex items-start justify-between">
+                    {industry.icon && (
+                      <span className="grid h-12 w-12 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-brand-3 transition-all duration-500 group-hover:-translate-y-1 group-hover:border-transparent group-hover:bg-brand group-hover:text-white group-hover:shadow-[var(--shadow-brand)]">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                    )}
+                    <span className="ml-auto font-mono text-[11px] tabular-nums text-ink-3/40">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
 
                   {industry.name && (
-                    <span className="relative mt-auto text-[15px] font-semibold text-ink">
+                    <span className="relative mt-auto text-[15px] font-semibold leading-snug text-ink">
                       {industry.name}
                     </span>
                   )}

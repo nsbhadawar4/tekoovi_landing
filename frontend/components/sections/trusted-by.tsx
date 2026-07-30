@@ -1,7 +1,7 @@
 import { isHidden, type Logo, type Stat } from "@/backend/types";
 import { Counter } from "@/components/ui/counter";
 import { Marquee } from "@/components/ui/marquee";
-import { Reveal } from "@/components/ui/reveal";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Container } from "@/components/ui/section";
 
 export function TrustedBy({
@@ -11,72 +11,96 @@ export function TrustedBy({
   stats: Stat[];
   logos: Logo[];
 }) {
+  const named = logos.filter((logo) => logo.name);
+
   return (
-    <section className="relative overflow-hidden border-y border-white/10 bg-bg-2 py-16 sm:py-18 md:py-24">
-      {/* ambient brand glow */}
+    <section className="relative overflow-hidden border-y border-line bg-bg-2 py-20 md:py-28">
+      {/* ambient depth */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0">
-        <div className="mx-auto h-44 w-3/4 max-w-4xl rounded-full bg-brand/10 blur-[110px]" />
+        <div className="mx-auto h-56 w-3/4 max-w-4xl rounded-full bg-brand/12 blur-[120px]" />
       </div>
+      <div
+        aria-hidden
+        className="dot-grid mask-radial-fade pointer-events-none absolute inset-0 opacity-60"
+      />
 
       <Container className="relative">
-        <Reveal className="mb-10 text-center sm:mb-12">
+        <Reveal className="mb-12 text-center">
           <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-3 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-brand-2 shadow-[0_0_10px_2px_rgba(138,92,255,0.7)]" />
             Trusted by teams building at the edge
           </span>
         </Reveal>
 
-        {/* stat panel */}
-        <Reveal delay={0.05}>
-          <dl className="glass grid grid-cols-2 divide-x divide-y divide-white/[0.08] overflow-hidden rounded-[24px] md:grid-cols-4 md:divide-y-0">
+        {/* ---------------- stat cards ---------------- */}
+        {stats.length > 0 && (
+          <RevealGroup
+            className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
+            stagger={0.07}
+          >
             {stats.map((stat, i) => (
-              <div
-                key={stat.id}
-                className="group relative flex flex-col items-center gap-2.5 p-6 text-center transition-colors duration-300 hover:bg-white/[0.02] sm:p-8"
-                style={{ transitionDelay: `${i * 60}ms` }}
-              >
-                {/* accent glow on hover */}
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -top-px left-1/2 h-px w-16 -translate-x-1/2 bg-linear-to-r from-transparent via-brand-2/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                />
-                {/* The number is a real 0 sometimes, so an empty value can't
-                    stand in for "hidden" here — ask the record directly. */}
-                {!isHidden(stat, "value") && (
-                  <dt className="text-ink-gradient font-display text-4xl font-bold leading-none tracking-tight sm:text-5xl md:text-[3.25rem]">
-                    <Counter to={stat.value} suffix={stat.suffix} />
-                  </dt>
-                )}
-                {stat.label && (
-                  <dd className="text-sm text-ink-2">{stat.label}</dd>
-                )}
-              </div>
+              <RevealItem key={stat.id} className="h-full">
+                <div className="group relative h-full">
+                  <div className="card-lux border-glow lift relative h-full overflow-hidden rounded-[22px] p-6 text-center sm:p-8">
+                    {/* corner bloom */}
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute -right-10 -top-12 h-28 w-28 rounded-full bg-brand/20 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+                    />
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-x-8 top-0 h-px bg-linear-to-r from-transparent via-brand-2/60 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    />
+
+                    <p className="relative font-mono text-[11px] tabular-nums text-brand-3/60">
+                      {String(i + 1).padStart(2, "0")}
+                    </p>
+
+                    {/* The number is a real 0 sometimes, so an empty value can't
+                        stand in for "hidden" — ask the record directly. */}
+                    {!isHidden(stat, "value") && (
+                      <p className="text-ink-gradient relative mt-3 font-display text-[2.75rem] font-bold leading-none tracking-tight sm:text-5xl">
+                        <Counter to={stat.value} suffix={stat.suffix} />
+                      </p>
+                    )}
+                    {stat.label && (
+                      <p className="relative mt-3 text-sm leading-snug text-ink-2">
+                        {stat.label}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </RevealItem>
             ))}
-          </dl>
-        </Reveal>
+          </RevealGroup>
+        )}
       </Container>
 
-      {/* client logos */}
-      <div className="relative mt-14 sm:mt-16">
-        <Reveal className="mb-7 text-center">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-ink-3/70">
-            Powering ambitious teams worldwide
-          </p>
-        </Reveal>
-        <Marquee slow>
-          {logos
-            .filter((logo) => logo.name)
-            .map((logo) => (
+      {/* ---------------- client logos ---------------- */}
+      {named.length > 0 && (
+        <div className="relative mt-16">
+          <Reveal className="mb-8 text-center">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-ink-3/70">
+              Powering ambitious teams worldwide
+            </p>
+          </Reveal>
+          <Marquee slow>
+            {named.map((logo) => (
               <div
                 key={logo.id}
-                className="mx-2 flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.02] px-5 py-2 text-base font-semibold tracking-tight text-ink-3 transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:text-ink-2"
+                className="group mx-2 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-3.5 backdrop-blur transition-all duration-500 hover:-translate-y-1 hover:border-brand-2/40 hover:bg-white/[0.04] hover:shadow-[var(--shadow-brand)]"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-brand-3/70" />
-                {logo.name}
+                <span className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 bg-white/[0.03] font-display text-xs font-bold text-brand-3 transition-colors duration-500 group-hover:border-transparent group-hover:bg-brand group-hover:text-white">
+                  {logo.name.charAt(0)}
+                </span>
+                <span className="whitespace-nowrap text-base font-semibold tracking-tight text-ink-3 transition-colors duration-500 group-hover:text-ink">
+                  {logo.name}
+                </span>
               </div>
             ))}
-        </Marquee>
-      </div>
+          </Marquee>
+        </div>
+      )}
     </section>
   );
 }

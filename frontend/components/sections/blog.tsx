@@ -192,7 +192,7 @@ export function BlogCard({ blog }: { blog: Blog }) {
   return (
     <Link
       href={blogHref(blog)}
-      className="group relative flex h-full flex-col overflow-hidden rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0)_40%)] transition-[transform,border-color,box-shadow] duration-500 ease-out will-change-transform hover:-translate-y-1.5 hover:border-brand-2/40 hover:shadow-[0_34px_80px_-44px_rgba(108,59,255,0.6)]"
+      className="group card-lux lift sheen relative flex h-full flex-col overflow-hidden rounded-[24px]"
     >
       {/* cover */}
       <div className="relative aspect-[16/10] overflow-hidden">
@@ -209,11 +209,6 @@ export function BlogCard({ blog }: { blog: Blog }) {
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/65 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90"
-        />
-        {/* shine sweep */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(110deg,transparent_30%,rgba(255,255,255,0.16)_50%,transparent_70%)] transition-transform duration-[1100ms] ease-out group-hover:translate-x-full"
         />
         {blog.category && (
           <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-brand-3 backdrop-blur">
@@ -237,9 +232,9 @@ export function BlogCard({ blog }: { blog: Blog }) {
           </span>
         )}
 
-        {/* title with an underline that grows on hover */}
+        {/* title with an underline that draws itself in on hover */}
         {blog.title && (
-          <h3 className="mt-3 self-start bg-[linear-gradient(90deg,var(--color-brand-2),var(--color-brand-3))] bg-[length:0%_2px] bg-[position:0_100%] bg-no-repeat pb-1 font-display text-xl font-semibold leading-snug text-ink transition-[background-size] duration-500 ease-out group-hover:bg-[length:100%_2px]">
+          <h3 className="link-underline mt-3 self-start pb-1 font-display text-xl font-semibold leading-snug text-ink">
             {blog.title}
           </h3>
         )}

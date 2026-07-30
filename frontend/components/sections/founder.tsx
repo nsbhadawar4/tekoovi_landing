@@ -1,3 +1,4 @@
+import { Compass, Target } from "lucide-react";
 import type { Founder as FounderContent, Social } from "@/backend/types";
 import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/ui/reveal";
@@ -48,109 +49,115 @@ export function Founder({
   founder: FounderContent;
   socials: Social[];
 }) {
+  const links = socials.filter((s) => s.label && s.href).slice(0, 4);
+
   return (
-    <Section id="studio">
-      <Container>
-        <div className="grid items-center gap-10 sm:gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-          {/* portrait card */}
+    <Section id="studio" className="relative overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -left-24 top-1/3 h-[420px] w-[420px] rounded-full bg-brand/12 blur-[140px]"
+      />
+
+      <Container className="relative">
+        <div className="grid items-center gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
+          {/* ---------- portrait card ---------- */}
           <Reveal>
             <div className="group relative mx-auto w-full max-w-sm">
-              {/* ambient glow */}
               <div
                 aria-hidden
-                className="absolute -inset-6 rounded-[2.5rem] bg-brand/20 opacity-70 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+                className="absolute -inset-6 rounded-[2.75rem] bg-brand/22 opacity-70 blur-3xl transition-opacity duration-700 group-hover:opacity-100"
               />
 
-              <div className="card-hairline glass relative overflow-hidden rounded-[1.75rem] p-5 min-[390px]:p-6 sm:p-8">
-                <div
-                  aria-hidden
-                  className="grid-lines pointer-events-none absolute inset-0 opacity-30"
-                />
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-brand/25 blur-[70px]"
-                />
+              <div className="frame-gradient relative rounded-[2rem]">
+                <div className="glass relative overflow-hidden rounded-[calc(2rem-1px)] p-6 sm:p-8">
+                  <div
+                    aria-hidden
+                    className="grid-lines pointer-events-none absolute inset-0 opacity-30"
+                  />
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-brand/25 blur-[70px]"
+                  />
 
-                {/* status pill */}
-                <div className="relative flex justify-end">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium tracking-wide text-ink-2">
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    </span>
-                    Available for projects
-                  </span>
-                </div>
-
-                <div className="relative mt-4 flex flex-col items-center text-center">
-                  {/* avatar with rotating gradient ring */}
-                  <div className="relative h-28 w-28">
-                    <div
-                      aria-hidden
-                      className="absolute inset-0 animate-spin-slow rounded-full [background:conic-gradient(from_0deg,transparent_0deg,var(--color-brand-2)_90deg,var(--color-brand-3)_170deg,transparent_300deg)]"
-                    />
-                    <span className="absolute inset-[4px] grid place-items-center rounded-full btn-brand font-display text-3xl font-bold text-white">
-                      {founder.initials}
-                    </span>
-                    {/* online dot */}
-                    <span
-                      aria-hidden
-                      className="absolute bottom-1.5 right-1.5 grid h-6 w-6 place-items-center rounded-full bg-card ring-1 ring-white/10"
-                    >
-                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  {/* status pill */}
+                  <div className="relative flex justify-end">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium tracking-wide text-ink-2">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      </span>
+                      Available for projects
                     </span>
                   </div>
 
-                  {founder.name && (
-                    <h3 className="mt-5 font-display text-xl font-semibold text-ink">
-                      {founder.name}
-                    </h3>
-                  )}
-                  {founder.role && (
-                    <p className="mt-1 text-sm text-brand-3">{founder.role}</p>
-                  )}
+                  <div className="relative mt-4 flex flex-col items-center text-center">
+                    {/* monogram inside a rotating gradient ring */}
+                    <div className="relative h-32 w-32">
+                      <div
+                        aria-hidden
+                        className="absolute inset-0 animate-spin-slow rounded-full [background:conic-gradient(from_0deg,transparent_0deg,var(--color-brand-2)_90deg,var(--color-brand-3)_170deg,transparent_300deg)]"
+                      />
+                      <span className="absolute inset-[5px] grid place-items-center rounded-full btn-brand font-display text-4xl font-bold text-white shadow-[var(--shadow-brand)]">
+                        {founder.initials}
+                      </span>
+                      <span
+                        aria-hidden
+                        className="absolute bottom-2 right-2 grid h-7 w-7 place-items-center rounded-full bg-card ring-1 ring-white/10"
+                      >
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.6)]" />
+                      </span>
+                    </div>
 
-                  <div className="my-6 h-px w-16 bg-line" />
+                    {founder.name && (
+                      <h3 className="mt-6 font-display text-xl font-semibold text-ink">
+                        {founder.name}
+                      </h3>
+                    )}
+                    {founder.role && (
+                      <p className="mt-1 text-sm text-brand-3">{founder.role}</p>
+                    )}
 
-                  {/* social icons */}
-                  <div className="flex items-center gap-2.5">
-                    {socials
-                      .filter((s) => s.label && s.href)
-                      .slice(0, 4)
-                      .map((s) => (
-                        <a
-                          key={s.id}
-                          href={s.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={s.label}
-                          title={s.label}
-                          className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-ink-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brand/10 hover:text-ink"
-                        >
-                          <SocialGlyph label={s.label} />
-                        </a>
-                      ))}
+                    <div className="my-6 h-px w-16 bg-linear-to-r from-transparent via-white/25 to-transparent" />
+
+                    {links.length > 0 && (
+                      <div className="flex items-center gap-2.5">
+                        {links.map((s) => (
+                          <a
+                            key={s.id}
+                            href={s.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={s.label}
+                            title={s.label}
+                            className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-ink-2 transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:bg-brand/10 hover:text-ink hover:shadow-[var(--shadow-brand)]"
+                          >
+                            <SocialGlyph label={s.label} />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </Reveal>
 
-          {/* story */}
+          {/* ---------- story ---------- */}
           <div>
             <Reveal>
               <Badge>The Studio</Badge>
             </Reveal>
+
             {founder.story && (
               <Reveal delay={0.06}>
-                <blockquote className="relative mt-6">
+                <blockquote className="relative mt-7">
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute -left-2 -top-8 font-display text-7xl leading-none text-brand/20 select-none"
+                    className="pointer-events-none absolute -left-3 -top-10 select-none font-display text-8xl leading-none text-brand/20"
                   >
                     &ldquo;
                   </span>
-                  <p className="relative text-balance font-display text-xl font-medium leading-snug text-ink sm:text-2xl md:text-[28px]">
+                  <p className="text-ink-gradient relative text-balance font-display text-2xl font-medium leading-snug sm:text-[28px] md:text-[32px]">
                     {founder.story}
                   </p>
                 </blockquote>
@@ -158,12 +165,14 @@ export function Founder({
             )}
 
             {(founder.mission || founder.vision) && (
-              <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4">
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 {founder.mission && (
                   <Reveal delay={0.1}>
-                    <div className="card-hairline h-full rounded-2xl p-5">
-                      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-3">
-                        <span className="h-1.5 w-1.5 rounded-full bg-brand-3" />
+                    <div className="group card-lux lift sheen relative h-full overflow-hidden rounded-[22px] p-6">
+                      <span className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-brand-3 transition-all duration-500 group-hover:border-transparent group-hover:bg-brand group-hover:text-white">
+                        <Target className="h-5 w-5" />
+                      </span>
+                      <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-brand-3">
                         Mission
                       </p>
                       <p className="mt-2.5 text-sm leading-relaxed text-ink-2">
@@ -174,9 +183,11 @@ export function Founder({
                 )}
                 {founder.vision && (
                   <Reveal delay={0.16}>
-                    <div className="card-hairline h-full rounded-2xl p-5">
-                      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-3">
-                        <span className="h-1.5 w-1.5 rounded-full bg-brand-3" />
+                    <div className="group card-lux lift sheen relative h-full overflow-hidden rounded-[22px] p-6">
+                      <span className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-brand-3 transition-all duration-500 group-hover:border-transparent group-hover:bg-brand group-hover:text-white">
+                        <Compass className="h-5 w-5" />
+                      </span>
+                      <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-brand-3">
                         Vision
                       </p>
                       <p className="mt-2.5 text-sm leading-relaxed text-ink-2">
@@ -190,8 +201,12 @@ export function Founder({
 
             {founder.name && (
               <Reveal delay={0.2}>
-                <p className="mt-8 font-display text-lg text-ink-3">
-                  — {founder.name.split(" ")[0]}, on why Tekoovi exists
+                <p className="mt-9 flex items-center gap-3 font-display text-lg text-ink-3">
+                  <span
+                    aria-hidden
+                    className="h-px w-10 bg-linear-to-r from-brand-2 to-transparent"
+                  />
+                  {founder.name.split(" ")[0]}, on why Tekoovi exists
                 </p>
               </Reveal>
             )}

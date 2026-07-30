@@ -26,7 +26,13 @@ export default async function Home() {
 
   return (
     <>
-      {shows("hero") && <Hero hero={content.hero} />}
+      {shows("hero") && (
+        <Hero
+          hero={content.hero}
+          stats={content.stats}
+          testimonials={content.testimonials}
+        />
+      )}
       {shows("trustedBy") && (
         <TrustedBy stats={content.stats} logos={content.logos} />
       )}
@@ -44,7 +50,9 @@ export default async function Home() {
         <Founder founder={content.founder} socials={content.socials} />
       )}
       {shows("blog") && <BlogSection blogs={content.blogs ?? []} />}
-      {shows("faq") && <FAQ faqs={content.faqs} />}
+      {shows("faq") && (
+        <FAQ faqs={content.faqs} calendly={content.contact.calendly} />
+      )}
     </>
   );
 }
