@@ -1,3 +1,5 @@
+import { isBlockVisible } from "@/backend/types";
+
 /* -------------------------------------------------------------- */
 /*  Static navigation.                                             */
 /*                                                                 */
@@ -6,12 +8,32 @@
 /*  (each points at a section anchor id) so they stay in code.      */
 /* -------------------------------------------------------------- */
 
-export const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "Work", href: "#work" },
-  { label: "Services", href: "#services" },
-  { label: "Process", href: "#process" },
-  { label: "Studio", href: "#studio" },
-  { label: "Blog", href: "#blog" },
-  { label: "FAQ", href: "#faq" },
-] as const;
+export type NavLink = {
+  label: string;
+  href: string;
+  /**
+   * Landing-page block this link scrolls to (a key from PAGE_BLOCKS). When the
+   * block is switched off in the admin its anchor no longer exists, so the link
+   * goes with it. Links without a block are always shown.
+   */
+  block?: string;
+};
+
+export const NAV_LINKS: NavLink[] = [
+  { label: "Home", href: "#home", block: "hero" },
+  { label: "Work", href: "#work", block: "work" },
+  { label: "Services", href: "#services", block: "services" },
+  { label: "Process", href: "#process", block: "process" },
+  { label: "Studio", href: "#studio", block: "founder" },
+  { label: "Blog", href: "#blog", block: "blog" },
+  { label: "FAQ", href: "#faq", block: "faq" },
+];
+
+/** The nav links whose landing-page section is switched on. */
+export function visibleNavLinks(
+  pageSections?: Record<string, boolean>,
+): NavLink[] {
+  return NAV_LINKS.filter(
+    (link) => !link.block || isBlockVisible(pageSections, link.block),
+  );
+}

@@ -114,36 +114,56 @@ export function Hero({ hero }: { hero: HeroContent }) {
           animate="show"
           className="mx-auto flex max-w-4xl flex-col items-center text-center"
         >
-          <motion.div variants={item}>
-            <Badge>{hero.badge}</Badge>
-          </motion.div>
+          {/* Each block below is skipped when its field is empty or switched
+              off in the admin, so the hero closes up around what's left. */}
+          {hero.badge && (
+            <motion.div variants={item}>
+              <Badge>{hero.badge}</Badge>
+            </motion.div>
+          )}
 
-          <motion.h1
-            variants={item}
-            className="mt-7 text-balance text-4xl font-semibold leading-[1.03] tracking-tight min-[390px]:text-5xl sm:text-6xl md:text-7xl"
-          >
-            <span className="text-ink-gradient">{hero.titleLead}</span>
-            <span className="text-brand-gradient">{hero.titleHighlight}</span>
-          </motion.h1>
+          {(hero.titleLead || hero.titleHighlight) && (
+            <motion.h1
+              variants={item}
+              className="mt-7 text-balance text-4xl font-semibold leading-[1.03] tracking-tight min-[390px]:text-5xl sm:text-6xl md:text-7xl"
+            >
+              {hero.titleLead && (
+                <span className="text-ink-gradient">{hero.titleLead}</span>
+              )}
+              {hero.titleHighlight && (
+                <span className="text-brand-gradient">
+                  {hero.titleHighlight}
+                </span>
+              )}
+            </motion.h1>
+          )}
 
-          <motion.p
-            variants={item}
-            className="mt-6 max-w-xl text-balance text-base leading-relaxed text-ink-2 sm:mt-7 sm:text-lg"
-          >
-            {hero.subtitle}
-          </motion.p>
+          {hero.subtitle && (
+            <motion.p
+              variants={item}
+              className="mt-6 max-w-xl text-balance text-base leading-relaxed text-ink-2 sm:mt-7 sm:text-lg"
+            >
+              {hero.subtitle}
+            </motion.p>
+          )}
 
-          <motion.div
-            variants={item}
-            className="mt-8 flex w-full flex-col items-stretch gap-3 min-[390px]:w-auto min-[390px]:items-center sm:mt-10 sm:flex-row"
-          >
-            <Button href={hero.primaryHref} size="lg" magnetic withArrow className="w-full sm:w-auto">
-              {hero.primaryLabel}
-            </Button>
-            <Button href={hero.secondaryHref} size="lg" variant="secondary" className="w-full sm:w-auto">
-              {hero.secondaryLabel}
-            </Button>
-          </motion.div>
+          {(hero.primaryLabel || hero.secondaryLabel) && (
+            <motion.div
+              variants={item}
+              className="mt-8 flex w-full flex-col items-stretch gap-3 min-[390px]:w-auto min-[390px]:items-center sm:mt-10 sm:flex-row"
+            >
+              {hero.primaryLabel && (
+                <Button href={hero.primaryHref} size="lg" magnetic withArrow className="w-full sm:w-auto">
+                  {hero.primaryLabel}
+                </Button>
+              )}
+              {hero.secondaryLabel && (
+                <Button href={hero.secondaryHref} size="lg" variant="secondary" className="w-full sm:w-auto">
+                  {hero.secondaryLabel}
+                </Button>
+              )}
+            </motion.div>
+          )}
         </motion.div>
       </Container>
     </section>

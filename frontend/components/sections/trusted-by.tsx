@@ -1,4 +1,4 @@
-import type { Logo, Stat } from "@/backend/types";
+import { isHidden, type Logo, type Stat } from "@/backend/types";
 import { Counter } from "@/components/ui/counter";
 import { Marquee } from "@/components/ui/marquee";
 import { Reveal } from "@/components/ui/reveal";
@@ -40,10 +40,16 @@ export function TrustedBy({
                   aria-hidden
                   className="pointer-events-none absolute -top-px left-1/2 h-px w-16 -translate-x-1/2 bg-linear-to-r from-transparent via-brand-2/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                 />
-                <dt className="text-ink-gradient font-display text-4xl font-bold leading-none tracking-tight sm:text-5xl md:text-[3.25rem]">
-                  <Counter to={stat.value} suffix={stat.suffix} />
-                </dt>
-                <dd className="text-sm text-ink-2">{stat.label}</dd>
+                {/* The number is a real 0 sometimes, so an empty value can't
+                    stand in for "hidden" here — ask the record directly. */}
+                {!isHidden(stat, "value") && (
+                  <dt className="text-ink-gradient font-display text-4xl font-bold leading-none tracking-tight sm:text-5xl md:text-[3.25rem]">
+                    <Counter to={stat.value} suffix={stat.suffix} />
+                  </dt>
+                )}
+                {stat.label && (
+                  <dd className="text-sm text-ink-2">{stat.label}</dd>
+                )}
               </div>
             ))}
           </dl>
@@ -58,15 +64,17 @@ export function TrustedBy({
           </p>
         </Reveal>
         <Marquee slow>
-          {logos.map((logo) => (
-            <div
-              key={logo.id}
-              className="mx-2 flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.02] px-5 py-2 text-base font-semibold tracking-tight text-ink-3 transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:text-ink-2"
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-3/70" />
-              {logo.name}
-            </div>
-          ))}
+          {logos
+            .filter((logo) => logo.name)
+            .map((logo) => (
+              <div
+                key={logo.id}
+                className="mx-2 flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.02] px-5 py-2 text-base font-semibold tracking-tight text-ink-3 transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:text-ink-2"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-brand-3/70" />
+                {logo.name}
+              </div>
+            ))}
         </Marquee>
       </div>
     </section>

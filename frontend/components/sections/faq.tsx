@@ -9,6 +9,8 @@ import { Section, Container, SectionHeading } from "@/components/ui/section";
 
 export function FAQ({ faqs }: { faqs: Faq[] }) {
   const [open, setOpen] = useState<number | null>(0);
+  // A question switched off in the admin leaves nothing to open.
+  const items = faqs.filter((faq) => faq.q);
 
   return (
     <Section id="faq">
@@ -25,7 +27,7 @@ export function FAQ({ faqs }: { faqs: Faq[] }) {
         />
 
         <div className="mx-auto mt-10 max-w-3xl sm:mt-14">
-          {faqs.map((faq, i) => {
+          {items.map((faq, i) => {
             const isOpen = open === i;
             return (
               <Reveal key={faq.id} delay={i * 0.04}>
@@ -48,7 +50,7 @@ export function FAQ({ faqs }: { faqs: Faq[] }) {
                     </span>
                   </button>
                   <AnimatePresence initial={false}>
-                    {isOpen && (
+                    {isOpen && faq.a && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}

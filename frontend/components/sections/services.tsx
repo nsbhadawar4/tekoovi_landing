@@ -51,28 +51,34 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
           )}
 
           <div className="relative flex items-start justify-between">
-            <div
-              className={cn(
-                "grid h-12 w-12 place-items-center rounded-2xl border",
-                service.featured
-                  ? "btn-brand border-transparent text-white"
-                  : "border-white/10 bg-white/[0.03] text-brand-3",
-              )}
-            >
-              {createElement(Icon, { className: "h-5 w-5" })}
-            </div>
-            <span className="font-mono text-xs tabular-nums text-ink-3/50">
+            {service.icon && (
+              <div
+                className={cn(
+                  "grid h-12 w-12 place-items-center rounded-2xl border",
+                  service.featured
+                    ? "btn-brand border-transparent text-white"
+                    : "border-white/10 bg-white/[0.03] text-brand-3",
+                )}
+              >
+                {createElement(Icon, { className: "h-5 w-5" })}
+              </div>
+            )}
+            <span className="ml-auto font-mono text-xs tabular-nums text-ink-3/50">
               {String(index + 1).padStart(2, "0")}
             </span>
           </div>
 
           <div className="relative flex-1">
-            <h3 className="font-display text-lg font-semibold text-ink">
-              {service.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-ink-2">
-              {service.description}
-            </p>
+            {service.title && (
+              <h3 className="font-display text-lg font-semibold text-ink">
+                {service.title}
+              </h3>
+            )}
+            {service.description && (
+              <p className="mt-2 text-sm leading-relaxed text-ink-2">
+                {service.description}
+              </p>
+            )}
           </div>
 
           <span
@@ -93,17 +99,23 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
           />
 
           <div className="relative">
-            <div className="grid h-12 w-12 place-items-center rounded-2xl btn-brand text-white shadow-[0_8px_24px_-8px_rgba(108,59,255,0.7)]">
-              {createElement(Icon, { className: "h-5 w-5" })}
-            </div>
-            <h3 className="mt-5 font-display text-xl font-semibold text-ink">
-              {service.title}
-            </h3>
+            {service.icon && (
+              <div className="grid h-12 w-12 place-items-center rounded-2xl btn-brand text-white shadow-[0_8px_24px_-8px_rgba(108,59,255,0.7)]">
+                {createElement(Icon, { className: "h-5 w-5" })}
+              </div>
+            )}
+            {service.title && (
+              <h3 className="mt-5 font-display text-xl font-semibold text-ink">
+                {service.title}
+              </h3>
+            )}
           </div>
 
-          <p className="relative text-sm leading-relaxed text-ink-2">
-            {service.description}
-          </p>
+          {service.description && (
+            <p className="relative text-sm leading-relaxed text-ink-2">
+              {service.description}
+            </p>
+          )}
         </div>
       </div>
     </div>

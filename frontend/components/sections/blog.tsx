@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, CalendarDays, Clock } from "lucide-react";
-import type { Blog } from "@/backend/types";
+import { isHidden, type Blog } from "@/backend/types";
 import { AuroraBlobs, GridBackdrop } from "@/components/ui/backgrounds";
 import { Badge } from "@/components/ui/badge";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
@@ -155,9 +155,11 @@ function FeaturedCard({ blog }: { blog: Blog }) {
           )}
         </div>
 
-        <h2 className="text-ink-gradient text-balance font-display text-2xl font-semibold leading-[1.12] sm:text-3xl md:text-4xl">
-          {blog.title}
-        </h2>
+        {blog.title && (
+          <h2 className="text-ink-gradient text-balance font-display text-2xl font-semibold leading-[1.12] sm:text-3xl md:text-4xl">
+            {blog.title}
+          </h2>
+        )}
         {blog.excerpt && (
           <p className="line-clamp-3 text-[15px] leading-relaxed text-ink-2 md:text-base">
             {blog.excerpt}
@@ -165,12 +167,16 @@ function FeaturedCard({ blog }: { blog: Blog }) {
         )}
 
         <div className="mt-2 flex items-center justify-between">
-          <span className="inline-flex items-center gap-2.5">
-            <Avatar name={blog.author} className="h-9 w-9 text-sm" />
-            <span className="text-sm font-medium text-ink-2">
-              {blog.author || "Tekoovi"}
+          {/* "Tekoovi" stands in for a blank author, so an author switched off
+              in the admin has to be checked on the record itself. */}
+          {!isHidden(blog, "author") && (
+            <span className="inline-flex items-center gap-2.5">
+              <Avatar name={blog.author} className="h-9 w-9 text-sm" />
+              <span className="text-sm font-medium text-ink-2">
+                {blog.author || "Tekoovi"}
+              </span>
             </span>
-          </span>
+          )}
           <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors group-hover:text-brand-3">
             Read article
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -232,9 +238,11 @@ export function BlogCard({ blog }: { blog: Blog }) {
         )}
 
         {/* title with an underline that grows on hover */}
-        <h3 className="mt-3 self-start bg-[linear-gradient(90deg,var(--color-brand-2),var(--color-brand-3))] bg-[length:0%_2px] bg-[position:0_100%] bg-no-repeat pb-1 font-display text-xl font-semibold leading-snug text-ink transition-[background-size] duration-500 ease-out group-hover:bg-[length:100%_2px]">
-          {blog.title}
-        </h3>
+        {blog.title && (
+          <h3 className="mt-3 self-start bg-[linear-gradient(90deg,var(--color-brand-2),var(--color-brand-3))] bg-[length:0%_2px] bg-[position:0_100%] bg-no-repeat pb-1 font-display text-xl font-semibold leading-snug text-ink transition-[background-size] duration-500 ease-out group-hover:bg-[length:100%_2px]">
+            {blog.title}
+          </h3>
+        )}
 
         {blog.excerpt && (
           <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-2">
@@ -243,12 +251,14 @@ export function BlogCard({ blog }: { blog: Blog }) {
         )}
 
         <div className="mt-auto flex items-center justify-between pt-6">
-          <span className="inline-flex items-center gap-2">
-            <Avatar name={blog.author} className="h-7 w-7 text-[11px]" />
-            <span className="text-xs font-medium text-ink-3">
-              {blog.author || "Tekoovi"}
+          {!isHidden(blog, "author") && (
+            <span className="inline-flex items-center gap-2">
+              <Avatar name={blog.author} className="h-7 w-7 text-[11px]" />
+              <span className="text-xs font-medium text-ink-3">
+                {blog.author || "Tekoovi"}
+              </span>
             </span>
-          </span>
+          )}
           <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors group-hover:text-brand-3">
             Read
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

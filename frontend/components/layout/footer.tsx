@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { Mail, MessageCircle } from "lucide-react";
-import type { Contact, Service, Social } from "@/backend/types";
-import { NAV_LINKS } from "@/lib/data";
+import {
+  isBlockVisible,
+  type Contact,
+  type Service,
+  type Social,
+} from "@/backend/types";
+import { visibleNavLinks } from "@/lib/data";
 import { Logo } from "@/components/ui/logo";
 import { Container } from "@/components/ui/section";
 
@@ -10,13 +15,22 @@ export function Footer({
   socials,
   services,
   logoImage,
+  pageSections,
 }: {
   contact: Contact;
   socials: Social[];
   services: Service[];
   logoImage?: string;
+  /** Landing-page blocks switched on/off in the admin. */
+  pageSections?: Record<string, boolean>;
 }) {
   const year = new Date().getFullYear();
+
+  // Footer links point at landing-page anchors, so a section switched off in
+  // the admin takes its links with it rather than leaving a dead jump.
+  const navLinks = visibleNavLinks(pageSections);
+  const showWorkLink = isBlockVisible(pageSections, "work");
+  const showServices = isBlockVisible(pageSections, "services");
 
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-bg-2 pt-14 sm:pt-16 md:pt-20">
@@ -33,61 +47,78 @@ export function Footer({
               AI and mobile products for ambitious founders and teams.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {socials.map((s) => (
-                <a
-                  key={s.id}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium text-ink-2 transition-colors hover:border-white/20 hover:text-ink"
-                >
-                  {s.label}
-                </a>
-              ))}
+              {socials
+                .filter((s) => s.label)
+                .map((s) => (
+                  <a
+                    key={s.id}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium text-ink-2 transition-colors hover:border-white/20 hover:text-ink"
+                  >
+                    {s.label}
+                  </a>
+                ))}
             </div>
           </div>
 
           <FooterCol title="Navigate">
-            {NAV_LINKS.map((l) => (
+            {navLinks.map((l) => (
               <FooterLink key={l.href} href={`/${l.href}`}>
                 {l.label}
               </FooterLink>
             ))}
-            <FooterLink href="/#work">Case studies</FooterLink>
+            {showWorkLink && (
+              <FooterLink href="/#work">Case studies</FooterLink>
+            )}
           </FooterCol>
 
-          <FooterCol title="Services">
-            {services.slice(0, 6).map((s) => (
-              <FooterLink key={s.id} href="/#services">
-                {s.title}
-              </FooterLink>
-            ))}
-          </FooterCol>
+          {showServices && (
+            <FooterCol title="Services">
+              {services
+                .filter((s) => s.title)
+                .slice(0, 6)
+                .map((s) => (
+                  <FooterLink key={s.id} href="/#services">
+                    {s.title}
+                  </FooterLink>
+                ))}
+            </FooterCol>
+          )}
 
-          <FooterCol title="Get in touch">
-            <a
-              href={`mailto:${contact.email}`}
-              className="inline-flex items-center gap-2 text-sm text-ink-2 transition-colors hover:text-ink"
-            >
-              <Mail className="h-4 w-4" /> {contact.email}
-            </a>
-            <a
-              href={contact.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-ink-2 transition-colors hover:text-ink"
-            >
-              <MessageCircle className="h-4 w-4" /> WhatsApp
-            </a>
-            <a
-              href={contact.calendly}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-ink-2 transition-colors hover:text-ink"
-            >
-              Book on Calendly
-            </a>
-          </FooterCol>
+          {(contact.email || contact.whatsapp || contact.calendly) && (
+            <FooterCol title="Get in touch">
+              {contact.email && (
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="inline-flex items-center gap-2 text-sm text-ink-2 transition-colors hover:text-ink"
+                >
+                  <Mail className="h-4 w-4" /> {contact.email}
+                </a>
+              )}
+              {contact.whatsapp && (
+                <a
+                  href={contact.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-ink-2 transition-colors hover:text-ink"
+                >
+                  <MessageCircle className="h-4 w-4" /> WhatsApp
+                </a>
+              )}
+              {contact.calendly && (
+                <a
+                  href={contact.calendly}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-ink-2 transition-colors hover:text-ink"
+                >
+                  Book on Calendly
+                </a>
+              )}
+            </FooterCol>
+          )}
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-6 text-center text-xs text-ink-3 sm:py-8 md:flex-row md:text-left">

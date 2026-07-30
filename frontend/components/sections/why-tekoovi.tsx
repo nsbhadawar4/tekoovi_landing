@@ -70,20 +70,26 @@ export function WhyTekoovi({ why }: { why: WhyItem[] }) {
                     />
 
                     <div className="relative flex items-start justify-between">
-                      <div className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-brand-3 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-transparent group-hover:bg-brand group-hover:text-white group-hover:shadow-[0_8px_22px_-8px_rgba(108,59,255,0.75)]">
-                        <Icon className="h-[18px] w-[18px]" />
-                      </div>
-                      <span className="font-mono text-xs tabular-nums text-ink-3/40">
+                      {item.icon && (
+                        <div className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-brand-3 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-transparent group-hover:bg-brand group-hover:text-white group-hover:shadow-[0_8px_22px_-8px_rgba(108,59,255,0.75)]">
+                          <Icon className="h-[18px] w-[18px]" />
+                        </div>
+                      )}
+                      <span className="ml-auto font-mono text-xs tabular-nums text-ink-3/40">
                         {String(i + 1).padStart(2, "0")}
                       </span>
                     </div>
 
-                    <h3 className="relative font-display text-base font-semibold text-ink">
-                      {item.title}
-                    </h3>
-                    <p className="relative text-sm leading-relaxed text-ink-2">
-                      {item.description}
-                    </p>
+                    {item.title && (
+                      <h3 className="relative font-display text-base font-semibold text-ink">
+                        {item.title}
+                      </h3>
+                    )}
+                    {item.description && (
+                      <p className="relative text-sm leading-relaxed text-ink-2">
+                        {item.description}
+                      </p>
+                    )}
                   </div>
                 </RevealItem>
               );

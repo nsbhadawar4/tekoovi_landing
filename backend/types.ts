@@ -27,6 +27,18 @@ export interface FieldDef {
   hint?: string;
   /** Singleton editors: fields sharing a group id render inside one card. */
   group?: string;
+  /**
+   * Boolean fields: what an unset value means. A switch the admin has never
+   * touched shows (and saves) this, so "on unless turned off" reads correctly.
+   */
+  default?: boolean;
+  /**
+   * No show/hide switch for this field. Used for values that aren't content on
+   * the page — a link target, a style class — where hiding means nothing. The
+   * visible field they belong to (the button label, the card image) carries the
+   * switch instead.
+   */
+  noToggle?: boolean;
 }
 
 export type SectionKind = "collection" | "singleton";
@@ -53,8 +65,80 @@ export interface SectionDef {
   subField?: string;
   /** Collection only: a singleton record edited above the list. */
   header?: HeaderDef;
+  /** Site-wide controls rather than page content — no show/hide switches. */
+  noToggles?: boolean;
+  /**
+   * Landing-page blocks this section feeds (keys from PAGE_BLOCKS). The admin
+   * shows each one's show/hide switch right in this section's toolbar, so a
+   * whole block can be turned off from where its content is edited.
+   */
+  blocks?: string[];
   fields: FieldDef[];
 }
+
+/* --------------------- landing-page blocks -------------------- */
+
+/** One switchable block of the landing page. */
+export interface PageBlockDef {
+  key: string;
+  /** Name of the block as a visitor would recognise it. */
+  label: string;
+  /** What it covers, shown under the switch in the admin. */
+  hint: string;
+}
+
+/**
+ * The landing page, block by block, in render order — this list IS the set of
+ * switches in the admin's "Page Sections" panel, and app/(site)/page.tsx renders
+ * each block only when its switch is on. Add a block here and to that page
+ * together; a key with no stored value counts as shown.
+ */
+export const PAGE_BLOCKS: PageBlockDef[] = [
+  { key: "hero", label: "Hero", hint: "The opening banner, headline and buttons." },
+  {
+    key: "trustedBy",
+    label: "Trusted By",
+    hint: "The stats panel and the client logo marquee.",
+  },
+  {
+    key: "work",
+    label: "Selected Work",
+    hint: "The project card grid (“Products we're proud to have shipped”).",
+  },
+  { key: "services", label: "Services", hint: "The “What we do” cards." },
+  { key: "industries", label: "Industries", hint: "The industry tiles." },
+  { key: "why", label: "Why Tekoovi", hint: "The reasons-to-hire-us list." },
+  { key: "process", label: "Process", hint: "The “How we work” timeline." },
+  { key: "techStack", label: "Tech Stack", hint: "The technology marquee." },
+  {
+    key: "caseStudies",
+    label: "Case Studies",
+    hint: "The “Client success stories” cards.",
+  },
+  {
+    key: "testimonials",
+    label: "Testimonials",
+    hint: "The featured quote and the testimonial grid.",
+  },
+  {
+    key: "founder",
+    label: "The Studio",
+    hint: "The founder card, story, mission and vision.",
+  },
+  { key: "blog", label: "Blog", hint: "The latest-posts teaser. /blog stays live." },
+  { key: "faq", label: "FAQ", hint: "The question accordion." },
+];
+
+/** Switch fields for the Page Sections panel — one per block, on by default. */
+const PAGE_BLOCK_FIELDS: FieldDef[] = PAGE_BLOCKS.map((block) => ({
+  name: block.key,
+  label: block.label,
+  type: "boolean",
+  hint: block.hint,
+  default: true,
+  // One card for the whole list — it reads as a single control panel.
+  group: "pageBlocks",
+}));
 
 const LEGAL_HEADER_FIELDS: FieldDef[] = [
   { name: "title", label: "Page title", type: "text" },
@@ -85,6 +169,9 @@ export const SECTIONS: SectionDef[] = [
     kind: "singleton",
     icon: "SlidersHorizontal",
     singular: "Settings",
+    // Appearance controls for the whole site, not page content — nothing here
+    // gets a show/hide switch.
+    noToggles: true,
     fields: [
       {
         name: "logoImage",
@@ -123,12 +210,24 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
+    key: "pageSections",
+    label: "Page Sections",
+    onPage: "Whole landing page",
+    kind: "singleton",
+    icon: "LayoutList",
+    singular: "Page sections",
+    // These switches are the visibility controls themselves.
+    noToggles: true,
+    fields: PAGE_BLOCK_FIELDS,
+  },
+  {
     key: "hero",
     label: "Hero",
     onPage: "Top of page",
     kind: "singleton",
     icon: "Sparkles",
     singular: "Hero",
+    blocks: ["hero"],
     fields: [
       {
         name: "backgroundImage",
@@ -141,10 +240,30 @@ export const SECTIONS: SectionDef[] = [
       { name: "titleLead", label: "Headline — lead", type: "text" },
       { name: "titleHighlight", label: "Headline — highlight", type: "text" },
       { name: "subtitle", label: "Subtitle", type: "textarea" },
-      { name: "primaryLabel", label: "Primary button label", type: "text" },
-      { name: "primaryHref", label: "Primary button link", type: "text" },
-      { name: "secondaryLabel", label: "Secondary button label", type: "text" },
-      { name: "secondaryHref", label: "Secondary button link", type: "text" },
+      {
+        name: "primaryLabel",
+        label: "Primary button label",
+        type: "text",
+        hint: "Switch this off to remove the primary button from the hero.",
+      },
+      {
+        name: "primaryHref",
+        label: "Primary button link",
+        type: "text",
+        noToggle: true,
+      },
+      {
+        name: "secondaryLabel",
+        label: "Secondary button label",
+        type: "text",
+        hint: "Switch this off to remove the secondary button from the hero.",
+      },
+      {
+        name: "secondaryHref",
+        label: "Secondary button link",
+        type: "text",
+        noToggle: true,
+      },
     ],
   },
   {
@@ -154,6 +273,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "BarChart3",
     singular: "Stat",
+    blocks: ["trustedBy"],
     titleField: "label",
     subField: "value",
     fields: [
@@ -174,6 +294,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "Building2",
     singular: "Logo",
+    blocks: ["trustedBy"],
     titleField: "name",
     subField: "",
     fields: [{ name: "name", label: "Company name", type: "text" }],
@@ -185,6 +306,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "FolderKanban",
     singular: "Project",
+    blocks: ["work", "caseStudies"],
     titleField: "name",
     subField: "category",
     fields: [
@@ -200,6 +322,7 @@ export const SECTIONS: SectionDef[] = [
         label: "Accent (Tailwind gradient classes)",
         type: "text",
         placeholder: "from-[#6C3BFF]/40 to-[#3a1f8f]/10",
+        noToggle: true,
       },
 
       {
@@ -264,6 +387,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "Wrench",
     singular: "Service",
+    blocks: ["services"],
     titleField: "title",
     subField: "description",
     fields: [
@@ -280,6 +404,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "Factory",
     singular: "Industry",
+    blocks: ["industries"],
     titleField: "name",
     subField: "",
     fields: [
@@ -294,6 +419,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "BadgeCheck",
     singular: "Reason",
+    blocks: ["why"],
     titleField: "title",
     subField: "description",
     fields: [
@@ -309,6 +435,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "Workflow",
     singular: "Step",
+    blocks: ["process"],
     titleField: "title",
     subField: "description",
     fields: [
@@ -324,6 +451,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "Code2",
     singular: "Technology",
+    blocks: ["techStack"],
     titleField: "name",
     subField: "",
     fields: [{ name: "name", label: "Technology name", type: "text" }],
@@ -367,6 +495,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "MessageSquareQuote",
     singular: "Testimonial",
+    blocks: ["testimonials"],
     titleField: "name",
     subField: "role",
     fields: [
@@ -383,6 +512,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "singleton",
     icon: "UserRound",
     singular: "Founder",
+    blocks: ["founder"],
     fields: [
       { name: "name", label: "Name", type: "text" },
       { name: "role", label: "Role", type: "text" },
@@ -399,6 +529,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "HelpCircle",
     singular: "FAQ",
+    blocks: ["faq"],
     titleField: "q",
     subField: "a",
     fields: [
@@ -420,6 +551,7 @@ export const SECTIONS: SectionDef[] = [
         name: "calendly",
         label: "Calendly link — every “Book a call” button opens this",
         type: "text",
+        noToggle: true,
       },
     ],
   },
@@ -433,8 +565,14 @@ export const SECTIONS: SectionDef[] = [
     titleField: "label",
     subField: "href",
     fields: [
-      { name: "label", label: "Label", type: "text", placeholder: "LinkedIn" },
-      { name: "href", label: "URL", type: "text" },
+      {
+        name: "label",
+        label: "Label",
+        type: "text",
+        placeholder: "LinkedIn",
+        hint: "Switch this off to remove the link from the footer and founder card.",
+      },
+      { name: "href", label: "URL", type: "text", noToggle: true },
     ],
   },
   {
@@ -478,6 +616,7 @@ export const SECTIONS: SectionDef[] = [
     kind: "collection",
     icon: "Newspaper",
     singular: "Blog post",
+    blocks: ["blog"],
     titleField: "title",
     subField: "category",
     fields: [
@@ -572,9 +711,61 @@ export function isSingleton(key: string): boolean {
   return SECTION_MAP[key]?.kind === "singleton";
 }
 
+/* ---------------------- field visibility ---------------------- */
+
+/**
+ * Reserved record key listing the fields switched off in the admin.
+ *
+ * Every content record may carry it. The public read path (getContent) blanks
+ * out those fields, so hidden content is never rendered — and never even
+ * reaches the browser. The admin API returns records untouched, so switching a
+ * field back on restores the value the admin typed.
+ */
+export const HIDDEN_FIELDS = "hiddenFields";
+
+/**
+ * Is this landing-page block switched on?
+ *
+ * A key with no stored value counts as shown, so a block added to PAGE_BLOCKS
+ * later appears on the page until someone deliberately turns it off.
+ */
+export function isBlockVisible(
+  pageSections: Record<string, boolean> | undefined,
+  key: string,
+): boolean {
+  return pageSections?.[key] !== false;
+}
+
+/** A content record that can have some of its fields hidden from the site. */
+export interface Hideable {
+  /** Field names switched off in the admin. */
+  hiddenFields?: string[];
+}
+
+/** Does this field get a show/hide switch in the admin? */
+export function isToggleable(
+  def: { noToggles?: boolean },
+  field: FieldDef,
+): boolean {
+  // A boolean field is already a switch of its own — hiding it would only
+  // duplicate what turning it off does.
+  return !def.noToggles && !field.noToggle && field.type !== "boolean";
+}
+
+/**
+ * Is this record's field switched off?
+ *
+ * Hidden values are blanked on read, so a plain truthiness check is usually
+ * enough. Reach for this only where the blank value has a meaning of its own
+ * (a fallback avatar, a default author name) and must not be shown either.
+ */
+export function isHidden(record: Hideable | undefined, field: string): boolean {
+  return record?.hiddenFields?.includes(field) ?? false;
+}
+
 /* --------------------- content shape types -------------------- */
 
-export interface Hero {
+export interface Hero extends Hideable {
   /** Cropped hero banner stored as a data URL; empty keeps the visual fallback. */
   backgroundImage: string;
   badge: string;
@@ -587,19 +778,19 @@ export interface Hero {
   secondaryHref: string;
 }
 
-export interface Stat {
+export interface Stat extends Hideable {
   id: string;
   label: string;
   value: number;
   suffix: string;
 }
 
-export interface Logo {
+export interface Logo extends Hideable {
   id: string;
   name: string;
 }
 
-export interface Project {
+export interface Project extends Hideable {
   id: string;
   image: string; // uploaded card image URL ("" = gradient fallback)
   name: string;
@@ -628,7 +819,7 @@ export interface Project {
   quoteAuthor?: string;
 }
 
-export interface Service {
+export interface Service extends Hideable {
   id: string;
   title: string;
   description: string;
@@ -636,32 +827,32 @@ export interface Service {
   featured: boolean;
 }
 
-export interface Industry {
+export interface Industry extends Hideable {
   id: string;
   name: string;
   icon: string;
 }
 
-export interface WhyItem {
+export interface WhyItem extends Hideable {
   id: string;
   title: string;
   description: string;
   icon: string;
 }
 
-export interface ProcessStep {
+export interface ProcessStep extends Hideable {
   id: string;
   step: string;
   title: string;
   description: string;
 }
 
-export interface Tech {
+export interface Tech extends Hideable {
   id: string;
   name: string;
 }
 
-export interface CaseStudy {
+export interface CaseStudy extends Hideable {
   client: string;
   title: string;
   problem: string;
@@ -672,13 +863,13 @@ export interface CaseStudy {
   outcome: string;
 }
 
-export interface CaseMetric {
+export interface CaseMetric extends Hideable {
   id: string;
   value: string;
   label: string;
 }
 
-export interface Testimonial {
+export interface Testimonial extends Hideable {
   id: string;
   quote: string;
   name: string;
@@ -686,7 +877,7 @@ export interface Testimonial {
   initials: string;
 }
 
-export interface Founder {
+export interface Founder extends Hideable {
   name: string;
   role: string;
   initials: string;
@@ -695,33 +886,33 @@ export interface Founder {
   vision: string;
 }
 
-export interface Faq {
+export interface Faq extends Hideable {
   id: string;
   q: string;
   a: string;
 }
 
-export interface Contact {
+export interface Contact extends Hideable {
   email: string;
   whatsapp: string;
   calendly: string;
 }
 
-export interface Social {
+export interface Social extends Hideable {
   id: string;
   label: string;
   href: string;
 }
 
 /** Header block for a legal page (/privacy, /terms). */
-export interface LegalMeta {
+export interface LegalMeta extends Hideable {
   title: string;
   intro: string;
   updated: string;
 }
 
 /** One numbered clause on a legal page. */
-export interface LegalClause {
+export interface LegalClause extends Hideable {
   id: string;
   heading: string;
   body: string;
@@ -740,7 +931,7 @@ export interface SiteSettings {
 }
 
 /** A blog post — listed on /blog, opened at /blog/[slug]. */
-export interface Blog {
+export interface Blog extends Hideable {
   id: string;
   title: string;
   category: string;
@@ -761,6 +952,8 @@ export interface Blog {
 }
 
 export interface ContentData {
+  /** Landing-page blocks switched off in the admin (missing key = shown). */
+  pageSections?: Record<string, boolean>;
   settings: SiteSettings;
   hero: Hero;
   stats: Stat[];

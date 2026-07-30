@@ -101,28 +101,35 @@ export function Founder({
                     </span>
                   </div>
 
-                  <h3 className="mt-5 font-display text-xl font-semibold text-ink">
-                    {founder.name}
-                  </h3>
-                  <p className="mt-1 text-sm text-brand-3">{founder.role}</p>
+                  {founder.name && (
+                    <h3 className="mt-5 font-display text-xl font-semibold text-ink">
+                      {founder.name}
+                    </h3>
+                  )}
+                  {founder.role && (
+                    <p className="mt-1 text-sm text-brand-3">{founder.role}</p>
+                  )}
 
                   <div className="my-6 h-px w-16 bg-line" />
 
                   {/* social icons */}
                   <div className="flex items-center gap-2.5">
-                    {socials.slice(0, 4).map((s) => (
-                      <a
-                        key={s.id}
-                        href={s.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={s.label}
-                        title={s.label}
-                        className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-ink-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brand/10 hover:text-ink"
-                      >
-                        <SocialGlyph label={s.label} />
-                      </a>
-                    ))}
+                    {socials
+                      .filter((s) => s.label)
+                      .slice(0, 4)
+                      .map((s) => (
+                        <a
+                          key={s.id}
+                          href={s.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={s.label}
+                          title={s.label}
+                          className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-ink-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brand/10 hover:text-ink"
+                        >
+                          <SocialGlyph label={s.label} />
+                        </a>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -134,50 +141,60 @@ export function Founder({
             <Reveal>
               <Badge>The Studio</Badge>
             </Reveal>
-            <Reveal delay={0.06}>
-              <blockquote className="relative mt-6">
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -left-2 -top-8 font-display text-7xl leading-none text-brand/20 select-none"
-                >
-                  &ldquo;
-                </span>
-                <p className="relative text-balance font-display text-xl font-medium leading-snug text-ink sm:text-2xl md:text-[28px]">
-                  {founder.story}
+            {founder.story && (
+              <Reveal delay={0.06}>
+                <blockquote className="relative mt-6">
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -left-2 -top-8 font-display text-7xl leading-none text-brand/20 select-none"
+                  >
+                    &ldquo;
+                  </span>
+                  <p className="relative text-balance font-display text-xl font-medium leading-snug text-ink sm:text-2xl md:text-[28px]">
+                    {founder.story}
+                  </p>
+                </blockquote>
+              </Reveal>
+            )}
+
+            {(founder.mission || founder.vision) && (
+              <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4">
+                {founder.mission && (
+                  <Reveal delay={0.1}>
+                    <div className="card-hairline h-full rounded-2xl p-5">
+                      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-3">
+                        <span className="h-1.5 w-1.5 rounded-full bg-brand-3" />
+                        Mission
+                      </p>
+                      <p className="mt-2.5 text-sm leading-relaxed text-ink-2">
+                        {founder.mission}
+                      </p>
+                    </div>
+                  </Reveal>
+                )}
+                {founder.vision && (
+                  <Reveal delay={0.16}>
+                    <div className="card-hairline h-full rounded-2xl p-5">
+                      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-3">
+                        <span className="h-1.5 w-1.5 rounded-full bg-brand-3" />
+                        Vision
+                      </p>
+                      <p className="mt-2.5 text-sm leading-relaxed text-ink-2">
+                        {founder.vision}
+                      </p>
+                    </div>
+                  </Reveal>
+                )}
+              </div>
+            )}
+
+            {founder.name && (
+              <Reveal delay={0.2}>
+                <p className="mt-8 font-display text-lg text-ink-3">
+                  — {founder.name.split(" ")[0]}, on why Tekoovi exists
                 </p>
-              </blockquote>
-            </Reveal>
-
-            <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4">
-              <Reveal delay={0.1}>
-                <div className="card-hairline h-full rounded-2xl p-5">
-                  <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-3">
-                    <span className="h-1.5 w-1.5 rounded-full bg-brand-3" />
-                    Mission
-                  </p>
-                  <p className="mt-2.5 text-sm leading-relaxed text-ink-2">
-                    {founder.mission}
-                  </p>
-                </div>
               </Reveal>
-              <Reveal delay={0.16}>
-                <div className="card-hairline h-full rounded-2xl p-5">
-                  <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-3">
-                    <span className="h-1.5 w-1.5 rounded-full bg-brand-3" />
-                    Vision
-                  </p>
-                  <p className="mt-2.5 text-sm leading-relaxed text-ink-2">
-                    {founder.vision}
-                  </p>
-                </div>
-              </Reveal>
-            </div>
-
-            <Reveal delay={0.2}>
-              <p className="mt-8 font-display text-lg text-ink-3">
-                — {founder.name.split(" ")[0]}, on why Tekoovi exists
-              </p>
-            </Reveal>
+            )}
           </div>
         </div>
       </Container>

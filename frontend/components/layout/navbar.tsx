@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NAV_LINKS } from "@/lib/data";
+import { NAV_LINKS, type NavLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
@@ -22,11 +22,14 @@ export function Navbar({
   calendly,
   logoImage,
   showThemeToggle = false,
+  links = NAV_LINKS,
 }: {
   calendly: string;
   logoImage?: string;
   /** Admin-controlled: show the light/dark toggle in the header. */
   showThemeToggle?: boolean;
+  /** Links to render — the layout drops those whose section is switched off. */
+  links?: NavLink[];
 }) {
   const pathname = usePathname();
   // The section anchors only exist on the landing page. Everywhere else (the
@@ -52,16 +55,15 @@ export function Navbar({
     // Off the landing page the anchors don't exist, so there is nothing to spy on.
     if (!isHome) return;
 
-    const sections = NAV_LINKS.filter((link) => link.href.startsWith("#"))
+    const sections = links
+      .filter((link) => link.href.startsWith("#"))
       .map((link) => ({
         href: link.href,
         element: document.querySelector(link.href),
       }))
       .filter(
-        (section): section is {
-          href: (typeof NAV_LINKS)[number]["href"];
-          element: Element;
-        } => section.element !== null,
+        (section): section is { href: string; element: Element } =>
+          section.element !== null,
       );
 
     const observer = new IntersectionObserver(
@@ -78,7 +80,7 @@ export function Navbar({
 
     sections.forEach((section) => observer.observe(section.element));
     return () => observer.disconnect();
-  }, [isHome]);
+  }, [isHome, links]);
 
   useEffect(() => {
     if (!open) return;
@@ -89,7 +91,7 @@ export function Navbar({
 
   // On the landing page the scroll spy owns the active state; on any other
   // route (e.g. /blog, /blog/x) the matching route link is active instead.
-  const activeRouteHref = NAV_LINKS.find(
+  const activeRouteHref = links.find(
     (l) =>
       !l.href.startsWith("#") &&
       (pathname === l.href || pathname.startsWith(`${l.href}/`)),
@@ -152,7 +154,7 @@ export function Navbar({
               className="hidden items-center gap-0.5 md:flex"
               onMouseLeave={() => setHoveredHref(null)}
             >
-              {NAV_LINKS.map((link) => {
+              {links.map((link) => {
                 const isActive = currentHref === link.href;
                 return (
                   <li key={link.href} className="relative">
@@ -268,7 +270,7 @@ export function Navbar({
                       }}
                       className="flex flex-col gap-1"
                     >
-                      {NAV_LINKS.map((link) => {
+                      {links.map((link) => {
                         const isActive = currentHref === link.href;
                         return (
                           <motion.li

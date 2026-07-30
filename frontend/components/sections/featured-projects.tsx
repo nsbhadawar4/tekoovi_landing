@@ -59,40 +59,54 @@ function ProjectCard({ project }: { project: Project }) {
           className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-black/70 via-black/10 to-transparent"
         />
 
-        {/* overlays */}
-        <span className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-brand-3 backdrop-blur">
-          {project.category}
-        </span>
-        <span className="absolute right-3 top-3 max-w-[48%] truncate rounded-full border border-white/10 bg-black/40 px-2.5 py-1 text-[11px] font-medium text-ink backdrop-blur sm:right-4 sm:top-4 sm:max-w-[55%] sm:px-3">
-          {project.result}
-        </span>
+        {/* overlays — each chip disappears when its field is empty or hidden */}
+        {project.category && (
+          <span className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-brand-3 backdrop-blur">
+            {project.category}
+          </span>
+        )}
+        {project.result && (
+          <span className="absolute right-3 top-3 max-w-[48%] truncate rounded-full border border-white/10 bg-black/40 px-2.5 py-1 text-[11px] font-medium text-ink backdrop-blur sm:right-4 sm:top-4 sm:max-w-[55%] sm:px-3">
+            {project.result}
+          </span>
+        )}
       </div>
 
       {/* body */}
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <div className="flex items-start justify-between gap-4">
-          <h3 className="min-w-0 font-display text-xl font-semibold text-ink sm:text-2xl">
-            {project.name}
-          </h3>
-          <span className="mt-1 inline-flex max-w-[42%] shrink-0 items-center gap-1 truncate text-xs text-ink-3">
-            <MapPin className="h-3.5 w-3.5" /> {project.country}
-          </span>
-        </div>
+        {(project.name || project.country) && (
+          <div className="flex items-start justify-between gap-4">
+            {project.name && (
+              <h3 className="min-w-0 font-display text-xl font-semibold text-ink sm:text-2xl">
+                {project.name}
+              </h3>
+            )}
+            {project.country && (
+              <span className="mt-1 inline-flex max-w-[42%] shrink-0 items-center gap-1 truncate text-xs text-ink-3">
+                <MapPin className="h-3.5 w-3.5" /> {project.country}
+              </span>
+            )}
+          </div>
+        )}
 
-        <p className="mt-2 text-sm leading-relaxed text-ink-2">
-          {project.description}
-        </p>
+        {project.description && (
+          <p className="mt-2 text-sm leading-relaxed text-ink-2">
+            {project.description}
+          </p>
+        )}
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          {project.tech.map((t) => (
-            <span
-              key={t}
-              className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-ink-2"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
+        {project.tech.length > 0 && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {project.tech.map((t) => (
+              <span
+                key={t}
+                className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-ink-2"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* The pseudo-element stretches the hit area over the whole card, so
             the visible link stays a single accessible target. */}

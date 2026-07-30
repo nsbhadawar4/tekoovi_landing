@@ -43,18 +43,26 @@ export function Testimonials({
 
             <div className="flex flex-col justify-center">
               <Quote className="h-8 w-8 text-brand-3/60" />
-              <p className="mt-4 text-balance font-display text-lg font-medium leading-relaxed text-ink sm:text-xl md:text-2xl">
-                “{featured.quote}”
-              </p>
-              <div className="mt-6 flex items-center gap-3">
-                <Avatar initials={featured.initials} />
-                <div>
-                  <p className="text-sm font-semibold text-ink">
-                    {featured.name}
-                  </p>
-                  <p className="text-xs text-ink-3">{featured.role}</p>
+              {featured.quote && (
+                <p className="mt-4 text-balance font-display text-lg font-medium leading-relaxed text-ink sm:text-xl md:text-2xl">
+                  “{featured.quote}”
+                </p>
+              )}
+              {(featured.initials || featured.name || featured.role) && (
+                <div className="mt-6 flex items-center gap-3">
+                  {featured.initials && <Avatar initials={featured.initials} />}
+                  <div>
+                    {featured.name && (
+                      <p className="text-sm font-semibold text-ink">
+                        {featured.name}
+                      </p>
+                    )}
+                    {featured.role && (
+                      <p className="text-xs text-ink-3">{featured.role}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </GlowCard>
         </Reveal>
@@ -65,16 +73,24 @@ export function Testimonials({
             <RevealItem key={t.id} className="h-full">
               <div className="card-hairline flex h-full flex-col rounded-2xl p-5 sm:p-6">
                 <Quote className="h-6 w-6 text-brand-3/50" />
-                <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-2">
-                  “{t.quote}”
-                </p>
-                <div className="mt-6 flex items-center gap-3">
-                  <Avatar initials={t.initials} />
-                  <div>
-                    <p className="text-sm font-semibold text-ink">{t.name}</p>
-                    <p className="text-xs text-ink-3">{t.role}</p>
+                {t.quote && (
+                  <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-2">
+                    “{t.quote}”
+                  </p>
+                )}
+                {(t.initials || t.name || t.role) && (
+                  <div className="mt-6 flex items-center gap-3">
+                    {t.initials && <Avatar initials={t.initials} />}
+                    <div>
+                      {t.name && (
+                        <p className="text-sm font-semibold text-ink">
+                          {t.name}
+                        </p>
+                      )}
+                      {t.role && <p className="text-xs text-ink-3">{t.role}</p>}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </RevealItem>
           ))}

@@ -3,9 +3,11 @@ import { Marquee } from "@/components/ui/marquee";
 import { Section, Container, SectionHeading } from "@/components/ui/section";
 
 export function TechStack({ techStack }: { techStack: Tech[] }) {
-  const mid = Math.ceil(techStack.length / 2);
-  const firstRow = techStack.slice(0, mid);
-  const secondRow = techStack.slice(mid);
+  // A hidden (or empty) name leaves nothing to put in a chip.
+  const chips = techStack.filter((tech) => tech.name);
+  const mid = Math.ceil(chips.length / 2);
+  const firstRow = chips.slice(0, mid);
+  const secondRow = chips.slice(mid);
 
   return (
     <Section id="stack" className="relative overflow-hidden bg-bg-2">

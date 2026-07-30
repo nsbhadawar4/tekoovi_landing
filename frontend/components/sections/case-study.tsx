@@ -91,9 +91,11 @@ function StoryCard({ project }: { project: Project }) {
         />
 
         {/* category chip */}
-        <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-brand-3 backdrop-blur">
-          {project.category}
-        </span>
+        {project.category && (
+          <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.1em] text-brand-3 backdrop-blur">
+            {project.category}
+          </span>
+        )}
 
         {/* reveal-on-hover: read case study */}
         <span className="absolute bottom-4 left-4 inline-flex translate-y-3 items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-semibold text-[#0f1117] opacity-0 shadow-lg transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
@@ -104,15 +106,19 @@ function StoryCard({ project }: { project: Project }) {
 
       {/* ---------- body ---------- */}
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="font-display text-xl font-semibold text-ink transition-colors duration-300 group-hover:text-brand-3 sm:text-2xl">
-          {project.name}
-        </h3>
-        <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-ink-2">
-          {project.description}
-        </p>
+        {project.name && (
+          <h3 className="font-display text-xl font-semibold text-ink transition-colors duration-300 group-hover:text-brand-3 sm:text-2xl">
+            {project.name}
+          </h3>
+        )}
+        {project.description && (
+          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-ink-2">
+            {project.description}
+          </p>
+        )}
 
         {/* metric pills */}
-        <div className="mt-5 flex flex-wrap gap-2 pt-1">
+        <div className="mt-5 flex flex-wrap gap-2 pt-1 empty:hidden">
           {project.result && (
             <span className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white shadow-[0_6px_16px_-8px_rgba(108,59,255,0.85)] transition-transform duration-300 group-hover:-translate-y-0.5">
               {project.result}

@@ -18,12 +18,15 @@ import {
   CheckCircle2,
   CircleAlert,
   Code2,
+  Eye,
+  EyeOff,
   ExternalLink,
   Factory,
   FileText,
   FolderKanban,
   Gavel,
   HelpCircle,
+  LayoutList,
   type LucideIcon,
   LogOut,
   Mail,
@@ -47,6 +50,10 @@ import {
   type FieldDef,
   getSection,
   type HeaderDef,
+  HIDDEN_FIELDS,
+  isBlockVisible,
+  isToggleable,
+  PAGE_BLOCKS,
   SECTIONS,
   type SectionDef,
 } from "@/backend/types";
@@ -59,6 +66,7 @@ type Toast = { id: number; type: "success" | "error"; message: string };
 
 /* Lucide component for each section's sidebar icon (name -> component). */
 const SIDEBAR_ICONS: Record<string, LucideIcon> = {
+  LayoutList,
   SlidersHorizontal,
   Sparkles,
   BarChart3,
@@ -100,14 +108,29 @@ function buildForm(
   const form: FormState = {};
   for (const field of fields) {
     const value = record?.[field.name];
-    if (field.type === "boolean") form[field.name] = value === true;
+    // A switch nobody has touched falls back to the field's default, so
+    // "on unless turned off" survives a record that predates the field.
+    if (field.type === "boolean")
+      form[field.name] =
+        value === undefined ? field.default === true : value === true;
     else if (field.type === "tags")
       form[field.name] = Array.isArray(value)
         ? value.join(", ")
         : String(value ?? "");
     else form[field.name] = value == null ? "" : String(value);
   }
+  // Which fields are switched off, kept as one comma-joined value so the flat
+  // form state (and the JSON body built from it) needs no special shape.
+  const hidden = record?.[HIDDEN_FIELDS];
+  form[HIDDEN_FIELDS] = Array.isArray(hidden) ? hidden.join(",") : "";
   return form;
+}
+
+/** Field names switched off in this form. */
+function hiddenIn(form: FormState): string[] {
+  return String(form[HIDDEN_FIELDS] ?? "")
+    .split(",")
+    .filter(Boolean);
 }
 
 /* ------------------------- image field ------------------------ */
@@ -260,15 +283,14 @@ function Field({
 
   if (field.type === "boolean") {
     return (
-      <label className="mt-2 flex items-center gap-2.5 text-sm text-ink-2">
-        <input
-          type="checkbox"
-          checked={value === true}
-          onChange={(e) => onChange(e.target.checked)}
-          className="h-4 w-4 accent-brand"
+      <div className="mt-2 flex items-center justify-between gap-3">
+        <span className="text-sm text-ink-2">{field.label}</span>
+        <BooleanSwitch
+          on={value === true}
+          label={field.label}
+          onChange={onChange}
         />
-        {field.label}
-      </label>
+      </div>
     );
   }
 
@@ -335,37 +357,163 @@ function Field({
   );
 }
 
+/* ------------------------- switches --------------------------- */
+
+/** The track + knob every switch in the panel is drawn with. */
+function SwitchTrack({ on }: { on: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`relative block h-4 w-7 rounded-full transition-colors ${
+        on ? "bg-brand" : "bg-white/15"
+      }`}
+    >
+      <span
+        className={`absolute top-[3px] block h-2.5 w-2.5 rounded-full bg-white transition-[left] duration-200 ${
+          on ? "left-[14px]" : "left-[3px]"
+        }`}
+      />
+    </span>
+  );
+}
+
+/** Plain on/off switch — used for `boolean` fields. */
+function BooleanSwitch({
+  on,
+  label,
+  onChange,
+}: {
+  on: boolean;
+  label: string;
+  onChange: (on: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={label}
+      onClick={() => onChange(!on)}
+      className="inline-flex shrink-0 items-center gap-2 text-[11px] font-medium text-ink-3 transition-colors hover:text-ink-2"
+    >
+      <span className={on ? "text-brand-3" : ""}>{on ? "On" : "Off"}</span>
+      <SwitchTrack on={on} />
+    </button>
+  );
+}
+
+/**
+ * Show/hide switch. Off leaves the field (or the whole section) out of the
+ * public page without touching the content, so switching it back on restores
+ * everything as it was.
+ */
+function VisibilitySwitch({
+  on,
+  label,
+  onChange,
+  what = "field",
+}: {
+  on: boolean;
+  label: string;
+  onChange: (on: boolean) => void;
+  /** Named in the tooltip: "…switch off to hide this field / section". */
+  what?: "field" | "section";
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={`${label} — ${on ? "shown on the site" : "hidden from the site"}`}
+      title={
+        on
+          ? `Shown on the site — switch off to hide this ${what}`
+          : `Hidden from the site — switch on to show this ${what}`
+      }
+      onClick={() => onChange(!on)}
+      className="inline-flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-ink-3 transition-colors hover:text-ink-2"
+    >
+      {on ? (
+        <Eye className="h-3.5 w-3.5 text-brand-3" />
+      ) : (
+        <EyeOff className="h-3.5 w-3.5" />
+      )}
+      <span className={on ? "text-brand-3" : ""}>
+        {on ? "Shown" : "Hidden"}
+      </span>
+      <SwitchTrack on={on} />
+    </button>
+  );
+}
+
 function FieldRows({
   fields,
   form,
   setForm,
   card = false,
+  toggles = true,
 }: {
   fields: FieldDef[];
   form: FormState;
   setForm: React.Dispatch<React.SetStateAction<FormState>>;
   /** Wrap each field in its own card (used by the singleton editors). */
   card?: boolean;
+  /** Show the per-field show/hide switches (off for site-wide settings). */
+  toggles?: boolean;
 }) {
-  const renderField = (field: FieldDef) => (
-    <div key={field.name}>
-      {field.type !== "boolean" && (
-        <label className="block text-xs font-medium text-ink-3">
-          {field.label}
-        </label>
-      )}
-      <Field
-        field={field}
-        value={form[field.name] ?? ""}
-        onChange={(v) => setForm((f) => ({ ...f, [field.name]: v }))}
-      />
-      {field.hint && (
-        <p className="mt-1.5 text-[11px] leading-relaxed text-ink-3">
-          {field.hint}
-        </p>
-      )}
-    </div>
-  );
+  const hidden = hiddenIn(form);
+
+  function setVisible(name: string, visible: boolean) {
+    setForm((f) => {
+      const next = hiddenIn(f).filter((n) => n !== name);
+      if (!visible) next.push(name);
+      return { ...f, [HIDDEN_FIELDS]: next.join(",") };
+    });
+  }
+
+  const renderField = (field: FieldDef) => {
+    const canToggle = isToggleable({ noToggles: !toggles }, field);
+    const off = canToggle && hidden.includes(field.name);
+    return (
+      <div key={field.name} className={off ? "opacity-60" : undefined}>
+        {(field.type !== "boolean" || canToggle) && (
+          <div className="flex items-center justify-between gap-3">
+            {field.type !== "boolean" ? (
+              <label className="block text-xs font-medium text-ink-3">
+                {field.label}
+              </label>
+            ) : (
+              <span />
+            )}
+            {canToggle && (
+              <VisibilitySwitch
+                on={!off}
+                label={field.label}
+                onChange={(v) => setVisible(field.name, v)}
+              />
+            )}
+          </div>
+        )}
+        <Field
+          field={field}
+          value={form[field.name] ?? ""}
+          onChange={(v) => setForm((f) => ({ ...f, [field.name]: v }))}
+        />
+        {off ? (
+          <p className="mt-1.5 text-[11px] leading-relaxed text-amber-300/90">
+            Hidden — this doesn&apos;t show on the site. The value is kept for
+            when you switch it back on.
+          </p>
+        ) : (
+          field.hint && (
+            <p className="mt-1.5 text-[11px] leading-relaxed text-ink-3">
+              {field.hint}
+            </p>
+          )
+        )}
+      </div>
+    );
+  };
 
   if (!card) return <>{fields.map(renderField)}</>;
 
@@ -506,6 +654,11 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  // Which landing-page blocks are switched on. Loaded once and kept here so
+  // every section's toolbar can show (and flip) its own block.
+  const [blocks, setBlocks] = useState<Record<string, boolean>>({});
+  const [blocksLoaded, setBlocksLoaded] = useState(false);
+
   // Delete confirmation dialog + toast notifications.
   const [pendingDelete, setPendingDelete] = useState<AdminItem | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -558,6 +711,24 @@ export default function AdminDashboard() {
       active = false;
     };
   }, [section]);
+
+  // Page-section switches: one fetch for the whole panel.
+  useEffect(() => {
+    let active = true;
+    fetch("/api/content/pageSections", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data: { item?: Record<string, boolean> }) => {
+        if (!active) return;
+        setBlocks(data.item ?? {});
+        setBlocksLoaded(true);
+      })
+      .catch(() => {
+        if (active) setBlocksLoaded(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   function selectSection(key: string) {
     if (key === section) return;
@@ -638,7 +809,41 @@ export default function AdminDashboard() {
       notify("error", msg);
       return;
     }
+    // The Page Sections editor writes the same record the toolbar switches
+    // read, so keep them in step without a refetch.
+    if (section === "pageSections") {
+      setBlocks(
+        Object.fromEntries(def.fields.map((f) => [f.name, form[f.name] === true])),
+      );
+    }
     notify("success", `${def.singular} saved`);
+  }
+
+  // Show/hide a whole landing-page block from the section toolbar. The switch
+  // flips straight away and rolls back if the save doesn't land.
+  async function setBlockVisible(key: string, on: boolean) {
+    const label = PAGE_BLOCKS.find((b) => b.key === key)?.label ?? key;
+    const previous = blocks;
+    setBlocks({ ...blocks, [key]: on });
+
+    const res = await fetch(`/api/content/pageSections`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [key]: on }),
+    });
+
+    if (res.status === 401) return unauthorized();
+    if (!res.ok) {
+      setBlocks(previous);
+      notify("error", `Could not update the ${label} section.`);
+      return;
+    }
+    notify(
+      "success",
+      on
+        ? `${label} section is back on the page`
+        : `${label} section is hidden from the page`,
+    );
   }
 
   async function confirmDelete() {
@@ -794,6 +999,39 @@ export default function AdminDashboard() {
               <p className="mt-0.5 truncate text-xs text-ink-3">
                 On page: {def.onPage}
               </p>
+              {!def.noToggles && (
+                <p className="mt-1 text-xs text-ink-3/80">
+                  Switch any field to{" "}
+                  <span className="text-ink-2">Hidden</span> to leave it off the
+                  page — the value stays saved.
+                </p>
+              )}
+              {/* Whole-section switches for the blocks this section feeds. */}
+              {blocksLoaded && def.blocks && def.blocks.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {def.blocks.map((key) => {
+                    const block = PAGE_BLOCKS.find((b) => b.key === key);
+                    const label = block?.label ?? key;
+                    return (
+                      <div
+                        key={key}
+                        className="flex items-center gap-2.5 rounded-xl border border-line bg-white/[0.02] px-3 py-1.5"
+                        title={block?.hint}
+                      >
+                        <span className="text-xs text-ink-2">
+                          {label} section
+                        </span>
+                        <VisibilitySwitch
+                          on={isBlockVisible(blocks, key)}
+                          label={`${label} section`}
+                          what="section"
+                          onChange={(v) => setBlockVisible(key, v)}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             {!isSingle && (
               <button
@@ -824,6 +1062,7 @@ export default function AdminDashboard() {
                     form={form}
                     setForm={setForm}
                     card
+                    toggles={!def.noToggles}
                   />
                   {error && <p className="text-sm text-red-400">{error}</p>}
                   <div className="flex justify-end pt-1">
@@ -951,7 +1190,12 @@ export default function AdminDashboard() {
             </h3>
 
             <div className="mt-5 space-y-4">
-              <FieldRows fields={def.fields} form={form} setForm={setForm} />
+              <FieldRows
+                fields={def.fields}
+                form={form}
+                setForm={setForm}
+                toggles={!def.noToggles}
+              />
             </div>
 
             {error && <p className="mt-4 text-sm text-red-400">{error}</p>}

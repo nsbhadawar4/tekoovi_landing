@@ -34,17 +34,25 @@ export function Process({ steps }: { steps: ProcessStep[] }) {
             {steps.map((stage, i) => (
               <TimelineRow key={stage.id} index={i}>
             <div className="card-hairline rounded-2xl p-5 sm:p-6 transition-colors duration-300 hover:border-white/15">
-                  <div className="flex items-center gap-3">
-                    <span className="font-display text-sm font-bold text-brand-3">
-                      {stage.step}
-                    </span>
-                    <h3 className="font-display text-lg font-semibold text-ink">
-                      {stage.title}
-                    </h3>
-                  </div>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-2">
-                    {stage.description}
-                  </p>
+                  {(stage.step || stage.title) && (
+                    <div className="flex items-center gap-3">
+                      {stage.step && (
+                        <span className="font-display text-sm font-bold text-brand-3">
+                          {stage.step}
+                        </span>
+                      )}
+                      {stage.title && (
+                        <h3 className="font-display text-lg font-semibold text-ink">
+                          {stage.title}
+                        </h3>
+                      )}
+                    </div>
+                  )}
+                  {stage.description && (
+                    <p className="mt-2 text-sm leading-relaxed text-ink-2">
+                      {stage.description}
+                    </p>
+                  )}
                 </div>
               </TimelineRow>
             ))}

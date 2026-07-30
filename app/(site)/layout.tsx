@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { getContent } from "@/backend/controllers/content.controller";
+import { visibleNavLinks } from "@/lib/data";
 import { DEFAULT_FONT, getFont } from "@/lib/fonts";
 import { normalizeTheme, themeInitScript } from "@/lib/theme";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
@@ -76,6 +77,7 @@ export default async function SiteLayout({
         calendly={content.contact.calendly}
         logoImage={content.settings?.logoImage}
         showThemeToggle={showThemeToggle}
+        links={visibleNavLinks(content.pageSections)}
       />
       <main>{children}</main>
       <Footer
@@ -83,6 +85,7 @@ export default async function SiteLayout({
         socials={content.socials}
         services={content.services}
         logoImage={content.settings?.logoImage}
+        pageSections={content.pageSections}
       />
       <script
         type="application/ld+json"

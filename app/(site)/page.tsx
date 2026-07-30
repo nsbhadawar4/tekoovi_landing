@@ -1,4 +1,5 @@
 import { getContent } from "@/backend/controllers/content.controller";
+import { isBlockVisible } from "@/backend/types";
 import { Hero } from "@/components/sections/hero";
 import { TrustedBy } from "@/components/sections/trusted-by";
 import { FeaturedProjects } from "@/components/sections/featured-projects";
@@ -19,21 +20,31 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const content = await getContent();
 
+  // Every block below is switched from the admin's "Page Sections" panel (and
+  // from the toolbar of the section that fills it). Keys come from PAGE_BLOCKS.
+  const shows = (block: string) => isBlockVisible(content.pageSections, block);
+
   return (
     <>
-      <Hero hero={content.hero} />
-      <TrustedBy stats={content.stats} logos={content.logos} />
-      <FeaturedProjects projects={content.projects} />
-      <Services services={content.services} />
-      <Industries industries={content.industries} />
-      <WhyTekoovi why={content.why} />
-      <Process steps={content.process} />
-      <TechStack techStack={content.techStack} />
-      <CaseStudy projects={content.projects} />
-      <Testimonials testimonials={content.testimonials} />
-      <Founder founder={content.founder} socials={content.socials} />
-      <BlogSection blogs={content.blogs ?? []} />
-      <FAQ faqs={content.faqs} />
+      {shows("hero") && <Hero hero={content.hero} />}
+      {shows("trustedBy") && (
+        <TrustedBy stats={content.stats} logos={content.logos} />
+      )}
+      {shows("work") && <FeaturedProjects projects={content.projects} />}
+      {shows("services") && <Services services={content.services} />}
+      {shows("industries") && <Industries industries={content.industries} />}
+      {shows("why") && <WhyTekoovi why={content.why} />}
+      {shows("process") && <Process steps={content.process} />}
+      {shows("techStack") && <TechStack techStack={content.techStack} />}
+      {shows("caseStudies") && <CaseStudy projects={content.projects} />}
+      {shows("testimonials") && (
+        <Testimonials testimonials={content.testimonials} />
+      )}
+      {shows("founder") && (
+        <Founder founder={content.founder} socials={content.socials} />
+      )}
+      {shows("blog") && <BlogSection blogs={content.blogs ?? []} />}
+      {shows("faq") && <FAQ faqs={content.faqs} />}
     </>
   );
 }
