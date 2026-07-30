@@ -126,6 +126,12 @@ function buildForm(
   return form;
 }
 
+/** How many fields this record has switched off. */
+function hiddenCount(record: Record<string, unknown>): number {
+  const hidden = record[HIDDEN_FIELDS];
+  return Array.isArray(hidden) ? hidden.length : 0;
+}
+
 /** Field names switched off in this form. */
 function hiddenIn(form: FormState): string[] {
   return String(form[HIDDEN_FIELDS] ?? "")
@@ -1145,8 +1151,17 @@ export default function AdminDashboard() {
                           </div>
                         )}
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-ink">
-                            {title}
+                          <p className="flex items-center gap-2 text-sm font-medium text-ink">
+                            <span className="truncate">{title}</span>
+                            {hiddenCount(item) > 0 && (
+                              <span
+                                title="Fields switched off for this item"
+                                className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[10px] font-medium text-amber-200"
+                              >
+                                <EyeOff className="h-3 w-3" />
+                                {hiddenCount(item)} hidden
+                              </span>
+                            )}
                           </p>
                           {def.subField && (
                             <p className="truncate text-xs text-ink-3">

@@ -35,6 +35,9 @@ export function Hero({ hero }: { hero: HeroContent }) {
   const contentY = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  const showPrimary = Boolean(hero.primaryLabel && hero.primaryHref);
+  const showSecondary = Boolean(hero.secondaryLabel && hero.secondaryHref);
+
   function handleMove(e: React.MouseEvent<HTMLElement>) {
     const el = ref.current;
     if (!el) return;
@@ -147,17 +150,19 @@ export function Hero({ hero }: { hero: HeroContent }) {
             </motion.p>
           )}
 
-          {(hero.primaryLabel || hero.secondaryLabel) && (
+          {/* A button needs both halves — switching off either its label or
+              its link in the admin takes the whole button off the page. */}
+          {(showPrimary || showSecondary) && (
             <motion.div
               variants={item}
               className="mt-8 flex w-full flex-col items-stretch gap-3 min-[390px]:w-auto min-[390px]:items-center sm:mt-10 sm:flex-row"
             >
-              {hero.primaryLabel && (
+              {showPrimary && (
                 <Button href={hero.primaryHref} size="lg" magnetic withArrow className="w-full sm:w-auto">
                   {hero.primaryLabel}
                 </Button>
               )}
-              {hero.secondaryLabel && (
+              {showSecondary && (
                 <Button href={hero.secondaryHref} size="lg" variant="secondary" className="w-full sm:w-auto">
                   {hero.secondaryLabel}
                 </Button>

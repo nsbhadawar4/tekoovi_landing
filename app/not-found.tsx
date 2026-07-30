@@ -29,9 +29,11 @@ export default async function NotFound() {
           <Button href="/" size="lg" magnetic withArrow>
             Back to home
           </Button>
-          <Button href={contact.calendly} size="lg" variant="secondary">
-            Book a call
-          </Button>
+          {contact.calendly && (
+            <Button href={contact.calendly} size="lg" variant="secondary">
+              Book a call
+            </Button>
+          )}
         </div>
       </div>
     </section>

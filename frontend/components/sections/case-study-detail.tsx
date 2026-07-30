@@ -135,13 +135,17 @@ export function CaseStudyDetail({
             {/* text */}
             <Reveal delay={0.06} y={30}>
               <div>
-                <Badge>{project.category}</Badge>
-                <h1 className="text-ink-gradient mt-6 text-balance text-4xl font-semibold leading-[1.04] tracking-tight sm:text-5xl md:text-6xl">
-                  {project.name}
-                </h1>
-                <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-ink-2 md:text-lg">
-                  {project.description}
-                </p>
+                {project.category && <Badge>{project.category}</Badge>}
+                {project.name && (
+                  <h1 className="text-ink-gradient mt-6 text-balance text-4xl font-semibold leading-[1.04] tracking-tight sm:text-5xl md:text-6xl">
+                    {project.name}
+                  </h1>
+                )}
+                {project.description && (
+                  <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-ink-2 md:text-lg">
+                    {project.description}
+                  </p>
+                )}
 
                 {facts.length > 0 && (
                   <div className="mt-7 flex flex-wrap items-center gap-2.5">
@@ -157,11 +161,13 @@ export function CaseStudyDetail({
                   </div>
                 )}
 
-                <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-                  <Button href={contact.calendly} size="lg" magnetic withArrow>
-                    Start a project like this
-                  </Button>
-                </div>
+                {contact.calendly && (
+                  <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                    <Button href={contact.calendly} size="lg" magnetic withArrow>
+                      Start a project like this
+                    </Button>
+                  </div>
+                )}
               </div>
             </Reveal>
 
@@ -369,10 +375,14 @@ export function CaseStudyDetail({
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
                   Next case study
                 </p>
-                <p className="mt-2 font-display text-2xl font-semibold text-ink transition-colors group-hover:text-brand-3 md:text-3xl">
-                  {next.name}
-                </p>
-                <p className="mt-1 text-sm text-ink-2">{next.category}</p>
+                {next.name && (
+                  <p className="mt-2 font-display text-2xl font-semibold text-ink transition-colors group-hover:text-brand-3 md:text-3xl">
+                    {next.name}
+                  </p>
+                )}
+                {next.category && (
+                  <p className="mt-1 text-sm text-ink-2">{next.category}</p>
+                )}
               </div>
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-ink transition-all duration-300 group-hover:border-brand-2/40 group-hover:bg-brand group-hover:text-white">
                 <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -390,17 +400,19 @@ export function CaseStudyDetail({
             <div className="relative mx-auto max-w-2xl">
               <Sparkles className="mx-auto h-8 w-8 text-brand-3" />
               <p className="mt-5 font-display text-2xl font-semibold text-ink md:text-3xl">
-                Want results like {project.name}?
+                Want results like {project.name || "these"}?
               </p>
               <p className="mt-3 text-ink-2">
                 Tell us where you are — we&apos;ll map the fastest route to a
                 shipped product.
               </p>
-              <div className="mt-8 flex justify-center">
-                <Button href={contact.calendly} size="lg" magnetic withArrow>
-                  Book a call
-                </Button>
-              </div>
+              {contact.calendly && (
+                <div className="mt-8 flex justify-center">
+                  <Button href={contact.calendly} size="lg" magnetic withArrow>
+                    Book a call
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </Reveal>

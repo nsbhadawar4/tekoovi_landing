@@ -39,6 +39,9 @@ export function Navbar({
   // we're elsewhere); route links (e.g. "/blog") are used as-is.
   const hrefFor = (href: string) =>
     href.startsWith("#") ? (isHome ? href : `/${href}`) : href;
+  // With the hero switched off there is no #home anchor to jump to, so the
+  // logo goes to the top of the page instead of a link that does nothing.
+  const homeHref = links.some((l) => l.href === "#home") ? hrefFor("#home") : "/";
 
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -140,7 +143,7 @@ export function Navbar({
             />
 
             <Link
-              href={hrefFor("#home")}
+              href={homeHref}
               aria-label="Tekoovi home"
               className="group relative pl-1"
             >
@@ -195,11 +198,15 @@ export function Navbar({
 
             <div className="flex items-center gap-2">
               {showThemeToggle && <ThemeToggle />}
-              <div className="hidden md:block">
-                <Button href={calendly} size="md" magnetic withArrow>
-                  Book a call
-                </Button>
-              </div>
+              {/* No Calendly link (or it's switched off in the admin) — then
+                  there is nothing for this button to open. */}
+              {calendly && (
+                <div className="hidden md:block">
+                  <Button href={calendly} size="md" magnetic withArrow>
+                    Book a call
+                  </Button>
+                </div>
+              )}
               <button
                 type="button"
                 aria-label="Toggle menu"
@@ -302,20 +309,22 @@ export function Navbar({
                           </motion.li>
                         );
                       })}
-                      <motion.li
-                        variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
-                        className="mt-2 px-1 pb-1"
-                      >
-                        <Button
-                          href={calendly}
-                          size="lg"
-                          withArrow
-                          className="w-full"
-                          onClick={() => setOpen(false)}
+                      {calendly && (
+                        <motion.li
+                          variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                          className="mt-2 px-1 pb-1"
                         >
-                          Book a call
-                        </Button>
-                      </motion.li>
+                          <Button
+                            href={calendly}
+                            size="lg"
+                            withArrow
+                            className="w-full"
+                            onClick={() => setOpen(false)}
+                          >
+                            Book a call
+                          </Button>
+                        </motion.li>
+                      )}
                     </motion.ul>
                   </div>
                 </div>

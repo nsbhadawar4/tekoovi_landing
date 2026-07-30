@@ -48,7 +48,7 @@ export function Footer({
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {socials
-                .filter((s) => s.label)
+                .filter((s) => s.label && s.href)
                 .map((s) => (
                   <a
                     key={s.id}

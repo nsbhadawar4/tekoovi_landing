@@ -115,7 +115,7 @@ export function Founder({
                   {/* social icons */}
                   <div className="flex items-center gap-2.5">
                     {socials
-                      .filter((s) => s.label)
+                      .filter((s) => s.label && s.href)
                       .slice(0, 4)
                       .map((s) => (
                         <a

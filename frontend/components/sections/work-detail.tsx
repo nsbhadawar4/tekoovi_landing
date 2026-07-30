@@ -213,15 +213,19 @@ export function WorkDetail({
                 aria-hidden
                 className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand-2/70 to-transparent"
               />
-              <Badge>{project.category}</Badge>
+              {project.category && <Badge>{project.category}</Badge>}
 
-              <h1 className="text-ink-gradient mt-6 text-balance text-[2.5rem] font-semibold leading-[1.02] tracking-tight sm:text-5xl md:text-6xl">
-                {project.name}
-              </h1>
+              {project.name && (
+                <h1 className="text-ink-gradient mt-6 text-balance text-[2.5rem] font-semibold leading-[1.02] tracking-tight sm:text-5xl md:text-6xl">
+                  {project.name}
+                </h1>
+              )}
 
-              <p className="mt-5 text-pretty text-base leading-relaxed text-ink-2 md:text-lg">
-                {project.description}
-              </p>
+              {project.description && (
+                <p className="mt-5 text-pretty text-base leading-relaxed text-ink-2 md:text-lg">
+                  {project.description}
+                </p>
+              )}
 
               {facts.length > 0 && (
                 <div className="mt-7 flex flex-wrap items-center gap-2.5 border-t border-white/10 pt-6">
@@ -238,9 +242,11 @@ export function WorkDetail({
               )}
 
               <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-                <Button href={contact.calendly} size="lg" magnetic withArrow>
-                  Start a project like this
-                </Button>
+                {contact.calendly && (
+                  <Button href={contact.calendly} size="lg" magnetic withArrow>
+                    Start a project like this
+                  </Button>
+                )}
                 <Button href="/#work" variant="ghost" size="lg">
                   See more work
                 </Button>
@@ -409,21 +415,23 @@ export function WorkDetail({
                 </div>
               )}
 
-              <div className="mt-6">
-                <p className="text-[11px] uppercase tracking-[0.12em] text-ink-3">
-                  Stack
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {project.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-ink-2 transition-colors hover:border-white/20 hover:text-ink"
-                    >
-                      {t}
-                    </span>
-                  ))}
+              {project.tech.length > 0 && (
+                <div className="mt-6">
+                  <p className="text-[11px] uppercase tracking-[0.12em] text-ink-3">
+                    Stack
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {project.tech.map((t) => (
+                      <span
+                        key={t}
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-ink-2 transition-colors hover:border-white/20 hover:text-ink"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div
@@ -443,14 +451,16 @@ export function WorkDetail({
                 Tell us where you are — we&apos;ll map the fastest route to a
                 shipped product.
               </p>
-              <Button
-                href={contact.calendly}
-                variant="secondary"
-                withArrow
-                className="relative mt-6 w-full"
-              >
-                Book a call
-              </Button>
+              {contact.calendly && (
+                <Button
+                  href={contact.calendly}
+                  variant="secondary"
+                  withArrow
+                  className="relative mt-6 w-full"
+                >
+                  Book a call
+                </Button>
+              )}
             </div>
           </aside>
         </div>
@@ -520,12 +530,16 @@ export function WorkDetail({
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-3">
                         Next case study
                       </p>
-                      <p className="mt-2.5 font-display text-3xl font-semibold text-ink transition-colors group-hover:text-brand-3 md:text-4xl">
-                        {next.name}
-                      </p>
-                      <p className="mt-1.5 text-sm text-ink-2">
-                        {next.category}
-                      </p>
+                      {next.name && (
+                        <p className="mt-2.5 font-display text-3xl font-semibold text-ink transition-colors group-hover:text-brand-3 md:text-4xl">
+                          {next.name}
+                        </p>
+                      )}
+                      {next.category && (
+                        <p className="mt-1.5 text-sm text-ink-2">
+                          {next.category}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <span className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-ink transition-colors group-hover:text-brand-3 md:pr-2">

@@ -6,7 +6,7 @@ import {
   CalendarDays,
   Clock,
 } from "lucide-react";
-import type { Blog, Contact } from "@/backend/types";
+import { isHidden, type Blog, type Contact } from "@/backend/types";
 import { AuroraBlobs, GridBackdrop } from "@/components/ui/backgrounds";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,7 @@ export function BlogDetail({
 }) {
   const images = blogImages(blog);
   const tags = blog.tags?.filter(Boolean) ?? [];
+  const showAuthor = !isHidden(blog, "author");
 
   return (
     <article className="relative">
@@ -93,22 +94,30 @@ export function BlogDetail({
           <Reveal delay={0.06}>
             <div className="mt-8">
               {blog.category && <Badge>{blog.category}</Badge>}
-              <h1 className="text-ink-gradient mt-5 text-balance text-3xl font-semibold leading-[1.08] tracking-tight sm:text-4xl md:text-5xl">
-                {blog.title}
-              </h1>
+              {blog.title && (
+                <h1 className="text-ink-gradient mt-5 text-balance text-3xl font-semibold leading-[1.08] tracking-tight sm:text-4xl md:text-5xl">
+                  {blog.title}
+                </h1>
+              )}
 
-              {/* byline */}
+              {/* byline — "Tekoovi" stands in for a blank author, so the
+                  switched-off case is read off the record itself. */}
+              {(showAuthor || blog.date || blog.readTime) && (
               <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 border-y border-white/10 py-5">
-                <span className="inline-flex items-center gap-3">
-                  <Avatar name={blog.author} />
-                  <span className="leading-tight">
-                    <span className="block text-sm font-semibold text-ink">
-                      {blog.author || "Tekoovi"}
+                {showAuthor && (
+                  <span className="inline-flex items-center gap-3">
+                    <Avatar name={blog.author} />
+                    <span className="leading-tight">
+                      <span className="block text-sm font-semibold text-ink">
+                        {blog.author || "Tekoovi"}
+                      </span>
+                      <span className="block text-xs text-ink-3">Author</span>
                     </span>
-                    <span className="block text-xs text-ink-3">Author</span>
                   </span>
-                </span>
-                <span className="hidden h-8 w-px bg-white/10 sm:block" />
+                )}
+                {showAuthor && (blog.date || blog.readTime) && (
+                  <span className="hidden h-8 w-px bg-white/10 sm:block" />
+                )}
                 {blog.date && (
                   <span className="inline-flex items-center gap-2 text-sm text-ink-3">
                     <CalendarDays className="h-4 w-4 text-brand-3" />
@@ -122,6 +131,7 @@ export function BlogDetail({
                   </span>
                 )}
               </div>
+              )}
             </div>
           </Reveal>
         </Container>
@@ -252,9 +262,11 @@ function BlogNav({
             </>
           )}
         </span>
-        <span className="mt-1 block truncate font-display text-base font-semibold text-ink transition-colors group-hover:text-brand-3">
-          {blog.title}
-        </span>
+        {blog.title && (
+          <span className="mt-1 block truncate font-display text-base font-semibold text-ink transition-colors group-hover:text-brand-3">
+            {blog.title}
+          </span>
+        )}
       </span>
 
       <ArrowUpRight
