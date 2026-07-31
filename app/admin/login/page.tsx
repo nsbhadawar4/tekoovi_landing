@@ -33,10 +33,10 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="grid min-h-screen place-items-center px-6">
+    <div className="grid min-h-screen place-items-center px-4 py-8 sm:px-6">
       <form
         onSubmit={onSubmit}
-        className="card-elevated w-full max-w-sm rounded-3xl p-8"
+        className="card-elevated w-full max-w-sm rounded-3xl p-6 sm:p-8"
       >
         <div className="flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-xl btn-brand font-display text-lg font-bold text-white">

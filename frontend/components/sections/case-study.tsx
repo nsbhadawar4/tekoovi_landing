@@ -41,7 +41,7 @@ export function CaseStudy({ projects }: { projects: Project[] }) {
         <Reveal className="mt-12 sm:mt-14">
           <Carousel
             label="Client success stories"
-            slideClass="basis-[86%] sm:basis-[58%] lg:basis-[42%]"
+            slideClass="basis-[78%] sm:basis-[46%] lg:basis-[31.5%]"
             autoPlay
             showProgress
             slides={featured.map((project) => (
@@ -63,7 +63,7 @@ function StoryCard({ project }: { project: Project }) {
       className="group card-lux lift sheen relative flex h-full flex-col overflow-hidden rounded-[26px]"
     >
       {/* ---------- visual ---------- */}
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className="relative aspect-[16/11] overflow-hidden">
         {project.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -101,31 +101,31 @@ function StoryCard({ project }: { project: Project }) {
       </div>
 
       {/* ---------- body ---------- */}
-      <div className="flex flex-1 flex-col p-6 sm:p-7">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
         {project.name && (
-          <h3 className="font-display text-xl font-semibold text-ink transition-colors duration-300 group-hover:text-brand-3 sm:text-2xl">
+          <h3 className="font-display text-lg font-semibold text-ink transition-colors duration-300 group-hover:text-brand-3 sm:text-xl">
             {project.name}
           </h3>
         )}
         {project.description && (
-          <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-ink-2">
+          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-2">
             {project.description}
           </p>
         )}
 
         {/* headline metric — the reason anyone reads a case study */}
         {project.result && (
-          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-brand-2/25 bg-brand/10 px-4 py-3">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl btn-brand text-white">
-              <TrendingUp className="h-4 w-4" />
+          <div className="mt-4 flex items-center gap-2.5 rounded-xl border border-brand-2/25 bg-brand/10 px-3.5 py-2.5">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg btn-brand text-white">
+              <TrendingUp className="h-3.5 w-3.5" />
             </span>
-            <p className="text-sm font-semibold leading-snug text-ink">
+            <p className="text-[13px] font-semibold leading-snug text-ink">
               {project.result}
             </p>
           </div>
         )}
 
-        <div className="mt-auto flex items-center justify-between gap-4 pt-6">
+        <div className="mt-auto flex items-center justify-between gap-4 pt-5">
           {project.country ? (
             <span className="inline-flex items-center gap-1.5 text-xs text-ink-3">
               <MapPin className="h-3.5 w-3.5" />

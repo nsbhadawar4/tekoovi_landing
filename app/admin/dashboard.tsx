@@ -16,6 +16,7 @@ import {
   BarChart3,
   Building2,
   CheckCircle2,
+  ChevronDown,
   CircleAlert,
   Code2,
   Eye,
@@ -204,9 +205,9 @@ function ImageField({
 
   return (
     <div className="mt-2">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
         <div
-          className="relative w-40 shrink-0 overflow-hidden rounded-xl border border-line bg-bg/50 bg-center bg-no-repeat"
+          className="relative w-full max-w-[200px] shrink-0 overflow-hidden rounded-xl border border-line bg-bg/50 bg-center bg-no-repeat sm:w-40"
           style={{
             aspectRatio: aspect ?? 16 / 10,
             backgroundSize: fit === "contain" ? "contain" : "cover",
@@ -219,7 +220,7 @@ function ImageField({
             </div>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
@@ -444,7 +445,8 @@ function VisibilitySwitch({
       ) : (
         <EyeOff className="h-3.5 w-3.5" />
       )}
-      <span className={on ? "text-brand-3" : ""}>
+      {/* the word is the first thing to go when space runs out */}
+      <span className={`hidden min-[380px]:inline ${on ? "text-brand-3" : ""}`}>
         {on ? "Shown" : "Hidden"}
       </span>
       <SwitchTrack on={on} />
@@ -483,9 +485,9 @@ function FieldRows({
     return (
       <div key={field.name} className={off ? "opacity-60" : undefined}>
         {(field.type !== "boolean" || canToggle) && (
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-start justify-between gap-3">
             {field.type !== "boolean" ? (
-              <label className="block text-xs font-medium text-ink-3">
+              <label className="block min-w-0 flex-1 text-xs font-medium leading-relaxed text-ink-3">
                 {field.label}
               </label>
             ) : (
@@ -542,7 +544,10 @@ function FieldRows({
   return (
     <>
       {cards.map((c) => (
-        <div key={c.key} className="card-hairline space-y-5 rounded-xl p-5">
+        <div
+          key={c.key}
+          className="card-hairline space-y-5 rounded-xl p-4 sm:p-5"
+        >
           {c.fields.map(renderField)}
         </div>
       ))}
@@ -605,7 +610,7 @@ function HeaderForm({
   }
 
   return (
-    <div className="card-hairline mt-6 rounded-2xl p-6">
+    <div className="card-hairline mt-6 rounded-2xl p-4 sm:p-6">
       <p className="text-sm font-medium text-ink">{header.label}</p>
       {loading ? (
         <div className="mt-4 space-y-4">
@@ -624,7 +629,7 @@ function HeaderForm({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-xl btn-brand px-5 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
+              className="w-full rounded-xl btn-brand px-5 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50 sm:w-auto"
             >
               {saving ? "Saving…" : "Save header"}
             </button>
@@ -632,6 +637,42 @@ function HeaderForm({
         </form>
       )}
     </div>
+  );
+}
+
+/** One entry in the sidebar / mobile section sheet. */
+function NavButton({
+  section,
+  active,
+  onSelect,
+}: {
+  section: SectionDef;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  const Icon = SIDEBAR_ICONS[section.icon] ?? Sparkles;
+  return (
+    <button
+      onClick={onSelect}
+      title={section.onPage}
+      className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors ${
+        active
+          ? "bg-brand/15 text-ink ring-1 ring-inset ring-brand/25"
+          : "text-ink-3 hover:bg-white/[0.04] hover:text-ink"
+      }`}
+    >
+      <Icon className={`h-4 w-4 shrink-0 ${active ? "text-brand-3" : ""}`} />
+      <span className="flex min-w-0 flex-col">
+        <span className="truncate">{section.label}</span>
+        <span
+          className={`truncate text-[10px] font-normal ${
+            active ? "text-brand-3/70" : "text-ink-3/70"
+          }`}
+        >
+          {section.onPage}
+        </span>
+      </span>
+    </button>
   );
 }
 
@@ -653,6 +694,8 @@ export default function AdminDashboard() {
 
   const [items, setItems] = useState<AdminItem[]>([]);
   const [loading, setLoading] = useState(true);
+  // Phone-only: the section sheet under the header.
+  const [navOpen, setNavOpen] = useState(false);
 
   // Editor state: null = closed, "new" = adding, otherwise editing that id.
   const [editing, setEditing] = useState<string | "new" | null>(null);
@@ -900,10 +943,13 @@ export default function AdminDashboard() {
     }
   }
 
+  const activeIndex = SECTIONS.findIndex((s) => s.key === section);
+  const ActiveIcon = SIDEBAR_ICONS[def.icon] ?? Sparkles;
+
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
-      {/* sidebar */}
-      <aside className="shrink-0 border-b border-line bg-bg-2/50 backdrop-blur-xl md:w-64 md:border-b-0 md:border-r">
+      {/* ---------------- sidebar (tablet and up) ---------------- */}
+      <aside className="hidden shrink-0 border-line bg-bg-2/50 backdrop-blur-xl md:block md:w-64 md:border-r">
         <div className="flex items-center gap-2.5 px-5 py-5">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg btn-brand font-display text-sm font-bold text-white">
             T
@@ -915,86 +961,130 @@ export default function AdminDashboard() {
             <p className="text-[11px] text-ink-3">Content studio</p>
           </div>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:max-h-[calc(100vh-88px)] md:flex-col md:overflow-y-auto md:pb-4">
-          {SECTIONS.map((s) => {
-            const Icon = SIDEBAR_ICONS[s.icon] ?? Sparkles;
-            const active = s.key === section;
-            return (
-              <button
-                key={s.key}
-                onClick={() => selectSection(s.key)}
-                title={s.onPage}
-                className={`flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-brand/15 text-ink ring-1 ring-inset ring-brand/25"
-                    : "text-ink-3 hover:bg-white/[0.04] hover:text-ink"
-                }`}
-              >
-                <Icon
-                  className={`h-4 w-4 shrink-0 ${active ? "text-brand-3" : ""}`}
-                />
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate">{s.label}</span>
-                  <span
-                    className={`hidden truncate text-[10px] font-normal md:block ${
-                      active ? "text-brand-3/70" : "text-ink-3/70"
-                    }`}
-                  >
-                    {s.onPage}
-                  </span>
-                </span>
-              </button>
-            );
-          })}
+        <nav className="flex max-h-[calc(100vh-88px)] flex-col gap-1 overflow-y-auto px-3 pb-4">
+          {SECTIONS.map((s) => (
+            <NavButton
+              key={s.key}
+              section={s}
+              active={s.key === section}
+              onSelect={() => selectSection(s.key)}
+            />
+          ))}
         </nav>
       </aside>
 
-      {/* main */}
-      <div className="flex-1">
+      {/* ---------------- main ---------------- */}
+      <div className="min-w-0 flex-1">
         {/* header */}
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-line bg-bg/70 px-5 py-4 backdrop-blur-xl md:px-6">
-          <div>
-            <h1 className="text-lg font-semibold text-ink">
-              Landing page admin
-            </h1>
-            <p className="mt-0.5 text-xs text-ink-3">
-              Changes show on the site instantly.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={optimizeImages}
-              disabled={optimizing}
-              title="Move inline images into the cached media store for faster page loads"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50"
-            >
-              <Sparkles className="h-4 w-4" />
-              <span className="hidden sm:inline">
-                {optimizing ? "Optimising…" : "Optimize images"}
+        <header className="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-3 px-4 py-3 md:px-6 md:py-4">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg btn-brand font-display text-sm font-bold text-white md:hidden">
+                T
               </span>
-            </button>
-            <a
-              href="/"
-              target="_blank"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
-            >
-              <ExternalLink className="h-4 w-4" />
-              <span className="hidden sm:inline">View site</span>
-            </a>
+              <div className="min-w-0">
+                <h1 className="truncate text-[15px] font-semibold text-ink md:text-lg">
+                  Landing page admin
+                </h1>
+                <p className="mt-0.5 hidden text-xs text-ink-3 sm:block">
+                  Changes show on the site instantly.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <button
+                onClick={optimizeImages}
+                disabled={optimizing}
+                title="Move inline images into the cached media store for faster page loads"
+                aria-label="Optimize images"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] p-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50 sm:px-3"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span className="hidden sm:inline">
+                  {optimizing ? "Optimising…" : "Optimize images"}
+                </span>
+              </button>
+              <a
+                href="/"
+                target="_blank"
+                aria-label="View site"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] p-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink sm:px-3"
+              >
+                <ExternalLink className="h-4 w-4" />
+                <span className="hidden sm:inline">View site</span>
+              </a>
+              <button
+                onClick={logout}
+                aria-label="Log out"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] p-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink sm:px-3"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Log out</span>
+              </button>
+            </div>
+          </div>
+
+          {/* phone: one tap opens the whole section list instead of a
+              21-item horizontal scroll strip nobody can navigate */}
+          <div className="relative md:hidden">
             <button
-              onClick={logout}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
+              type="button"
+              onClick={() => setNavOpen((v) => !v)}
+              aria-expanded={navOpen}
+              className="flex w-full items-center gap-3 border-t border-line px-4 py-3 text-left"
             >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Log out</span>
+              <ActiveIcon className="h-4 w-4 shrink-0 text-brand-3" />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-ink">
+                  {def.label}
+                </span>
+                <span className="block truncate text-[11px] text-ink-3">
+                  {def.onPage}
+                </span>
+              </span>
+              <span className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[10px] text-ink-3">
+                {activeIndex + 1}/{SECTIONS.length}
+              </span>
+              <ChevronDown
+                className={`h-4 w-4 shrink-0 text-ink-3 transition-transform duration-300 ${
+                  navOpen ? "rotate-180" : ""
+                }`}
+              />
             </button>
+
+            <AnimatePresence>
+              {navOpen && (
+                <motion.nav
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute inset-x-0 top-full z-40 max-h-[62vh] overflow-y-auto border-b border-line bg-bg/95 p-3 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.95)] backdrop-blur-xl"
+                >
+                  <div className="grid grid-cols-1 gap-1 min-[430px]:grid-cols-2">
+                    {SECTIONS.map((s) => (
+                      <NavButton
+                        key={s.key}
+                        section={s}
+                        active={s.key === section}
+                        onSelect={() => {
+                          selectSection(s.key);
+                          setNavOpen(false);
+                        }}
+                      />
+                    ))}
+                  </div>
+                </motion.nav>
+              )}
+            </AnimatePresence>
           </div>
         </header>
 
         {/* content */}
-        <div className="mx-auto max-w-5xl px-5 py-8 md:px-6">
+        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-5 sm:py-8 md:px-6">
           {/* toolbar */}
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <h2 className="truncate text-base font-medium text-ink">
                 {def.label}{" "}
@@ -1002,7 +1092,7 @@ export default function AdminDashboard() {
                   <span className="text-ink-3">({items.length})</span>
                 )}
               </h2>
-              <p className="mt-0.5 truncate text-xs text-ink-3">
+              <p className="mt-0.5 text-xs text-ink-3">
                 On page: {def.onPage}
               </p>
               {!def.noToggles && (
@@ -1021,10 +1111,10 @@ export default function AdminDashboard() {
                     return (
                       <div
                         key={key}
-                        className="flex items-center gap-2.5 rounded-xl border border-line bg-white/[0.02] px-3 py-1.5"
+                        className="flex w-full items-center justify-between gap-2.5 rounded-xl border border-line bg-white/[0.02] px-3 py-2 sm:w-auto sm:justify-start"
                         title={block?.hint}
                       >
-                        <span className="text-xs text-ink-2">
+                        <span className="min-w-0 truncate text-xs text-ink-2">
                           {label} section
                         </span>
                         <VisibilitySwitch
@@ -1042,7 +1132,7 @@ export default function AdminDashboard() {
             {!isSingle && (
               <button
                 onClick={startAdd}
-                className="shrink-0 rounded-xl btn-brand px-4 py-2 text-sm font-semibold text-white transition-[filter] hover:brightness-110"
+                className="w-full shrink-0 rounded-xl btn-brand px-4 py-2.5 text-sm font-semibold text-white transition-[filter] hover:brightness-110 sm:w-auto sm:py-2"
               >
                 + Add new
               </button>
@@ -1051,9 +1141,9 @@ export default function AdminDashboard() {
 
           {/* ------------------- singleton editor ------------------- */}
           {isSingle ? (
-            <div className="mt-6 card-hairline space-y-5 rounded-xl p-5">
+            <div className="mt-6 card-hairline space-y-5 rounded-xl p-3 sm:p-5">
               {loading ? (
-                <div className="card-hairline space-y-4 rounded-2xl p-6">
+                <div className="card-hairline space-y-4 rounded-2xl p-4 sm:p-6">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i} className="space-y-2">
                       <div className="h-3 w-24 animate-pulse rounded bg-white/10" />
@@ -1075,7 +1165,7 @@ export default function AdminDashboard() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="rounded-xl btn-brand px-5 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
+                      className="w-full rounded-xl btn-brand px-5 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50 sm:w-auto"
                     >
                       {saving ? "Saving…" : "Save changes"}
                     </button>
@@ -1132,11 +1222,11 @@ export default function AdminDashboard() {
                     return (
                       <div
                         key={item.id}
-                        className="card-hairline flex items-center gap-3 rounded-xl p-3 transition-colors hover:border-white/15 sm:gap-4 sm:p-4"
+                        className="card-hairline flex flex-wrap items-center gap-3 rounded-xl p-3 transition-colors hover:border-white/15 sm:flex-nowrap sm:gap-4 sm:p-4"
                       >
                         {imageField && (
                           <div
-                            className="relative aspect-[16/10] w-20 shrink-0 overflow-hidden rounded-lg border border-line bg-bg-2 bg-cover bg-center sm:w-28"
+                            className="relative aspect-[16/10] w-16 shrink-0 overflow-hidden rounded-lg border border-line bg-bg-2 bg-cover bg-center sm:w-28"
                             style={
                               img
                                 ? { backgroundImage: `url(${img})` }
@@ -1150,9 +1240,9 @@ export default function AdminDashboard() {
                             )}
                           </div>
                         )}
-                        <div className="min-w-0 flex-1">
-                          <p className="flex items-center gap-2 text-sm font-medium text-ink">
-                            <span className="truncate">{title}</span>
+                        <div className="min-w-0 flex-1 basis-40">
+                          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium text-ink">
+                            <span className="min-w-0 truncate">{title}</span>
                             {hiddenCount(item) > 0 && (
                               <span
                                 title="Fields switched off for this item"
@@ -1169,16 +1259,16 @@ export default function AdminDashboard() {
                             </p>
                           )}
                         </div>
-                        <div className="flex shrink-0 gap-2">
+                        <div className="flex w-full shrink-0 gap-2 sm:w-auto">
                           <button
                             onClick={() => startEdit(item)}
-                            className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
+                            className="flex-1 rounded-lg border border-line bg-white/[0.02] px-3 py-2 text-xs text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink sm:flex-none sm:py-1.5"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => setPendingDelete(item)}
-                            className="rounded-lg border border-red-500/30 bg-red-500/[0.04] px-3 py-1.5 text-xs text-red-300 transition-colors hover:bg-red-500/10"
+                            className="flex-1 rounded-lg border border-red-500/30 bg-red-500/[0.04] px-3 py-2 text-xs text-red-300 transition-colors hover:bg-red-500/10 sm:flex-none sm:py-1.5"
                           >
                             Delete
                           </button>
@@ -1195,38 +1285,49 @@ export default function AdminDashboard() {
 
       {/* editor modal (collections only) */}
       {!isSingle && editing !== null && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-bg/80 p-4 backdrop-blur-sm">
+        // Bottom sheet on a phone, centred dialog from `sm` up. The action bar
+        // is pinned so Save is always reachable in a long form.
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-bg/80 backdrop-blur-sm sm:items-center sm:p-4">
           <form
             onSubmit={save}
-            className="card-elevated max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl p-6"
+            className="card-elevated flex max-h-[92dvh] w-full max-w-lg flex-col rounded-t-2xl sm:max-h-[90vh] sm:rounded-2xl"
           >
-            <h3 className="text-lg font-semibold text-ink">
-              {editing === "new" ? "Add" : "Edit"} {def.singular}
-            </h3>
+            <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
+              <h3 className="truncate text-base font-semibold text-ink sm:text-lg">
+                {editing === "new" ? "Add" : "Edit"} {def.singular}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setEditing(null)}
+                aria-label="Close"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-ink-3 transition-colors hover:bg-white/[0.06] hover:text-ink"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
-            <div className="mt-5 space-y-4">
+            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-5 sm:px-6">
               <FieldRows
                 fields={def.fields}
                 form={form}
                 setForm={setForm}
                 toggles={!def.noToggles}
               />
+              {error && <p className="text-sm text-red-400">{error}</p>}
             </div>
 
-            {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
-
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="flex gap-3 border-t border-line px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:justify-end sm:px-6">
               <button
                 type="button"
                 onClick={() => setEditing(null)}
-                className="rounded-lg border border-line bg-white/[0.02] px-4 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink"
+                className="flex-1 rounded-lg border border-line bg-white/[0.02] px-4 py-2.5 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink sm:flex-none sm:py-2"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded-xl btn-brand px-4 py-2 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
+                className="flex-1 rounded-xl btn-brand px-4 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50 sm:flex-none sm:py-2"
               >
                 {saving ? "Saving…" : "Save"}
               </button>
@@ -1291,7 +1392,7 @@ export default function AdminDashboard() {
       </AnimatePresence>
 
       {/* toast notifications */}
-      <div className="pointer-events-none fixed right-4 top-4 z-[80] flex w-full max-w-xs flex-col gap-2">
+      <div className="pointer-events-none fixed inset-x-3 top-3 z-[80] flex flex-col gap-2 sm:left-auto sm:right-4 sm:top-4 sm:w-full sm:max-w-xs">
         <AnimatePresence initial={false}>
           {toasts.map((t) => (
             <motion.div

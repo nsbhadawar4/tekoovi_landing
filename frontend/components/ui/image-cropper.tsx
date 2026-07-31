@@ -201,8 +201,8 @@ export function ImageCropper({
   }
 
   return (
-    <div className="fixed inset-0 z-[90] grid place-items-center bg-bg/80 p-4 backdrop-blur-sm">
-      <div className="card-elevated w-full max-w-md rounded-2xl p-5">
+    <div className="fixed inset-0 z-[90] grid place-items-center overflow-y-auto bg-bg/80 p-3 backdrop-blur-sm sm:p-4">
+      <div className="card-elevated my-auto w-full max-w-md rounded-2xl p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-ink">Crop image</h3>
           <button
@@ -267,12 +267,12 @@ export function ImageCropper({
           Drag to reposition · scroll or use the slider to zoom.
         </p>
 
-        <div className="mt-5 flex justify-end gap-3">
+        <div className="mt-5 flex gap-3 sm:justify-end">
           <button
             type="button"
             onClick={onCancel}
             disabled={busy}
-            className="rounded-lg border border-line bg-white/[0.02] px-4 py-2 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50"
+            className="flex-1 rounded-lg border border-line bg-white/[0.02] px-4 py-2.5 text-sm text-ink-2 transition-colors hover:bg-white/[0.06] hover:text-ink disabled:opacity-50 sm:flex-none sm:py-2"
           >
             Cancel
           </button>
@@ -280,7 +280,7 @@ export function ImageCropper({
             type="button"
             onClick={handleCrop}
             disabled={busy || !nat}
-            className="inline-flex items-center gap-2 rounded-xl btn-brand px-4 py-2 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl btn-brand px-4 py-2.5 text-sm font-semibold text-white transition-[filter,opacity] hover:brightness-110 disabled:opacity-50 sm:flex-none sm:py-2"
           >
             <Check className="h-4 w-4" />
             {busy ? "Uploading…" : "Apply"}
