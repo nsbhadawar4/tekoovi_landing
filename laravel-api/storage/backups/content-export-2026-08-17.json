@@ -1,0 +1,812 @@
+{
+    "settings": {
+        "item": {
+            "fontFamily": "poppins",
+            "logoImage": "/api/media/6a620da2e30cd9d97e9ae888",
+            "theme": "dark",
+            "showThemeToggle": false
+        }
+    },
+    "pageSections": {
+        "item": {
+            "industries": true,
+            "techStack": true,
+            "faq": true,
+            "hero": true,
+            "trustedBy": true,
+            "work": true,
+            "services": true,
+            "why": true,
+            "process": true,
+            "caseStudies": true,
+            "testimonials": true,
+            "founder": true,
+            "blog": true
+        }
+    },
+    "hero": {
+        "item": {
+            "badge": "Premium Digital Product Studio",
+            "titleLead": "We build digital products that",
+            "titleHighlight": "scale businesses.",
+            "subtitle": "Tekoovi designs and engineers scalable websites, SaaS platforms, AI solutions and mobile apps — the quiet standard behind ambitious products.",
+            "primaryLabel": "Book Free Consultation",
+            "primaryHref": "https://calendly.com/tekoovi/discovery",
+            "secondaryLabel": "View Portfolio",
+            "secondaryHref": "#work",
+            "backgroundImage": "/api/media/6a61bd5045dab5140eaec7d6",
+            "hiddenFields": []
+        }
+    },
+    "stats": {
+        "items": [
+            {
+                "id": "st1",
+                "label": "Products shipped",
+                "value": 140,
+                "suffix": "+",
+                "hiddenFields": []
+            },
+            {
+                "id": "st2",
+                "label": "Countries served",
+                "value": 18,
+                "suffix": ""
+            },
+            {
+                "id": "st3",
+                "label": "Years of craft",
+                "value": 9,
+                "suffix": "+"
+            },
+            {
+                "id": "st4",
+                "label": "Client satisfaction",
+                "value": 98,
+                "suffix": "%"
+            }
+        ]
+    },
+    "logos": {
+        "items": [
+            {
+                "id": "lg1",
+                "name": "Aeronex"
+            },
+            {
+                "id": "lg2",
+                "name": "Northwind"
+            },
+            {
+                "id": "lg3",
+                "name": "Lumen Health"
+            },
+            {
+                "id": "lg4",
+                "name": "Kairo"
+            },
+            {
+                "id": "lg5",
+                "name": "Vaultline"
+            },
+            {
+                "id": "lg6",
+                "name": "Brightpath"
+            },
+            {
+                "id": "lg7",
+                "name": "Meridian"
+            },
+            {
+                "id": "lg8",
+                "name": "Cobalt"
+            },
+            {
+                "id": "lg9",
+                "name": "Fieldstone"
+            },
+            {
+                "id": "lg10",
+                "name": "Novus"
+            }
+        ]
+    },
+    "projects": {
+        "items": [
+            {
+                "id": "p1",
+                "image": "/api/media/6a61bd5045dab5140eaec7d7",
+                "name": "Lumen Health",
+                "category": "AI SaaS · Healthcare",
+                "description": "A clinical intelligence platform that turns patient data into real-time care decisions.",
+                "tech": [
+                    "Next.js",
+                    "OpenAI",
+                    "Supabase",
+                    "AWS"
+                ],
+                "country": "United States",
+                "result": "+63% faster triage",
+                "accent": "from-[#6C3BFF]/40 to-[#3a1f8f]/10",
+                "slug": "",
+                "year": "",
+                "duration": "",
+                "services": [],
+                "liveUrl": "",
+                "gallery1": "/api/media/6a61bd5045dab5140eaec7d8",
+                "gallery2": "",
+                "gallery3": "",
+                "overview": "csdcs",
+                "challenge": "fefs",
+                "solution": "dd",
+                "outcome": "sdcsd",
+                "highlights": [],
+                "quote": "test",
+                "quoteAuthor": "ath",
+                "hiddenFields": []
+            },
+            {
+                "id": "p2",
+                "image": "/api/media/6a61bd5045dab5140eaec7d9",
+                "name": "Vaultline",
+                "category": "Fintech · Platform",
+                "description": "Treasury & payments infrastructure moving eight figures monthly with zero downtime.",
+                "tech": [
+                    "Node.js",
+                    "PostgreSQL",
+                    "Stripe",
+                    "Docker"
+                ],
+                "country": "United Kingdom",
+                "result": "$40M+ processed",
+                "accent": "from-[#8A5CFF]/40 to-[#1b1b28]/10"
+            },
+            {
+                "id": "p3",
+                "image": "/api/media/6a61bd5045dab5140eaec7da",
+                "name": "Fieldstone",
+                "category": "PropTech · Web + Mobile",
+                "description": "An end-to-end real estate operating system for listings, tours and closings.",
+                "tech": [
+                    "React Native",
+                    "Laravel",
+                    "Google Cloud"
+                ],
+                "country": "United Arab Emirates",
+                "result": "3.4× lead conversion",
+                "accent": "from-[#B388FF]/35 to-[#241a3d]/10"
+            },
+            {
+                "image": "/api/media/6a61bd5145dab5140eaec7db",
+                "name": "Test1",
+                "category": "lorem ipsum",
+                "description": "lorem ipsum",
+                "tech": [
+                    "lorem ipsum"
+                ],
+                "country": "India",
+                "result": "test",
+                "accent": "often",
+                "id": "xzn50vat0o7l",
+                "slug": "https://www.google.com/test",
+                "year": "2026",
+                "duration": "20",
+                "services": [
+                    "not"
+                ],
+                "liveUrl": "https://www.google.com/",
+                "gallery1": "/api/media/6a61bd5145dab5140eaec7dc",
+                "gallery2": "/api/media/6a61bd5145dab5140eaec7dd",
+                "gallery3": "/api/media/6a61bd5145dab5140eaec7de",
+                "overview": "lorem ipsum",
+                "challenge": "lorem ipsum",
+                "solution": "lorem ipsum",
+                "outcome": "lorem ipsum",
+                "highlights": [
+                    "10"
+                ],
+                "quote": "lorem ipsum",
+                "quoteAuthor": "lorem ipsum"
+            }
+        ]
+    },
+    "services": {
+        "items": [
+            {
+                "id": "s3",
+                "title": "AI Solutions",
+                "description": "LLM copilots, RAG systems and intelligent agents wired into your product.",
+                "icon": "BrainCircuit",
+                "featured": true
+            },
+            {
+                "id": "s4",
+                "title": "Mobile Apps",
+                "description": "Native-grade iOS & Android experiences from a single codebase.",
+                "icon": "Smartphone",
+                "featured": false
+            },
+            {
+                "id": "s5",
+                "title": "Automation",
+                "description": "Internal tools and workflows that quietly remove operational drag.",
+                "icon": "Workflow",
+                "featured": false
+            },
+            {
+                "id": "s6",
+                "title": "UI / UX Design",
+                "description": "Systems, not screens — design languages your team can build on for years.",
+                "icon": "Palette",
+                "featured": false
+            },
+            {
+                "id": "s7",
+                "title": "SEO & Growth",
+                "description": "Technical SEO, Core Web Vitals and funnels tuned for compounding growth.",
+                "icon": "LineChart",
+                "featured": false
+            },
+            {
+                "id": "s8",
+                "title": "Maintenance",
+                "description": "Proactive monitoring, iteration and long-term partnership after launch.",
+                "icon": "Wrench",
+                "featured": false
+            }
+        ]
+    },
+    "industries": {
+        "items": [
+            {
+                "id": "in1",
+                "name": "Healthcare",
+                "icon": "Target"
+            },
+            {
+                "id": "in2",
+                "name": "Real Estate",
+                "icon": "Building2"
+            },
+            {
+                "id": "in3",
+                "name": "Education",
+                "icon": "GraduationCap"
+            },
+            {
+                "id": "in4",
+                "name": "Construction",
+                "icon": "Boxes"
+            },
+            {
+                "id": "in5",
+                "name": "HRTech",
+                "icon": "Users"
+            },
+            {
+                "id": "in6",
+                "name": "Finance",
+                "icon": "Landmark"
+            },
+            {
+                "id": "in7",
+                "name": "Restaurants",
+                "icon": "UtensilsCrossed"
+            },
+            {
+                "id": "in8",
+                "name": "Retail",
+                "icon": "ShoppingBag"
+            }
+        ]
+    },
+    "why": {
+        "items": [
+            {
+                "id": "wy1",
+                "title": "Transparent communication",
+                "description": "Direct access to the people building your product. No account managers, no fog.",
+                "icon": "ScanSearch"
+            },
+            {
+                "id": "wy2",
+                "title": "Business-first thinking",
+                "description": "We optimise for your revenue and outcomes, not our line count.",
+                "icon": "LineChart"
+            },
+            {
+                "id": "wy3",
+                "title": "Scalable architecture",
+                "description": "Foundations that hold at 10 users and 10 million — designed from day one.",
+                "icon": "Boxes"
+            },
+            {
+                "id": "wy4",
+                "title": "Fast, deliberate delivery",
+                "description": "Weekly shippable increments. Momentum you can actually see.",
+                "icon": "Rocket"
+            },
+            {
+                "id": "wy5",
+                "title": "Modern technology",
+                "description": "A battle-tested stack chosen for longevity, not hype cycles.",
+                "icon": "Sparkles"
+            },
+            {
+                "id": "wy6",
+                "title": "Long-term partnership",
+                "description": "Most clients stay for years. We build for the roadmap, not the invoice.",
+                "icon": "ShieldCheck"
+            }
+        ]
+    },
+    "process": {
+        "items": [
+            {
+                "id": "pr1",
+                "step": "01",
+                "title": "Discover",
+                "description": "We dig into your business, users and goals before a single pixel is drawn."
+            },
+            {
+                "id": "pr2",
+                "step": "02",
+                "title": "Plan",
+                "description": "Scope, architecture and a clear roadmap with milestones you can hold us to."
+            },
+            {
+                "id": "pr3",
+                "step": "03",
+                "title": "Design",
+                "description": "High-fidelity, interactive design systems that feel like the real product."
+            },
+            {
+                "id": "pr4",
+                "step": "04",
+                "title": "Develop",
+                "description": "Clean, tested, scalable code shipped in weekly increments you can review."
+            },
+            {
+                "id": "pr5",
+                "step": "05",
+                "title": "Test",
+                "description": "QA, performance budgets and accessibility audits before anything goes live."
+            },
+            {
+                "id": "pr6",
+                "step": "06",
+                "title": "Launch",
+                "description": "A confident, monitored release — with rollbacks ready if we ever need them."
+            },
+            {
+                "id": "pr7",
+                "step": "07",
+                "title": "Support",
+                "description": "We stay on. Iteration, monitoring and growth long after go-live."
+            }
+        ]
+    },
+    "techStack": {
+        "items": [
+            {
+                "id": "tc1",
+                "name": "React"
+            },
+            {
+                "id": "tc2",
+                "name": "Next.js"
+            },
+            {
+                "id": "tc3",
+                "name": "Laravel"
+            },
+            {
+                "id": "tc4",
+                "name": "Node.js"
+            },
+            {
+                "id": "tc5",
+                "name": "React Native"
+            },
+            {
+                "id": "tc6",
+                "name": "Flutter"
+            },
+            {
+                "id": "tc7",
+                "name": "Supabase"
+            },
+            {
+                "id": "tc8",
+                "name": "Firebase"
+            },
+            {
+                "id": "tc9",
+                "name": "AWS"
+            },
+            {
+                "id": "tc10",
+                "name": "DigitalOcean"
+            },
+            {
+                "id": "tc11",
+                "name": "Docker"
+            },
+            {
+                "id": "tc12",
+                "name": "OpenAI"
+            },
+            {
+                "id": "tc13",
+                "name": "Stripe"
+            },
+            {
+                "id": "tc14",
+                "name": "Google Cloud"
+            },
+            {
+                "id": "tc15",
+                "name": "PostgreSQL"
+            },
+            {
+                "id": "tc16",
+                "name": "MySQL"
+            }
+        ]
+    },
+    "caseStudy": {
+        "item": {
+            "client": "Lumen Health",
+            "title": "Cutting clinical triage time by two-thirds with an AI care platform",
+            "problem": "Clinicians were drowning in fragmented patient data across five disconnected systems, delaying critical care decisions.",
+            "research": "We shadowed care teams for two weeks, mapped every data source and identified the 12 signals that actually drive triage.",
+            "solution": "A unified, AI-assisted command centre that surfaces the right patient context — and a recommended next action — in real time.",
+            "challenges": "HIPAA-grade security, sub-200ms inference at the bedside, and a zero-training-required interface for busy staff.",
+            "tech": [
+                "Next.js",
+                "OpenAI",
+                "Supabase",
+                "AWS",
+                "PostgreSQL"
+            ],
+            "outcome": "A pilot that clinicians actually love — and measurable time back at the bedside."
+        }
+    },
+    "caseMetrics": {
+        "items": [
+            {
+                "id": "cm1",
+                "value": "63%",
+                "label": "Faster triage decisions"
+            },
+            {
+                "id": "cm2",
+                "value": "4.9/5",
+                "label": "Clinician usability score"
+            },
+            {
+                "id": "cm3",
+                "value": "0",
+                "label": "Critical incidents post-launch"
+            },
+            {
+                "id": "cm4",
+                "value": "3 wks",
+                "label": "From kickoff to first pilot"
+            }
+        ]
+    },
+    "testimonials": {
+        "items": [
+            {
+                "id": "t1",
+                "quote": "Tekoovi shipped a product our last two agencies couldn't. The quality is genuinely enterprise-grade — it feels like Vercel built it.",
+                "name": "Sarah Whitfield",
+                "role": "CEO, Lumen Health",
+                "initials": "SW"
+            },
+            {
+                "id": "t2",
+                "quote": "They think like founders. Every decision was tied back to revenue and users. Rare, and worth every cent.",
+                "name": "Daniel Osei",
+                "role": "Founder, Vaultline",
+                "initials": "DO"
+            },
+            {
+                "id": "t3",
+                "quote": "Fast, transparent and obsessive about detail. We went from idea to funded pilot in under a month.",
+                "name": "Amelia Rossi",
+                "role": "COO, Fieldstone",
+                "initials": "AR"
+            },
+            {
+                "id": "t4",
+                "quote": "The most senior engineering partner we've worked with. Zero hand-holding, all signal.",
+                "name": "Marcus Lindqvist",
+                "role": "CTO, Kairo",
+                "initials": "ML"
+            }
+        ]
+    },
+    "founder": {
+        "item": {
+            "name": "Abhay Pratap",
+            "role": "Founder & Principal Engineer",
+            "initials": "AP",
+            "story": "I started Tekoovi after a decade of watching brilliant businesses get let down by agencies that shipped templates and disappeared. I wanted to build the opposite: a small, senior studio that treats every product like our own.",
+            "mission": "To give founders and teams the kind of product craft usually reserved for the world's best companies — with the honesty and speed of working directly with the maker.",
+            "vision": "A studio known less for what we build and more for how it performs, scales and lasts — the quiet standard behind ambitious products."
+        }
+    },
+    "faqs": {
+        "items": [
+            {
+                "id": "f1",
+                "q": "What kind of companies do you work with?",
+                "a": "Funded startups and established businesses who treat their software as a core asset — not a checkbox. If you care about craft, speed and outcomes, we'll get along."
+            },
+            {
+                "id": "f2",
+                "q": "How is Tekoovi different from a typical agency?",
+                "a": "We're a product studio, not a feature factory. You work directly with senior designers and engineers who own outcomes, communicate transparently and stay for the long term."
+            },
+            {
+                "id": "f3",
+                "q": "How long does a typical project take?",
+                "a": "A focused MVP usually ships in 4–8 weeks. Larger platforms run in weekly increments so you always have something real to review and never wait months in the dark."
+            },
+            {
+                "id": "f4",
+                "q": "How much does a project cost?",
+                "a": "Every engagement is scoped to your goals, so pricing is bespoke. Most partnerships start in the mid five figures. We'll give you a clear, itemised proposal after the discovery call."
+            },
+            {
+                "id": "f5",
+                "q": "Do you work after launch?",
+                "a": "Always. Most clients stay on for ongoing iteration, monitoring and growth. We build for the roadmap, not the invoice."
+            },
+            {
+                "id": "f6",
+                "q": "Who actually owns the code and IP?",
+                "a": "You do — 100%. Clean, documented, well-architected code handed over in your own repositories from day one."
+            }
+        ]
+    },
+    "contact": {
+        "item": {
+            "email": "hello@tekoovi.com",
+            "whatsapp": "https://wa.me/10000000000",
+            "calendly": "https://calendly.com/tekoovi/discovery",
+            "hiddenFields": []
+        }
+    },
+    "socials": {
+        "items": [
+            {
+                "id": "so1",
+                "label": "X",
+                "href": "https://x.com/tekoovi"
+            },
+            {
+                "id": "so2",
+                "label": "LinkedIn",
+                "href": "https://linkedin.com/company/tekoovi"
+            },
+            {
+                "id": "so3",
+                "label": "Dribbble",
+                "href": "https://dribbble.com/tekoovi",
+                "hiddenFields": []
+            },
+            {
+                "id": "so4",
+                "label": "GitHub",
+                "href": "https://github.com/tekoovi"
+            }
+        ]
+    },
+    "privacy": {
+        "item": {
+            "title": "Privacy Policy",
+            "intro": "Tekoovi builds software for founders and teams who take their data seriously — so we hold ourselves to the same standard. This policy explains what we collect, why we collect it, and the control you keep over it.",
+            "updated": "17 July 2026",
+            "hiddenFields": []
+        }
+    },
+    "privacyClauses": {
+        "items": [
+            {
+                "id": "pc1",
+                "heading": "Who we are",
+                "body": "Tekoovi is a digital product studio that designs and engineers websites, SaaS platforms, AI solutions and mobile apps. This policy covers tekoovi.com and any enquiry you send us through it.\n\nFor anything privacy-related, including the requests described below, write to hello@tekoovi.com and a person will answer you."
+            },
+            {
+                "id": "pc2",
+                "heading": "Information we collect",
+                "body": "We only collect what we actually need to reply to you and keep the site working:\n\n- Details you send us. Your name, email address, company and whatever you write in an enquiry or discovery-call booking.\n- Technical data. IP address, browser type, device and referring page, logged automatically when you visit.\n- Usage data. Which pages you open and how long you stay, so we can tell which work is worth showing.\n\nWe do not ask for payment card numbers on this site, and we do not collect special-category data such as health or biometric information."
+            },
+            {
+                "id": "pc3",
+                "heading": "How we use it",
+                "body": "Your information is used to respond to your enquiry, prepare and deliver proposals, run projects we have agreed with you, keep the site secure, and — only if you have opted in — send you occasional studio updates.\n\nWe do not sell your data. We do not share it with advertisers, and we do not use it to build profiles for anyone else's marketing."
+            },
+            {
+                "id": "pc4",
+                "heading": "Legal basis for processing",
+                "body": "Where UK and EU data protection law applies, we rely on: your consent for optional marketing; performance of a contract when we are working on your project; and our legitimate interests in replying to enquiries, securing our site and improving our services.\n\nWhere we rely on consent, you can withdraw it at any time without affecting anything done before you withdrew it."
+            },
+            {
+                "id": "pc5",
+                "heading": "Cookies and analytics",
+                "body": "We use a small number of essential cookies to make the site function, and privacy-respecting analytics to understand traffic in aggregate.\n\nYou can block or delete cookies in your browser settings. Essential cookies aside, nothing on this site tracks you across other websites."
+            },
+            {
+                "id": "pc6",
+                "heading": "Service providers we rely on",
+                "body": "Running a studio means using a handful of trusted platforms — hosting, email, scheduling and analytics providers — and some of them process data on our behalf.\n\nEach one is bound by a contract that limits them to our instructions, and we share only the minimum they need to do their job."
+            },
+            {
+                "id": "pc7",
+                "heading": "International transfers",
+                "body": "We work with clients across 18 countries, so your information may be processed outside the country you live in.\n\nWhen data moves across borders we make sure an appropriate safeguard is in place, such as standard contractual clauses or an adequacy decision covering the receiving country."
+            },
+            {
+                "id": "pc8",
+                "heading": "How long we keep it",
+                "body": "Enquiries that do not turn into projects are deleted within 24 months. Project records are kept for the length of the engagement and for 7 years afterwards, where tax and accounting rules require it.\n\nServer logs are rotated within 90 days. When a retention period ends, data is deleted or irreversibly anonymised."
+            },
+            {
+                "id": "pc9",
+                "heading": "How we protect it",
+                "body": "Traffic to this site is encrypted in transit with TLS. Access to client data is limited to the people working on your engagement, protected by multi-factor authentication and reviewed regularly.\n\nNo system is perfectly secure, but if a breach ever affects your rights we will notify you and the relevant regulator without undue delay."
+            },
+            {
+                "id": "pc10",
+                "heading": "Your rights",
+                "body": "Depending on where you live, you can ask us to:\n\n- Give you a copy of the information we hold about you.\n- Correct anything inaccurate or incomplete.\n- Delete your data where we have no continuing reason to keep it.\n- Restrict or object to how we process it, including direct marketing.\n- Send your data to another provider in a portable format.\n\nEmail hello@tekoovi.com and we will respond within 30 days. You are also free to complain to your local data protection authority."
+            },
+            {
+                "id": "pc11",
+                "heading": "Children",
+                "body": "This site is aimed at businesses and is not directed at children under 16. We do not knowingly collect their information, and we delete it promptly if we discover we have."
+            },
+            {
+                "id": "pc12",
+                "heading": "Changes to this policy",
+                "body": "When this policy changes we update the date at the top of the page. If a change materially affects your rights, we will tell you directly rather than expecting you to notice."
+            }
+        ]
+    },
+    "terms": {
+        "item": {
+            "title": "Terms of Service",
+            "intro": "These terms cover your use of tekoovi.com and set the ground rules for working with the studio. They are written to be read — plain language, no traps.",
+            "updated": "17 July 2026"
+        }
+    },
+    "blogs": {
+        "items": [
+            {
+                "id": "blog-1",
+                "title": "Shipping AI features without breaking trust",
+                "category": "Engineering",
+                "author": "Tekoovi Team",
+                "date": "23 July 2026",
+                "readTime": "6 min read",
+                "excerpt": "How we wire LLMs into products with guardrails, evals and graceful fallbacks — so the magic never becomes a liability.",
+                "coverImage": "/api/media/6a6455c5b8d782578deb0cc4",
+                "image1": "/api/media/6a645731b8d782578deb0cce",
+                "image2": "/api/media/6a64573ab8d782578deb0cd1",
+                "image3": "/api/media/6a645743b8d782578deb0cd4",
+                "tags": [
+                    "AI",
+                    "LLM",
+                    "Product"
+                ],
+                "content": "Everyone wants an AI feature. Fewer teams think about what happens when the model is confidently wrong in front of a paying customer.\n\nWe start every AI build with an eval harness — a fixed set of real inputs and expected behaviours. Before a single prompt ships, we know how often it succeeds, and we watch that number like we watch uptime.\n\nGuardrails come next: strict output schemas, retries with backoff, and a deterministic fallback path for when the model is unavailable or off-target. The user should never see a raw stack trace or an empty screen.\n\nThe result is AI that feels magical on the good days and simply feels normal on the bad ones — which is exactly the bar for something people rely on."
+            },
+            {
+                "id": "blog-2",
+                "title": "The design system is the product",
+                "category": "Design",
+                "author": "Tekoovi Team",
+                "date": "10 July 2026",
+                "readTime": "5 min read",
+                "excerpt": "Why we invest in tokens, components and motion rules on day one — and how it pays back across every screen you ship after.",
+                "coverImage": "/api/media/6a645a5eb8d782578deb0cf8",
+                "image1": "",
+                "image2": "",
+                "image3": "",
+                "tags": [
+                    "Design",
+                    "Systems",
+                    "UI"
+                ],
+                "content": "A design system is not a nice-to-have you bolt on later. It is the grammar of the product, and the earlier you write it, the faster everything downstream moves.\n\nWe start with tokens — colour, type, spacing, motion — as CSS variables, not hard-coded values. One change updates the whole surface, light and dark, without hunting through files.\n\nComponents are built once, accessibly, and reused everywhere. Motion is codified into a small set of easings and durations so the whole app moves with one personality.\n\nThe payoff shows up around week three, when new screens take hours instead of days and still look like they belong."
+            },
+            {
+                "id": "blog-3",
+                "title": "Scaling to a million users from day one",
+                "category": "Architecture",
+                "author": "Tekoovi Team",
+                "date": "28 June 2026",
+                "readTime": "7 min read",
+                "excerpt": "Foundations that hold under load without over-engineering the MVP — the pragmatic middle path we take on every build.",
+                "coverImage": "/api/media/6a645a8db8d782578deb0cff",
+                "image1": "",
+                "image2": "",
+                "image3": "",
+                "tags": [
+                    "Architecture",
+                    "Scale",
+                    "Backend"
+                ],
+                "content": "Premature scaling kills startups as surely as no scaling does. The trick is building foundations that can grow without paying for capacity you don't need yet.\n\nWe design the data model and API contracts for the shape of a million users, but we deploy the smallest infrastructure that serves the first thousand. Stateless services, indexed queries and cache-friendly reads mean the same code scales by turning a dial, not by a rewrite.\n\nObservability goes in on day one — logs, traces and a couple of dashboards — so the first sign of strain is a graph, not an outage.\n\nWhen growth comes, and it does, the system bends instead of breaking."
+            }
+        ]
+    },
+    "termsClauses": {
+        "items": [
+            {
+                "id": "tc1",
+                "heading": "Agreement to these terms",
+                "body": "By browsing tekoovi.com or sending us an enquiry, you accept these terms. If you do not agree with them, please do not use the site.\n\nThese terms cover the website itself. Paid work is governed by a separate signed proposal or statement of work, and where the two disagree, that signed agreement wins."
+            },
+            {
+                "id": "tc2",
+                "heading": "What this site is",
+                "body": "This site describes our services and showcases selected work. Nothing on it is a binding offer, a quote, or a guarantee that we can take on your project.\n\nAn engagement begins only when both sides sign a written proposal."
+            },
+            {
+                "id": "tc3",
+                "heading": "Enquiries and discovery calls",
+                "body": "Discovery calls are free and carry no obligation on either side. Any timeline, budget range or approach we discuss on a call is an early estimate, not a commitment.\n\nFirm scope, pricing and dates are confirmed in the written proposal that follows."
+            },
+            {
+                "id": "tc4",
+                "heading": "Acceptable use",
+                "body": "You agree not to:\n\n- Copy, scrape or republish any part of this site without our written permission.\n- Attempt to gain unauthorised access to our systems or probe them for weaknesses.\n- Interfere with the site's operation or availability for anyone else.\n- Use our contact channels to send spam, malware or unlawful material.\n\nIf you find a security issue, tell us at hello@tekoovi.com — we will thank you rather than pursue you."
+            },
+            {
+                "id": "tc5",
+                "heading": "Intellectual property",
+                "body": "The design, code, copy, logos and case studies on this site belong to Tekoovi or the clients who licensed them to us, and are protected by copyright and trade mark law.\n\nWork we produce under a client engagement is dealt with separately: ownership transfers to you on full payment, on the terms set out in your signed agreement."
+            },
+            {
+                "id": "tc6",
+                "heading": "Client responsibilities",
+                "body": "Projects move at the speed of the slowest decision. Where we are engaged, you agree to provide the content, access, credentials and approvals we need, and to nominate someone who can make binding decisions.\n\nDelays in these areas shift timelines and may affect the fees we have quoted."
+            },
+            {
+                "id": "tc7",
+                "heading": "Fees and payment",
+                "body": "Fees, milestones and payment schedules are set out in each proposal. Unless it says otherwise, invoices are due within 14 days and are quoted exclusive of applicable taxes.\n\nWe may pause work on materially overdue accounts, and we will tell you before we do."
+            },
+            {
+                "id": "tc8",
+                "heading": "Third-party services and links",
+                "body": "This site links to third-party platforms such as scheduling and social tools. We do not control them and we are not responsible for their content, availability or privacy practices.\n\nYour use of those services is governed by their own terms."
+            },
+            {
+                "id": "tc9",
+                "heading": "Disclaimers",
+                "body": "This site is provided \"as is\". We work hard to keep it accurate and available, but we do not warrant that it will be uninterrupted, error-free, or that the information on it is complete or current.\n\nMetrics and outcomes shown in case studies reflect specific engagements. They are illustrations, not a prediction of your results."
+            },
+            {
+                "id": "tc10",
+                "heading": "Limitation of liability",
+                "body": "To the fullest extent the law allows, Tekoovi is not liable for indirect or consequential loss, or for lost profits, revenue or data, arising from your use of this site.\n\nNothing here limits liability for death or personal injury caused by negligence, for fraud, or for anything else that cannot lawfully be excluded."
+            },
+            {
+                "id": "tc11",
+                "heading": "Privacy",
+                "body": "How we handle personal information is set out in our Privacy Policy, which forms part of these terms. Please read it alongside this page."
+            },
+            {
+                "id": "tc12",
+                "heading": "Changes and governing law",
+                "body": "We may update these terms as the studio evolves, and the date at the top of the page always reflects the current version. Continuing to use the site after a change means you accept it.\n\nThese terms are governed by the laws of India, and the courts of Bengaluru have exclusive jurisdiction over any dispute."
+            }
+        ]
+    }
+}
