@@ -5,22 +5,28 @@ namespace Tests\Feature;
 use App\Repositories\ContentRepository;
 use Tests\TestCase;
 
-/**
- * The admin panel: who can reach it, and what it can change.
- *
- * These run against the configured MongoDB. Writes only ever touch a throwaway
- * item in a probe section, and every test cleans up after itself.
- */
 class AdminPanelTest extends TestCase
 {
-    /** A collection nothing on the page depends on being non-empty. */
     private const PROBE_SECTION = 'logos';
+    private const EMAIL = 'tests@example.com';
+    private const PASSWORD = 'test-only-password';
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config([
+            'admin.email' => self::EMAIL,
+            'admin.password' => null,
+            'admin.password_hash' => bcrypt(self::PASSWORD),
+        ]);
+    }
 
     private function signIn(): self
     {
         $this->post('/admin/login', [
-            'email' => config('admin.email'),
-            'password' => config('admin.password'),
+            'email' => self::EMAIL,
+            'password' => self::PASSWORD,
         ])->assertRedirect('/admin');
 
         return $this;
@@ -45,7 +51,7 @@ class AdminPanelTest extends TestCase
     public function test_a_wrong_password_does_not_sign_anyone_in(): void
     {
         $this->post('/admin/login', [
-            'email' => config('admin.email'),
+            'email' => self::EMAIL,
             'password' => 'definitely-not-the-password',
         ])->assertSessionHasErrors('email');
 
@@ -56,7 +62,7 @@ class AdminPanelTest extends TestCase
     {
         $this->post('/admin/login', [
             'email' => 'someone-else@example.com',
-            'password' => config('admin.password'),
+            'password' => self::PASSWORD,
         ])->assertSessionHasErrors('email');
     }
 
@@ -80,7 +86,7 @@ class AdminPanelTest extends TestCase
         $this->signIn();
 
         foreach (\App\Support\Sections::navigable() as $key => $definition) {
-            $this->get('/admin/section/'.$key)
+            $this->get('/admin/section/' . $key)
                 ->assertOk()
                 ->assertSee($definition['label'], false);
         }
@@ -100,7 +106,7 @@ class AdminPanelTest extends TestCase
         $before = count($repository->section(self::PROBE_SECTION));
 
         // add
-        $this->post('/admin/section/'.self::PROBE_SECTION, [
+        $this->post('/admin/section/' . self::PROBE_SECTION, [
             'name' => 'PHPUnit probe',
             'hiddenFields' => '',
         ])->assertRedirect(route('admin.section', self::PROBE_SECTION));
@@ -112,7 +118,7 @@ class AdminPanelTest extends TestCase
         $this->assertNotNull($probe, 'the new item should be stored');
 
         // edit, and switch the name off while we are here
-        $this->put('/admin/section/'.self::PROBE_SECTION.'/'.$probe['id'], [
+        $this->put('/admin/section/' . self::PROBE_SECTION . '/' . $probe['id'], [
             'name' => 'PHPUnit probe edited',
             'hiddenFields' => 'name',
         ])->assertRedirect(route('admin.section', self::PROBE_SECTION));
@@ -128,7 +134,7 @@ class AdminPanelTest extends TestCase
         $this->assertSame('', $publicProbe['name']);
 
         // delete
-        $this->delete('/admin/section/'.self::PROBE_SECTION.'/'.$probe['id'])
+        $this->delete('/admin/section/' . self::PROBE_SECTION . '/' . $probe['id'])
             ->assertRedirect(route('admin.section', self::PROBE_SECTION));
 
         $this->assertCount($before, app(ContentRepository::class)->section(self::PROBE_SECTION));
@@ -139,7 +145,7 @@ class AdminPanelTest extends TestCase
         $this->signIn();
         $before = count(app(ContentRepository::class)->section(self::PROBE_SECTION));
 
-        $this->post('/admin/section/'.self::PROBE_SECTION, ['name' => '', 'hiddenFields' => ''])
+        $this->post('/admin/section/' . self::PROBE_SECTION, ['name' => '', 'hiddenFields' => ''])
             ->assertSessionHasErrors('form');
 
         $this->assertCount($before, app(ContentRepository::class)->section(self::PROBE_SECTION));
@@ -177,11 +183,6 @@ class AdminPanelTest extends TestCase
         );
     }
 
-    /**
-     * A legal page's header is a singleton with no sidebar entry of its own —
-     * it is edited from the clause list above it, so it has to be addressable
-     * even though `navigable()` hides it.
-     */
     public function test_a_legal_page_header_saves_from_its_clause_section(): void
     {
         $this->signIn();
@@ -250,8 +251,6 @@ class AdminPanelTest extends TestCase
     public function test_an_image_can_be_uploaded_served_and_deleted(): void
     {
         $this->signIn();
-
-        // a 1x1 PNG, the shape the browser cropper posts
         $dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 
         $response = $this->postJson('/admin/media', ['dataUrl' => $dataUrl])->assertCreated();
@@ -262,7 +261,7 @@ class AdminPanelTest extends TestCase
         $this->get($url)->assertOk()->assertHeader('Content-Type', 'image/png');
 
         $id = basename($url);
-        $this->deleteJson('/admin/media/'.$id)->assertOk()->assertJson(['ok' => true]);
+        $this->deleteJson('/admin/media/' . $id)->assertOk()->assertJson(['ok' => true]);
         $this->get($url)->assertNotFound();
     }
 
