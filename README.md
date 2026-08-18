@@ -1,103 +1,104 @@
-# Tekoovi — Landing Page + Admin CMS
+# Tekoovi
 
-A premium marketing site with a self-contained admin panel. All page content is
-editable from `/admin`; the public site reads it on every request so edits show
-up immediately. Built on Next.js (App Router) with a small layered backend on
-MongoDB.
+The Tekoovi site and its content studio, as one Laravel application backed by
+MongoDB. Blade renders every public page and the admin panel; PHP is the only
+runtime the server needs.
 
-## Tech stack
+```
+Browser  →  Laravel route  →  Controller  →  MongoDB  →  Blade view  →  Browser
+```
 
-- **Next.js 16** (App Router, Turbopack) + **React 19** + **TypeScript**
-- **Tailwind CSS v4** (design system in `app/globals.css`)
-- **Motion** for animation, **Lenis** for smooth scroll, **lucide-react** icons
-- **MongoDB** via **Mongoose** (falls back to a local JSON file when no DB is set)
+## Requirements
 
-## Getting started
+- PHP 8.3+ with the `mongodb` extension
+- Composer
+- A MongoDB database (Atlas or self-hosted)
+- Node 20.19+ — **build time only**, to compile CSS/JS. Production never runs it.
+
+## Running it locally
 
 ```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+
+# Point it at your database and set the admin credentials.
+#   MONGODB_URI, MONGODB_DATABASE
+#   ADMIN_EMAIL, and ADMIN_PASSWORD_HASH from:
+php artisan admin:hash "your-password"
+
 npm install
-npm run dev          # http://localhost:3000
+npm run build          # writes public/build
+
+php artisan serve      # http://localhost:8000
 ```
 
-Create `.env.local`:
+The site is at `/`, the content studio at `/admin`.
+
+While working on the front end, `npm run dev` replaces `npm run build` and
+hot-reloads CSS and JS.
+
+### A fresh database
+
+Reads never write, so pointing the app at an empty database serves the bundled
+content in `resources/data/content.json` without creating anything. Plant it
+deliberately when you're ready:
 
 ```bash
-MONGODB_URI=mongodb+srv://<user>:<pass>@<cluster>/tekoovi   # omit to use the local JSON store
-ADMIN_EMAIL=you@example.com
-ADMIN_PASSWORD=<a-strong-password>                          # REQUIRED in production
+php artisan content:seed
 ```
 
-> The admin login falls back to dev defaults (`tekoovi@gmail.com` / `admin123`)
-> only when these are unset. **Always set a real `ADMIN_PASSWORD` before going
-> live.**
+## Deploying
 
-## Scripts
+The build output is committed-or-CI-built static files, so a deploy is a PHP
+deploy:
 
-| Command         | What it does               |
-| --------------- | -------------------------- |
-| `npm run dev`   | Dev server (Turbopack)     |
-| `npm run build` | Production build           |
-| `npm run start` | Serve the production build |
-| `npm run lint`  | ESLint                     |
-
-## Folder structure
-
-```
-app/                      Next.js App Router — routing only, thin pages
-  (site)/                 Public site (shared layout: navbar, footer, theme)
-    page.tsx              Home
-    work-detail/[slug]/   Project case-study pages
-    case-study-detail/    Featured case study
-    privacy, terms/       Legal pages
-  admin/                  Admin panel (login + dashboard)
-  api/                    Route handlers
-    content/[section]/    CRUD for every content section
-    media/                Image upload + serve + migrate
-    admin/login/          Auth
-  layout.tsx, globals.css Root layout + design system
-
-backend/                  Server-only logic: controller -> repository -> model
-  types.ts                SECTIONS registry + all content types (single source of truth)
-  controllers/            Validate/sanitize, orchestrate (content, media)
-  repository/             Data access (Mongo or JSON file), no business rules
-  models/                 Mongoose schemas (content, media)
-  lib/                    auth, mongodb connection
-  data/content.json       Seed content (+ the store when no MONGODB_URI)
-
-frontend/                 Client/presentation, no data access
-  components/
-    layout/               navbar, footer
-    sections/             one file per landing section + detail pages
-    ui/                   reusable primitives (button, badge, theme-toggle, ...)
-    providers/            smooth-scroll
-  lib/                    data, fonts, icons, theme, utils (browser-safe helpers)
+```bash
+composer install --no-dev --optimize-autoloader
+npm ci && npm run build        # or build in CI and ship public/build
+php artisan config:cache && php artisan route:cache && php artisan view:cache
 ```
 
-The `@/*`, `@/components/*`, `@/lib/*` path aliases are defined in `tsconfig.json`.
+Point the web server's document root at `public/`. Set `APP_ENV=production`,
+`APP_DEBUG=false` and `SESSION_SECURE_COOKIE=true`, and make sure `storage/` is
+writable (sessions, cache and logs live there).
 
-## Content & data model
+There is no Node process, no second deployment and no separate API host.
 
-All editable content lives in **one** MongoDB document in the `content`
-collection (`{ key: "landing", data: { ...all sections... } }`). This is a
-deliberate choice for a single-tenant site: the whole page is read in one round
-trip, edits are atomic, and there are no joins. The read is memoised per request
-(`getContent` uses React `cache()`), so the layout, page, and metadata share a
-single database call.
+## How it fits together
 
-Uploaded images are **not** stored inline. They live in their own `media`
-collection and are served from `/api/media/<id>` with immutable cache headers
-(or as files under `public/uploads` in local dev). This keeps the content
-document small and lets images be cached hard by the browser/CDN. The admin
-"Optimize images" button migrates any older inline images into this store.
+| Path | What lives there |
+|---|---|
+| `routes/web.php` | every public URL and the admin panel |
+| `routes/api.php` | only `/api/media/{id}` (image bytes) and `/api/health` |
+| `config/sections.php` | the content registry — sections, fields, page blocks |
+| `app/Support/Sections.php` | the rules over that registry |
+| `app/Services/ContentService.php` | coercion, validation and field visibility |
+| `app/Repositories/ContentRepository.php` | the single `content` document |
+| `app/Services/MediaService.php` | uploads, stored in the `media` collection |
+| `resources/views/pages/` | one view per public page |
+| `resources/views/sections/` | the landing page, block by block |
+| `resources/views/admin/` | the content studio |
 
-Adding a new section is data-driven: add an entry to `SECTIONS` in
-`backend/types.ts` and it automatically appears in the admin with the right
-fields — no new API or repository code needed.
+Content is one MongoDB document keyed `landing`; images are their own documents
+in `media` and are served from `/api/media/{id}`.
 
-## Deployment
+### Editing content
 
-1. Set `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` in the host's environment.
-2. `npm run build && npm run start` (or deploy to Vercel).
-3. On a read-only host (e.g. Vercel), image uploads require `MONGODB_URI` — the
-   `public/uploads` file fallback only works where the filesystem is writable.
+Everything on the site is editable at `/admin`. Two controls shape what visitors
+see:
+
+- **Field visibility** — switch any field to *Hidden* and it is blanked before
+  the page is rendered, so it never reaches the browser. The stored value is
+  kept, so switching it back on restores it.
+- **Page sections** — switch a whole landing-page block off from the *Page
+  Sections* panel, or from the toolbar of the section that fills it.
+
+## Commands
+
+```bash
+php artisan admin:hash "password"   # bcrypt hash for ADMIN_PASSWORD_HASH
+php artisan content:seed            # plant the bundled content (--force to overwrite)
+php artisan content:repair          # strip junk keys left by the old array cast
+php artisan test
 ```

@@ -1,0 +1,856 @@
+@import "tailwindcss";
+
+/* Blade templates and the hand-written JS are the only class sources. */
+@source "../views";
+@source "../js";
+
+/* Gradient accents live in MongoDB (a project's `accent` field), so Tailwind
+   can't find them by scanning source. These are the values the content uses. */
+@source inline("from-[#6C3BFF]/40 to-[#3a1f8f]/10 from-[#8A5CFF]/40 to-[#1b1b28]/10 from-[#B388FF]/35 to-[#241a3d]/10");
+
+/* ============================================================
+   TEKOOVI — DESIGN SYSTEM
+   80% dark neutrals · 15% white typography · 5% purple accent
+   ============================================================ */
+
+@theme {
+  /* Surfaces — cool slate near-blacks for a more premium depth */
+  --color-bg: #08090f;
+  --color-bg-2: #0d0e16;
+  --color-card: #14151f;
+  --color-card-2: #1b1c28;
+
+  /* Text — crisper, cooler neutrals for readability */
+  --color-ink: #ffffff;
+  --color-ink-2: #c3c5d4;
+  --color-ink-3: #838699;
+
+  /* Brand — used sparingly */
+  --color-brand: #6c3bff;
+  --color-brand-2: #8a5cff;
+  --color-brand-3: #b388ff;
+
+  /* Lines */
+  --color-line: rgba(255, 255, 255, 0.09);
+
+  /* Typography */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), sans-serif;
+
+  /* Motion tokens */
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-marquee-slow: marquee 70s linear infinite;
+  --animate-marquee-rev: marquee-rev 60s linear infinite;
+  --animate-float: float 9s ease-in-out infinite;
+  --animate-float-slow: float 14s ease-in-out infinite;
+  --animate-aurora: aurora 20s ease-in-out infinite alternate;
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-spin-slow: spin 26s linear infinite;
+  --animate-pulse-glow: pulse-glow 5s ease-in-out infinite;
+  --animate-border-spin: border-spin 6s linear infinite;
+  --animate-scroll-cue: scroll-cue 2.2s ease-in-out infinite;
+  --animate-rise: rise 0.9s var(--ease-out-expo) both;
+
+  /* Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Elevation — layered, tinted shadows. Flat drop shadows read cheap; each
+     level pairs a tight contact shadow with a wide ambient one. */
+  --shadow-e1: 0 1px 2px -1px rgba(4, 5, 12, 0.6), 0 8px 24px -12px rgba(4, 5, 12, 0.7);
+  --shadow-e2: 0 2px 4px -2px rgba(4, 5, 12, 0.7), 0 18px 44px -20px rgba(4, 5, 12, 0.85);
+  --shadow-e3: 0 4px 8px -4px rgba(4, 5, 12, 0.75), 0 34px 80px -34px rgba(4, 5, 12, 0.95);
+  --shadow-brand: 0 18px 50px -24px rgba(108, 59, 255, 0.75);
+  --shadow-brand-lg: 0 30px 90px -36px rgba(108, 59, 255, 0.85);
+}
+
+/* The two design fonts, loaded as webfonts by the layout. Next.js exposed them
+   under these same variable names, so every token above is unchanged. */
+:root {
+  --font-inter: "Inter";
+  --font-jakarta: "Plus Jakarta Sans";
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes marquee-rev {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-18px) translateX(6px); }
+}
+@keyframes aurora {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
+  50% { transform: translate3d(4%, -3%, 0) scale(1.12); opacity: 0.8; }
+  100% { transform: translate3d(-3%, 4%, 0) scale(1.05); opacity: 0.6; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes border-spin {
+  to { --angle: 360deg; }
+}
+@keyframes scroll-cue {
+  0% { transform: translateY(0); opacity: 0; }
+  35% { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Registered so the conic gradient angle can actually animate. */
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* ----------------------------------------------------------------
+   BASE
+   ---------------------------------------------------------------- */
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: auto; /* Lenis owns smooth scroll */
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink-2);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    font-feature-settings: "ss01", "cv01", "cv11";
+    overflow-wrap: break-word;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-brand) 40%, transparent);
+    color: #fff;
+  }
+
+  /* anchor offset for fixed navbar */
+  section[id] {
+    scroll-margin-top: 96px;
+  }
+
+  img, svg, video, canvas {
+    max-width: 100%;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg); }
+  ::-webkit-scrollbar-thumb {
+    background: #23232f;
+    border-radius: 999px;
+    border: 2px solid var(--color-bg);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #34344a; }
+}
+
+/* ----------------------------------------------------------------
+   UTILITIES
+   ---------------------------------------------------------------- */
+
+/* Fine noise grain overlaid on the whole page */
+@utility grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Muted white → white gradient headline ink */
+@utility text-ink-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 45%, #a9a9be 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Purple gradient text — accent only */
+@utility text-brand-gradient {
+  background: linear-gradient(105deg, var(--color-brand-2) 0%, var(--color-brand-3) 55%, #d9c4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Glass surface */
+@utility glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid var(--color-line);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+    0 24px 60px -30px rgba(0, 0, 0, 0.9);
+}
+
+/* Hairline top highlight for cards */
+@utility card-hairline {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)) padding-box,
+    var(--color-card);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+/* Elevated surface — panels, modals, sidebars */
+@utility card-elevated {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0)) padding-box,
+    var(--color-card-2);
+  border: 1px solid var(--color-line);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 70px -40px rgba(0, 0, 0, 0.95);
+}
+
+/* Consistent brand focus ring for inputs / controls */
+@utility focus-ring {
+  outline: none;
+  border-color: color-mix(in oklab, var(--color-brand) 55%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-brand) 22%, transparent);
+}
+
+/* Subtle animated grid */
+@utility grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* Fade both horizontal edges (marquees) */
+@utility mask-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* Radial fade to bottom for hero grids */
+@utility mask-radial-fade {
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 40%, transparent 100%);
+}
+
+/* Primary CTA gradient + glow */
+@utility btn-brand {
+  background-image: linear-gradient(180deg, var(--color-brand-2), var(--color-brand));
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.28) inset,
+    0 10px 30px -8px rgba(108, 59, 255, 0.55),
+    0 2px 8px -2px rgba(108, 59, 255, 0.4);
+}
+
+/* Dotted grid — softer than the ruled grid, used behind feature blocks */
+@utility dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Fade top and bottom edges (scrolling rails, sticky columns) */
+@utility mask-fade-y {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 88%, transparent);
+}
+
+/* Fade the right edge only (horizontal rails that run off-canvas) */
+@utility mask-fade-r {
+  -webkit-mask-image: linear-gradient(to right, #000 82%, transparent);
+  mask-image: linear-gradient(to right, #000 82%, transparent);
+}
+
+/* ----------------------------------------------------------------
+   PREMIUM SURFACES
+   Compound classes (not @utility) so they can react to `.group:hover`
+   and carry pseudo-elements. Every one has a light-theme counterpart
+   further down.
+   ---------------------------------------------------------------- */
+
+/* The house card: tinted glass over the card token, layered elevation. */
+.card-lux {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012) 45%)
+      padding-box,
+    var(--color-card);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-e1), 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
+  transition:
+    transform 0.55s var(--ease-out-expo),
+    box-shadow 0.55s var(--ease-out-expo),
+    border-color 0.4s ease;
+}
+.card-lux:hover,
+.group:hover > .card-lux {
+  border-color: rgba(255, 255, 255, 0.17);
+  box-shadow: var(--shadow-e3), 0 1px 0 0 rgba(255, 255, 255, 0.07) inset;
+}
+
+/* Pair with .card-lux to raise the card under the pointer. */
+.lift {
+  transition: transform 0.55s var(--ease-out-expo);
+}
+.lift:hover,
+.group:hover .lift {
+  transform: translateY(-6px);
+}
+
+/* 1px gradient frame — wrap content in a child with its own radius. */
+.frame-gradient {
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.04) 42%,
+    rgba(138, 92, 255, 0.38)
+  );
+  padding: 1px;
+  box-shadow: var(--shadow-e2);
+}
+
+/* Conic border that lights up and rotates while the group is hovered. */
+.border-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 0deg,
+    var(--color-brand-2) 80deg,
+    var(--color-brand-3) 150deg,
+    transparent 250deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+  animation: var(--animate-border-spin);
+}
+.border-glow:hover::before,
+.group:hover .border-glow::before {
+  opacity: 0.95;
+}
+
+/* Diagonal light sweep — the detail that reads as "expensive". */
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.13) 48%,
+    transparent 64%
+  );
+  transform: translateX(-130%);
+  transition: transform 1.15s var(--ease-out-expo);
+}
+.sheen:hover::after,
+.group:hover .sheen::after {
+  transform: translateX(130%);
+}
+
+/* Sliders stay swipeable without a visible scrollbar. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Underline that draws itself in on hover. */
+.link-underline {
+  background-image: linear-gradient(90deg, var(--color-brand-2), var(--color-brand-3));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.45s var(--ease-out-expo);
+}
+.link-underline:hover,
+.group:hover .link-underline {
+  background-size: 100% 1.5px;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ================================================================
+   SCROLL-IN MOTION
+   Framer Motion drove these in React (`<Reveal>`, `<RevealGroup>`,
+   `<WordReveal>`). Here the same curves live in CSS and a single
+   IntersectionObserver in app.js adds `.is-in` — no runtime library,
+   identical easing, duration and travel.
+   ================================================================ */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 22px));
+  transition:
+    opacity 0.75s var(--ease-out-expo) var(--reveal-delay, 0s),
+    transform 0.75s var(--ease-out-expo) var(--reveal-delay, 0s);
+  will-change: opacity, transform;
+}
+[data-reveal].is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Cascading children — the `stagger` prop of <RevealGroup>. */
+[data-reveal-item] {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 24px));
+  transition:
+    opacity 0.7s var(--ease-out-expo) var(--reveal-delay, 0s),
+    transform 0.7s var(--ease-out-expo) var(--reveal-delay, 0s);
+}
+/* A group reveals its own items — the observer only watches the group, which
+   is what makes the cascade one decision instead of N. A standalone item still
+   works on its own `.is-in`. */
+[data-reveal-item].is-in,
+[data-reveal-group].is-in [data-reveal-item] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero entrance: blur-up, staggered by the layout script. */
+[data-hero-item] {
+  opacity: 0;
+  transform: translateY(26px);
+  filter: blur(6px);
+  transition:
+    opacity 0.9s var(--ease-out-expo) var(--reveal-delay, 0s),
+    transform 0.9s var(--ease-out-expo) var(--reveal-delay, 0s),
+    filter 0.9s var(--ease-out-expo) var(--reveal-delay, 0s);
+}
+[data-hero-item].is-in {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* Headline that rises a word at a time from behind a mask. */
+.word-reveal > span {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  vertical-align: bottom;
+}
+.word-reveal > span > span {
+  display: inline-block;
+  transform: translateY(110%);
+  opacity: 0;
+  transition:
+    transform 0.85s var(--ease-out-expo) var(--word-delay, 0s),
+    opacity 0.85s var(--ease-out-expo) var(--word-delay, 0s);
+}
+.word-reveal.is-in > span > span {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Gradient headlines that are also word-revealed.
+
+   `text-ink-gradient` / `text-brand-gradient` clip a gradient to their own
+   text, but a word-revealed headline's words sit inside inline-block masks —
+   atomic boxes, not text runs — so the parent has nothing left to clip to and
+   the headline renders blank. Marking the wrapper `data-word-gradient` paints
+   the same gradient on each word instead. The gradient is vertical and every
+   word shares a line height, so the result is what clipping the whole line
+   would have drawn — and the wrapper keeps no empty clip of its own. */
+[data-word-gradient="ink"] .word-reveal > span > span {
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 45%, #a9a9be 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-word-gradient="brand"] .word-reveal > span > span {
+  background: linear-gradient(105deg, var(--color-brand-2) 0%, var(--color-brand-3) 55%, #d9c4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* The hand-drawn underline sweep under the hero highlight. */
+.title-sweep {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.1s var(--ease-out-expo) 1.05s;
+}
+.title-sweep.is-in {
+  transform: scaleX(1);
+}
+
+/* Float-in glass chips over the hero. */
+[data-float-card] {
+  opacity: 0;
+  transform: translateY(16px) scale(0.9);
+  transition:
+    opacity 0.85s var(--ease-out-expo) var(--reveal-delay, 0s),
+    transform 0.85s var(--ease-out-expo) var(--reveal-delay, 0s);
+}
+[data-float-card].is-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Navbar mount — the header slid down in React on first paint. */
+.site-header {
+  transform: translateY(-80px);
+  opacity: 0;
+  transition:
+    transform 0.7s var(--ease-out-expo) 0.1s,
+    opacity 0.7s var(--ease-out-expo) 0.1s;
+}
+.site-header.is-in {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Nav pill + active dot: one shared element that slides between links,
+   which is what motion's `layoutId` produced. */
+.nav-indicator,
+.nav-dot {
+  transition:
+    transform 0.42s var(--ease-spring),
+    width 0.42s var(--ease-spring),
+    opacity 0.25s ease;
+}
+
+/* Mobile sheet, the delete dialog and the crop modal all scale in. */
+[data-pop] {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.97);
+  transition:
+    opacity 0.32s var(--ease-out-expo),
+    transform 0.32s var(--ease-out-expo);
+}
+[data-pop].is-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* FAQ accordion — height animates from a measured pixel value. */
+[data-accordion-panel] {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.45s var(--ease-out-expo),
+    opacity 0.45s var(--ease-out-expo);
+}
+
+/* Floating widgets that slide in once the page is scrolled. */
+[data-slide-in] {
+  opacity: 0;
+  transform: translateY(90px);
+  pointer-events: none;
+  transition:
+    opacity 0.45s var(--ease-out-expo),
+    transform 0.45s var(--ease-out-expo);
+}
+[data-slide-in].is-in {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+[data-fade-in] {
+  opacity: 0;
+  transform: translateY(12px) scale(0.85);
+  pointer-events: none;
+  transition:
+    opacity 0.3s var(--ease-out-expo),
+    transform 0.3s var(--ease-out-expo);
+}
+[data-fade-in].is-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Preloader curtain. */
+.preloader {
+  transition: opacity 0.7s var(--ease-out-expo);
+}
+.preloader.is-out {
+  opacity: 0;
+  pointer-events: none;
+}
+.preloader-mark {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo),
+    filter 0.8s var(--ease-out-expo);
+}
+.preloader.is-ready .preloader-mark {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+.preloader-bar {
+  transform: translateX(-100%);
+  transition: transform 1.3s var(--ease-out-expo);
+}
+.preloader.is-ready .preloader-bar {
+  transform: translateX(0);
+}
+
+/* Toasts slide in from the right of the admin panel. */
+[data-toast] {
+  opacity: 0;
+  transform: translateX(40px) scale(0.96);
+  transition:
+    opacity 0.25s var(--ease-out-expo),
+    transform 0.25s var(--ease-out-expo);
+}
+[data-toast].is-in {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal],
+  [data-reveal-item],
+  [data-hero-item],
+  [data-float-card] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .word-reveal > span > span {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ================================================================
+   LIGHT THEME
+   The whole design system is authored dark-first. Setting
+   data-theme="light" on <html> remaps the colour tokens and the
+   dark-specific surfaces to a premium light palette. No attribute
+   (or "dark") leaves the original dark design completely untouched,
+   so this block is purely additive and cannot regress dark mode.
+   ================================================================ */
+:root[data-theme="light"] {
+  /* Surfaces — soft cool white with pure-white elevated cards */
+  --color-bg: #f4f5fa;
+  --color-bg-2: #ffffff;
+  --color-card: #ffffff;
+  --color-card-2: #ffffff;
+
+  /* Text — near-black headings, cool grey body */
+  --color-ink: #0f1117;
+  --color-ink-2: #40465a;
+  --color-ink-3: #6c7186;
+
+  /* Brand — deepened so purple stays legible on white */
+  --color-brand: #6c3bff;
+  --color-brand-2: #6c3bff;
+  --color-brand-3: #6d34d6;
+
+  /* Lines */
+  --color-line: rgba(16, 17, 26, 0.1);
+
+  color-scheme: light;
+}
+
+/* --- utilities re-skinned for light --- */
+:root[data-theme="light"] .glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.62));
+  border: 1px solid rgba(16, 17, 26, 0.08);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.7) inset,
+    0 24px 60px -34px rgba(16, 17, 26, 0.28);
+}
+
+:root[data-theme="light"] .card-hairline {
+  background:
+    linear-gradient(180deg, rgba(16, 17, 26, 0.02), rgba(16, 17, 26, 0)) padding-box,
+    #ffffff;
+  border: 1px solid rgba(16, 17, 26, 0.08);
+  box-shadow: 0 10px 30px -24px rgba(16, 17, 26, 0.22);
+}
+
+:root[data-theme="light"] .card-elevated {
+  background: #ffffff;
+  border: 1px solid rgba(16, 17, 26, 0.08);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.8) inset,
+    0 26px 60px -38px rgba(16, 17, 26, 0.32);
+}
+
+:root[data-theme="light"] .card-lux {
+  background:
+    linear-gradient(180deg, rgba(16, 17, 26, 0.022), rgba(16, 17, 26, 0)) padding-box,
+    #ffffff;
+  border: 1px solid rgba(16, 17, 26, 0.08);
+  box-shadow: 0 1px 2px -1px rgba(16, 17, 26, 0.08), 0 14px 34px -22px rgba(16, 17, 26, 0.26);
+}
+:root[data-theme="light"] .card-lux:hover,
+:root[data-theme="light"] .group:hover > .card-lux {
+  border-color: rgba(16, 17, 26, 0.16);
+  box-shadow: 0 2px 6px -2px rgba(16, 17, 26, 0.1), 0 30px 64px -30px rgba(16, 17, 26, 0.3);
+}
+
+:root[data-theme="light"] .frame-gradient {
+  background: linear-gradient(
+    140deg,
+    rgba(16, 17, 26, 0.14),
+    rgba(16, 17, 26, 0.05) 42%,
+    rgba(108, 59, 255, 0.4)
+  );
+  box-shadow: 0 20px 46px -30px rgba(16, 17, 26, 0.32);
+}
+
+:root[data-theme="light"] .sheen::after {
+  background: linear-gradient(
+    110deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.55) 48%,
+    transparent 64%
+  );
+}
+
+:root[data-theme="light"] .dot-grid {
+  background-image: radial-gradient(rgba(16, 17, 26, 0.09) 1px, transparent 1px);
+}
+
+:root[data-theme="light"] .text-ink-gradient {
+  background: linear-gradient(180deg, #0f1117 0%, #0f1117 45%, #494f63 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:root[data-theme="light"] [data-word-gradient="ink"] .word-reveal > span > span {
+  background: linear-gradient(180deg, #0f1117 0%, #0f1117 45%, #494f63 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:root[data-theme="light"] .grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(16, 17, 26, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 17, 26, 0.05) 1px, transparent 1px);
+}
+
+:root[data-theme="light"] .grain {
+  mix-blend-mode: multiply;
+  opacity: 0.03;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-track { background: var(--color-bg); }
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(16, 17, 26, 0.18);
+  border: 2px solid var(--color-bg);
+}
+:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: rgba(16, 17, 26, 0.3); }
+
+/* --- literal white-alpha classes remapped to ink-alpha on light ---
+   These utilities compile to fixed white values, so on a light surface
+   they'd wash out. Higher-specificity, unlayered overrides flip them to
+   subtle dark tints only while the light theme is active. --- */
+
+/* backgrounds */
+:root[data-theme="light"] .bg-white\/\[0\.02\] { background-color: rgba(16, 17, 26, 0.03); }
+:root[data-theme="light"] .bg-white\/\[0\.03\] { background-color: rgba(16, 17, 26, 0.04); }
+:root[data-theme="light"] .bg-white\/\[0\.04\] { background-color: rgba(16, 17, 26, 0.05); }
+:root[data-theme="light"] .bg-white\/\[0\.05\] { background-color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .bg-white\/\[0\.06\] { background-color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .bg-white\/\[0\.07\] { background-color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .bg-white\/\[0\.08\] { background-color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .bg-white\/10 { background-color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .bg-white\/20 { background-color: rgba(16, 17, 26, 0.09); }
+
+/* hover backgrounds */
+:root[data-theme="light"] .hover\:bg-white\/\[0\.03\]:hover { background-color: rgba(16, 17, 26, 0.05); }
+:root[data-theme="light"] .hover\:bg-white\/\[0\.04\]:hover { background-color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .hover\:bg-white\/\[0\.06\]:hover { background-color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .hover\:bg-white\/\[0\.07\]:hover { background-color: rgba(16, 17, 26, 0.08); }
+:root[data-theme="light"] .hover\:bg-white\/\[0\.08\]:hover { background-color: rgba(16, 17, 26, 0.08); }
+:root[data-theme="light"] .hover\:bg-white\/10:hover { background-color: rgba(16, 17, 26, 0.09); }
+
+/* borders */
+:root[data-theme="light"] .border-white\/10 { border-color: rgba(16, 17, 26, 0.12); }
+:root[data-theme="light"] .border-white\/15 { border-color: rgba(16, 17, 26, 0.15); }
+:root[data-theme="light"] .border-white\/20 { border-color: rgba(16, 17, 26, 0.2); }
+:root[data-theme="light"] .border-white\/\[0\.06\] { border-color: rgba(16, 17, 26, 0.1); }
+:root[data-theme="light"] .hover\:border-white\/15:hover { border-color: rgba(16, 17, 26, 0.18); }
+:root[data-theme="light"] .hover\:border-white\/20:hover { border-color: rgba(16, 17, 26, 0.24); }
+
+/* rings */
+:root[data-theme="light"] .ring-white\/10 { --tw-ring-color: rgba(16, 17, 26, 0.12); }
+
+/* group-hover variants used by the redesigned cards */
+:root[data-theme="light"] .group:hover .group-hover\:bg-white\/10 { background-color: rgba(16, 17, 26, 0.08); }
+:root[data-theme="light"] .group:hover .group-hover\:border-white\/20 { border-color: rgba(16, 17, 26, 0.22); }
+
+/* faded fallback initial + gradient hairlines */
+:root[data-theme="light"] .text-white\/\[0\.04\] { color: rgba(16, 17, 26, 0.06); }
+:root[data-theme="light"] .text-white\/\[0\.06\] { color: rgba(16, 17, 26, 0.07); }
+:root[data-theme="light"] .text-white\/\[0\.08\] { color: rgba(16, 17, 26, 0.09); }
+:root[data-theme="light"] .from-white\/15 { --tw-gradient-from: rgba(16, 17, 26, 0.16); }
+:root[data-theme="light"] .via-white\/10 { --tw-gradient-via: rgba(16, 17, 26, 0.12); }
+:root[data-theme="light"] .via-white\/12 { --tw-gradient-via: rgba(16, 17, 26, 0.14); }
+:root[data-theme="light"] .via-white\/20 { --tw-gradient-via: rgba(16, 17, 26, 0.18); }
+:root[data-theme="light"] .via-white\/25 { --tw-gradient-via: rgba(16, 17, 26, 0.22); }
+:root[data-theme="light"] .via-white\/30 { --tw-gradient-via: rgba(16, 17, 26, 0.24); }
