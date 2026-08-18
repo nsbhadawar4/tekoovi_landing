@@ -862,7 +862,9 @@ export default function AdminDashboard() {
     // read, so keep them in step without a refetch.
     if (section === "pageSections") {
       setBlocks(
-        Object.fromEntries(def.fields.map((f) => [f.name, form[f.name] === true])),
+        Object.fromEntries(
+          def.fields.map((f) => [f.name, form[f.name] === true]),
+        ),
       );
     }
     notify("success", `${def.singular} saved`);
@@ -1092,14 +1094,11 @@ export default function AdminDashboard() {
                   <span className="text-ink-3">({items.length})</span>
                 )}
               </h2>
-              <p className="mt-0.5 text-xs text-ink-3">
-                On page: {def.onPage}
-              </p>
+              <p className="mt-0.5 text-xs text-ink-3">On page: {def.onPage}</p>
               {!def.noToggles && (
                 <p className="mt-1 text-xs text-ink-3/80">
-                  Switch any field to{" "}
-                  <span className="text-ink-2">Hidden</span> to leave it off the
-                  page — the value stays saved.
+                  Switch any field to <span className="text-ink-2">Hidden</span>{" "}
+                  to leave it off the page — the value stays saved.
                 </p>
               )}
               {/* Whole-section switches for the blocks this section feeds. */}
