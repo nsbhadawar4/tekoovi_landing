@@ -417,7 +417,15 @@ function initBooleanSwitches(scope = document) {
     if (button.dataset.wired === "1") return;
     button.dataset.wired = "1";
 
-    const input = document.getElementById(button.dataset.booleanSwitch);
+    // Scoped to the row first: the editor dialog holds a copy of a template's
+    // fields, so the same id exists twice and a document-wide lookup would
+    // find the hidden original and leave the copy — the one being submitted —
+    // untouched. Falling back keeps the fields rendered straight onto the page
+    // (the singletons) working exactly as before.
+    const id = button.dataset.booleanSwitch;
+    const input =
+      button.closest("[data-field-row]")?.querySelector(`[id="${id}"]`) ??
+      document.getElementById(id);
     if (!input) return;
 
     const render = () => {
@@ -510,7 +518,18 @@ function initEditor() {
     form.action = template.dataset.action;
     methodInput.value = template.dataset.method;
     title.textContent = template.dataset.title;
-    dialog.querySelector("[data-editor-fields]").innerHTML = template.innerHTML;
+
+    const fields = dialog.querySelector("[data-editor-fields]");
+    fields.innerHTML = template.innerHTML;
+
+    // The boot-time pass walks the whole document, so it stamps `data-wired`
+    // on the hidden templates too — and `innerHTML` carries that attribute
+    // into the copy, which would make every initialiser below skip the very
+    // fields it was called for (a dead "Upload image" button, dead switches).
+    // The form's own flag goes with them: it was stamped while the dialog was
+    // empty, before the `hiddenFields` store it needs existed.
+    fields.querySelectorAll("[data-wired]").forEach((el) => delete el.dataset.wired);
+    delete form.dataset.wired;
 
     dialog.classList.remove("hidden");
     initImageFields(dialog);
