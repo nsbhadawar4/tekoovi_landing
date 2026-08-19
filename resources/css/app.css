@@ -151,6 +151,63 @@
     color: #fff;
   }
 
+  /* Chrome and Safari repaint autofilled fields with their own near-white
+     background, and they set it `!important` from the UA sheet, so
+     `background-color` here is ignored. Two things are needed: clipping the
+     background to the glyphs stops it being painted at all (this is what also
+     kills the pale highlight while a suggestion is merely previewed in the
+     dropdown), and a huge inset shadow paints our own surface back in. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-color: transparent !important;
+    background-image: none !important;
+    -webkit-text-fill-color: var(--color-ink) !important;
+    caret-color: var(--color-ink);
+    box-shadow: 0 0 0 100vmax var(--color-bg) inset;
+    /* the fill fades in via background-color; outrun the transition */
+    transition: background-color 100000s ease-in-out 0s;
+  }
+
+  /* The focus ring also rides on box-shadow, so restate it here or it would be
+     dropped for an autofilled field. */
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill:focus {
+    box-shadow:
+      0 0 0 100vmax var(--color-bg) inset,
+      0 0 0 3px color-mix(in oklab, var(--color-brand) 22%, transparent);
+  }
+
+  /* Chrome only: the pale wash it paints while a suggestion is highlighted in
+     the dropdown but not yet committed. These pseudo-classes are unparseable
+     elsewhere, and one bad selector voids a whole list, so they stand alone. */
+  input:-internal-autofill-selected,
+  input:-internal-autofill-previewed,
+  textarea:-internal-autofill-selected,
+  textarea:-internal-autofill-previewed,
+  select:-internal-autofill-selected,
+  select:-internal-autofill-previewed {
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-color: transparent !important;
+    background-image: none !important;
+    -webkit-text-fill-color: var(--color-ink) !important;
+    caret-color: var(--color-ink);
+    box-shadow: 0 0 0 100vmax var(--color-bg) inset;
+  }
+
+  input:-internal-autofill-selected:focus,
+  input:-internal-autofill-previewed:focus {
+    box-shadow:
+      0 0 0 100vmax var(--color-bg) inset,
+      0 0 0 3px color-mix(in oklab, var(--color-brand) 22%, transparent);
+  }
+
   /* anchor offset for fixed navbar */
   section[id] {
     scroll-margin-top: 96px;

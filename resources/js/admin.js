@@ -634,6 +634,32 @@ function initSectionNav() {
   });
 }
 
+/* ------------------------- password reveal ----------------------- */
+
+function initPasswordToggles() {
+  document.querySelectorAll("[data-password-toggle]").forEach((button) => {
+    const field = document.getElementById(button.getAttribute("aria-controls"));
+    if (!field) return;
+
+    const show = button.querySelector('[data-password-icon="show"]');
+    const hide = button.querySelector('[data-password-icon="hide"]');
+
+    button.addEventListener("click", () => {
+      const revealed = field.type === "text";
+
+      field.type = revealed ? "password" : "text";
+      button.setAttribute("aria-pressed", String(!revealed));
+      button.setAttribute("aria-label", revealed ? "Show password" : "Hide password");
+      show?.classList.toggle("hidden", !revealed);
+      hide?.classList.toggle("hidden", revealed);
+
+      // Swapping the type drops the caret, so put it back at the end.
+      field.focus();
+      field.setSelectionRange(field.value.length, field.value.length);
+    });
+  });
+}
+
 /* ----------------------------- boot ------------------------------ */
 
 function boot() {
@@ -646,6 +672,7 @@ function boot() {
   initDeleteDialog();
   initMediaActions();
   initSectionNav();
+  initPasswordToggles();
 }
 
 if (document.readyState === "loading") {
