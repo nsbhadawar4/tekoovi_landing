@@ -21,6 +21,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Where the bytes live
+    |--------------------------------------------------------------------------
+    |
+    | Uploads are written to `<directory>/<id>.<ext>` on this disk, and MySQL
+    | keeps only the metadata — mime type, path and size. The `public` disk is
+    | storage/app/public, which `php artisan storage:link` exposes at /storage,
+    | so the files can be served straight off disk by Apache if you ever want
+    | that; the app itself serves them through /api/media/{id} either way.
+    |
+    */
+
+    'disk' => env('MEDIA_DISK', 'public'),
+
+    'directory' => env('MEDIA_DIRECTORY', 'media'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Upload limits
     |--------------------------------------------------------------------------
     */

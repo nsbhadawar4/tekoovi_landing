@@ -2,23 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use MongoDB\Laravel\Auth\User as Authenticatable;
 
 /**
- * A user document in the existing `users` collection.
+ * A row in the `users` table.
  *
  * Admin access does **not** go through this model: the operator's credentials
- * come from the environment (see App\Services\AdminAuth), exactly as the Node
- * backend worked. This exists so the Laravel auth scaffolding points at a model
- * that can actually talk to MongoDB — and as the starting point if you ever want
- * database-backed logins.
+ * come from the environment (see App\Services\AdminAuth), exactly as they did
+ * before — the sign-in screen and flow are unchanged. This exists so the Laravel
+ * auth scaffolding points at a model backed by MySQL, and so the seeded admin
+ * row is there as the starting point if you ever want database-backed logins.
  */
 class User extends Authenticatable
 {
     use Notifiable;
-
-    protected $connection = 'mongodb';
 
     protected $table = 'users';
 

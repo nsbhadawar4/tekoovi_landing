@@ -6,11 +6,12 @@ use App\Models\Content;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Storage layer for the content document.
+ * Storage layer for the content record.
  *
- * Port of the Node `backend/repository/content.repository.ts`, preserving its
- * behaviour exactly: one document keyed "landing", seeded once from the bundled
- * JSON, with sections read and written as plain arrays.
+ * One row keyed "landing" in the `content` table, its whole section tree held in
+ * a JSON column, seeded once from the bundled JSON, with sections read and
+ * written as plain arrays. Behaviour is unchanged from the MongoDB version this
+ * replaced — the model does the JSON encoding, so callers still see arrays.
  */
 class ContentRepository
 {
@@ -57,7 +58,7 @@ class ContentRepository
         } catch (\Throwable $e) {
             // Never let a database hiccup take the public site down — serve the
             // bundled content and log loudly, as the Node backend did.
-            Log::error('[content] Mongo read failed, serving seed content', ['error' => $e->getMessage()]);
+            Log::error('[content] database read failed, serving seed content', ['error' => $e->getMessage()]);
 
             return $this->remember($this->seed());
         }
@@ -180,22 +181,62 @@ class ContentRepository
     }
 
     /**
-     * Drop the numeric keys an earlier `array` cast wrote into the document.
+     * Drop the numeric keys an earlier double-encoding bug wrote into the data.
      *
-     * That cast JSON-encoded the whole tree, and the encoded string landed in
-     * Mongo as one key per character ("0" => "{", "1" => "\"", …) sitting beside
-     * the real sections. Section names are never numeric, so filtering numeric
-     * top-level keys removes the junk and can't touch real content. Applied on
-     * both read and write, so a document repairs itself the first time the admin
-     * saves anything.
+     * Some stored trees carry one key per character ("0" => "{", "1" => "\"", …)
+     * beside the real sections, left by a cast that JSON-encoded into a store
+     * that was already encoding. Section names are never numeric, so filtering
+     * numeric top-level keys removes the junk and can't touch real content.
+     * Applied on both read and write, and on import, so a record repairs itself
+     * the first time the admin saves anything.
      */
     public static function sanitizeStored(array $data): array
     {
-        return array_filter(
+        return self::normalizeItemIds(array_filter(
             $data,
             fn ($key) => ! ctype_digit((string) $key),
             ARRAY_FILTER_USE_KEY,
-        );
+        ));
+    }
+
+    /**
+     * Give every collection item an `id`, renaming a legacy `_id` onto it.
+     *
+     * Items written by this app carry `id` — that is what the bundled seed uses,
+     * what addItem() generates, and what the admin views and updateItem()/
+     * removeItem() address records by. Records that came from the original
+     * Mongoose backend carry the same values under `_id` instead, the naming that
+     * store imposed, which left the admin unable to see an id at all.
+     *
+     * The rename is value-preserving ("pc1" stays "pc1"), so item URLs and any
+     * link that already resolves by id keep working; slugs come from a record's
+     * name or title, and only fall back to the id, so they don't move either. An
+     * existing `id` always wins, and applying this on read as well as on write
+     * means a record repairs itself the next time the admin saves.
+     */
+    private static function normalizeItemIds(array $data): array
+    {
+        foreach ($data as $section => $value) {
+            // Collections only: singleton blocks are keyed by field name.
+            if (! is_array($value) || ! array_is_list($value)) {
+                continue;
+            }
+
+            foreach ($value as $index => $item) {
+                if (! is_array($item) || ! array_key_exists('_id', $item)) {
+                    continue;
+                }
+
+                if (! array_key_exists('id', $item) || (string) $item['id'] === '') {
+                    $item['id'] = (string) $item['_id'];
+                }
+
+                unset($item['_id']);
+                $data[$section][$index] = $item;
+            }
+        }
+
+        return $data;
     }
 
     /**

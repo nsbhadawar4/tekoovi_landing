@@ -7,7 +7,7 @@ use Illuminate\Support\HtmlString;
 /**
  * Icon registry — the port of `frontend/lib/icons.ts`.
  *
- * Content stores an icon *name* (a plain string) so it can live in MongoDB.
+ * Content stores an icon *name* (a plain string) so it can live in the database.
  * Here that name resolves to the matching Lucide markup from config/lucide.php,
  * which the `<x-icon>` component wraps in an <svg>.
  */

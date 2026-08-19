@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * The public site.
  *
- * Every page reads the content document straight from MongoDB through
+ * Every page reads the content record straight from MySQL through
  * ContentService — no HTTP hop, no API client, no second deployment. Field
  * visibility is already applied by the service, so a switched-off value arrives
  * blank and the view renders nothing for it.

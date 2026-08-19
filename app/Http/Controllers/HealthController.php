@@ -6,7 +6,7 @@ use App\Models\Content;
 use Illuminate\Http\JsonResponse;
 
 /**
- * GET /api/health — is the app up, and can it reach MongoDB?
+ * GET /api/health — is the app up, and can it reach MySQL?
  *
  * Kept for uptime monitoring on cheap hosting, where a failed deploy otherwise
  * shows up as a blank page rather than a signal.

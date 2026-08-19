@@ -10,9 +10,8 @@ Before   Next.js (:3000) ──REST──▶ Laravel API (:8000) ──▶ Mongo
 After    Laravel (:8000) ────────────────────────────────▶ MongoDB
 ```
 
-The database was **not** migrated. The same cluster, the same `content` and
-`media` collections, the same document shapes — including Mongoose's
-`createdAt` / `updatedAt` field names and the `"x…"` item id format.
+The database was not migrated at that point. It has been since — see
+[MongoDB → MySQL](#migration--mongodb--mysql) at the end of this file.
 
 ---
 
@@ -132,3 +131,92 @@ wrapper is now marked `data-word-gradient` and the gradient is painted per word.
   current content references them; kept in case an old link does.
 - `caseStudy` / `caseMetrics` — editable in the admin but not rendered on the
   page. That was already true in the Next.js app; the parity is intentional.
+
+
+---
+
+# Migration — MongoDB → MySQL
+
+A second, later migration: the same Laravel application, the same routes, views
+and admin screens, now on MySQL.
+
+```
+Before   Laravel (:8000) ──▶ MongoDB Atlas
+After    Laravel (:8000) ──▶ MySQL (+ image files on disk)
+```
+
+Nothing above the storage layer moved. No route, controller signature, Blade
+view, CSS rule or piece of admin JavaScript changed; `/api/media/{id}` still
+serves image bytes at the same URLs, because those URLs are inside the content.
+
+## Schema
+
+| Was | Is |
+|---|---|
+| `content` collection, one document per key | `content` table: `id`, `key` (unique), `data` **JSON**, `createdAt`, `updatedAt` |
+| `media` collection, bytes in a BSON `Binary` | `media` table: `id` **char(24)**, `contentType`, `path`, `size`, `disk`, timestamps — bytes in `storage/app/public/media/` |
+| `users` collection | `users` table (plus `password_reset_tokens`, `sessions`) |
+
+Two decisions carry the weight:
+
+**The section tree stays one JSON column.** The admin studio is driven by a
+registry (`config/sections.php`), where a section is a free-form list of items or
+a singleton block, each with its own field set and its own per-record
+`hiddenFields` list. Shredding that into a table per section would mean a
+migration every time the registry changes, and 23 joins on every page render
+instead of one row. `data` is a JSON column cast to `array`, so the repository,
+the services and every view see exactly the arrays they saw before.
+
+**Media ids stay 24-hex strings, not auto-increments.** Every image in the
+content is addressed as `/api/media/<id>`. An integer primary key would have
+invalidated every one of those paths. New uploads generate an id in the same
+format (`bin2hex(random_bytes(12))`), so old and new rows are indistinguishable —
+and `MediaService::isValidId()` is unchanged.
+
+**Bytes moved out of the database.** A `Binary` column would have worked, but
+files are what backups, CDNs and shared hosting expect. MySQL keeps the pointer;
+`storage/app/public/media/` keeps the image. `MediaStreamController` is untouched.
+
+## Data migration
+
+`php artisan app:migrate-mongodb-to-mysql` imports the old database, preserving
+every key the data depends on: page keys, the 24-hex media ids and the original
+`createdAt`/`updatedAt` values. It is idempotent, `--dry-run` reports without
+writing, and it never modifies or deletes anything in MongoDB.
+
+It talks to the `mongodb` PHP extension directly rather than through a Composer
+package, so it still runs after `mongodb/laravel-mongodb` has been removed —
+which is what makes MongoDB a one-time requirement rather than a runtime one.
+
+## One bug found on the way
+
+**Every existing collection item was invisible to the admin.** Records written by
+the original Mongoose backend carry their id under `_id`; everything in this
+codebase addresses items by `id` — the bundled seed, `addItem()`,
+`updateItem()`/`removeItem()` and the admin views. So `/admin/section/logos` and
+the twenty other collection pages raised `Undefined array key "id"` and answered
+500, while a newly added item worked fine. It was there before this migration and
+was not caused by it.
+
+`ContentRepository::sanitizeStored()` now renames a legacy `_id` onto `id`,
+value-for-value ("pc1" stays "pc1"), on read, on write and on import — so nothing
+about slugs or links moves, and a record repairs itself the next time the admin
+saves. `content:repair` writes the fix through in one go; it renamed 105 items.
+
+## Removed
+
+`mongodb/laravel-mongodb` and `mongodb/mongodb` from `composer.json`, and the
+`mongodb` connection from `config/database.php`. `MONGODB_URI` /
+`MONGODB_DATABASE` stay in `.env.example` documented as import-only.
+
+## Kept deliberately
+
+- **The env-based admin login.** `AdminAuth` still checks `ADMIN_EMAIL` and
+  `ADMIN_PASSWORD_HASH`; the sign-in screen and flow are byte-for-byte what they
+  were. `AdminUserSeeder` additionally puts the operator in `users`, so moving to
+  a database-backed guard later is configuration, not a rewrite.
+- **`content:repair`.** Still the tool for a record imported from the old store.
+- **camelCase timestamp columns.** `createdAt`/`updatedAt`, matching the imported
+  rows and the models that already declared them.
+- **`resources/data/content.json`** — still the fallback when the database is
+  unreachable, and still the source for `content:seed`.

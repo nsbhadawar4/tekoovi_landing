@@ -4,7 +4,7 @@
 @source "../views";
 @source "../js";
 
-/* Gradient accents live in MongoDB (a project's `accent` field), so Tailwind
+/* Gradient accents live in the database (a project's `accent` field), so Tailwind
    can't find them by scanning source. These are the values the content uses. */
 @source inline("from-[#6C3BFF]/40 to-[#3a1f8f]/10 from-[#8A5CFF]/40 to-[#1b1b28]/10 from-[#B388FF]/35 to-[#241a3d]/10");
 

@@ -7,51 +7,63 @@ use App\Repositories\ContentRepository;
 use Illuminate\Console\Command;
 
 /**
- * Cleans the junk keys an earlier `array` cast wrote into the content document.
+ * Writes the content record back in the shape the app expects.
  *
- * The Content model used to carry `protected $casts = ['data' => 'array']`.
- * That cast JSON-encodes on write, and the encoded string reached MongoDB as
- * one key per character — "0" => "{", "1" => "\"", and so on for tens of
- * thousands of keys — sitting alongside the real sections. Reads still worked
- * (section names always won), so the only symptom was a document tens of times
- * larger than it should be, and a slower round trip on every page.
+ * Two legacy artefacts are cleaned, both by ContentRepository::sanitizeStored():
  *
- * The cast is gone. This removes what it left behind. Section names are never
- * numeric, so filtering numeric top-level keys cannot touch real content, and
- * the command is safe to run more than once.
+ *   junk keys  a cast that JSON-encoded into a store which was already encoding
+ *              turned the section tree into one key per character — "0" => "{",
+ *              "1" => "\"", and so on for tens of thousands of keys — sitting
+ *              alongside the real sections. Reads still worked (section names
+ *              always won), so the only symptom was a record tens of times larger
+ *              than it should be, and a slower round trip on every page.
+ *   item ids   records from the original Mongoose backend carry their id under
+ *              `_id`, which is the one key the admin needs to address an item by.
+ *
+ * Reads already apply both fixes, so the site is correct either way; this makes
+ * the stored record correct too. Safe to run more than once, and safe on a live
+ * site — no value is changed, only the key it sits under.
  */
 class RepairContent extends Command
 {
     protected $signature = 'content:repair {--dry-run : Report what would change without writing}';
 
-    protected $description = 'Strip the junk numeric keys left in the content document by the old array cast';
+    protected $description = 'Rewrite the content record without its legacy junk keys and `_id` item keys';
 
     public function handle(): int
     {
         $document = Content::query()->where('key', Content::LANDING)->first();
 
         if (! $document) {
-            $this->warn('No content document found — nothing to repair.');
+            $this->warn('No content record found — nothing to repair.');
 
             return self::SUCCESS;
         }
 
         $stored = (array) $document->getAttribute('data');
         $clean = ContentRepository::sanitizeStored($stored);
-        $removed = count($stored) - count($clean);
 
-        if ($removed === 0) {
-            $this->info('Content document is already clean ('.count($clean).' sections).');
+        if ($stored === $clean) {
+            $this->info('Content record is already clean ('.count($clean).' sections).');
 
             return self::SUCCESS;
         }
 
-        $this->line(sprintf(
-            'Found %s junk keys beside %s real sections: %s',
-            number_format($removed),
-            count($clean),
-            implode(', ', array_keys($clean)),
-        ));
+        $junk = count($stored) - count($clean);
+        $renamed = $this->countLegacyIds($stored);
+
+        if ($junk > 0) {
+            $this->line(sprintf(
+                'Found %s junk keys beside %s real sections: %s',
+                number_format($junk),
+                count($clean),
+                implode(', ', array_keys($clean)),
+            ));
+        }
+
+        if ($renamed > 0) {
+            $this->line(sprintf('Found %s items carrying a legacy `_id` to rename to `id`.', number_format($renamed)));
+        }
 
         if ($this->option('dry-run')) {
             $this->comment('Dry run — nothing written.');
@@ -62,8 +74,33 @@ class RepairContent extends Command
         $document->setAttribute('data', $clean);
         $document->save();
 
-        $this->info(sprintf('Removed %s junk keys. All %s sections kept.', number_format($removed), count($clean)));
+        $this->info(sprintf(
+            'Repaired: %s junk keys removed, %s item ids renamed. All %s sections kept.',
+            number_format($junk),
+            number_format($renamed),
+            count($clean),
+        ));
 
         return self::SUCCESS;
+    }
+
+    /** How many collection items still carry their id under `_id`. */
+    private function countLegacyIds(array $data): int
+    {
+        $count = 0;
+
+        foreach ($data as $value) {
+            if (! is_array($value) || ! array_is_list($value)) {
+                continue;
+            }
+
+            foreach ($value as $item) {
+                if (is_array($item) && array_key_exists('_id', $item)) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
     }
 }

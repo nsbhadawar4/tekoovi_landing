@@ -17,7 +17,7 @@ namespace App\Services;
  *   reads   only when MEDIA_BASE_URL is set (a CDN or separate image host in
  *           front of the app) do stored paths get an absolute prefix
  *   writes  always fold an absolute media URL — from any host — back to its
- *           relative form, so legacy documents and pasted URLs normalise and
+ *           relative form, so legacy records and pasted URLs normalise and
  *           the stored shape stays portable
  *
  * Both directions walk arbitrary nested data, because image paths appear inside

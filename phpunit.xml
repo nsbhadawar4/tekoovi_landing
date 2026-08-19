@@ -23,9 +23,9 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
-        <!-- The contract tests run against the real MongoDB: there is no SQL
-             database to swap in, and the point is to prove the live data still
-             reads and writes correctly. They only ever touch a throwaway item. -->
+        <!-- The contract tests run against the configured MySQL database: the
+             point is to prove the live data still reads and writes correctly.
+             They only ever touch a throwaway item and put it back. -->
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

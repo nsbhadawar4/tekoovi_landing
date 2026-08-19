@@ -8,15 +8,17 @@ use Illuminate\Console\Command;
 /**
  * Plants the starting content on a fresh database.
  *
- * Deliberately a manual step: reads never write, so pointing the API at an
- * empty database shows the bundled content without ever creating a document
- * beside real data.
+ * Deliberately a manual step: reads never write, so pointing the app at an
+ * empty database shows the bundled content without ever creating a record
+ * beside real data. `php artisan db:seed` does the same thing (see
+ * Database\Seeders\ContentSeeder); this command is what you reach for to
+ * overwrite with --force.
  */
 class SeedContent extends Command
 {
     protected $signature = 'content:seed {--force : Overwrite the existing document}';
 
-    protected $description = 'Seed the content document from resources/data/content.json';
+    protected $description = 'Seed the content record from resources/data/content.json';
 
     public function handle(): int
     {

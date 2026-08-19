@@ -9,9 +9,9 @@ use Tests\TestCase;
 /**
  * Every public URL the site answers.
  *
- * These run against the configured MongoDB and never write: the point is that
- * the live content still renders through the Blade views, which is exactly what
- * a visitor gets.
+ * These run against the configured MySQL database and never write: the point is
+ * that the live content still renders through the Blade views, which is exactly
+ * what a visitor gets.
  */
 class PublicSiteTest extends TestCase
 {

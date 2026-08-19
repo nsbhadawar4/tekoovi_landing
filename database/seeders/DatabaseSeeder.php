@@ -11,10 +11,15 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Seed the application's database.
+     *
+     * Both seeders are idempotent — nothing already in the database is
+     * overwritten — so `php artisan db:seed` is safe to re-run.
      */
     public function run(): void
     {
-        // Content lives in MongoDB and is seeded on demand:
-        //     php artisan content:seed
+        $this->call([
+            AdminUserSeeder::class,
+            ContentSeeder::class,
+        ]);
     }
 }

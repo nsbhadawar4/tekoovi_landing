@@ -2,38 +2,38 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * The single content document, exactly as the Node backend stored it.
+ * The single content row, carrying the whole section tree.
  *
- *   { _id, key: "landing", data: { hero: {...}, projects: [...], ... },
+ *   { id, key: "landing", data: { hero: {...}, projects: [...], ... },
  *     createdAt, updatedAt }
  *
- * Timestamp column names are overridden to Mongoose's camelCase so Laravel
- * keeps writing the same fields the existing documents already use.
+ * `data` is a MySQL JSON column cast to an array, so the nested structure the
+ * admin studio and every Blade view expect round-trips unchanged — the same
+ * shape the MongoDB document held.
  *
- * `data` deliberately carries NO cast. Laravel's `array` cast JSON-encodes on
- * write, which turned the nested document into a string and left the stored
- * record carrying one key per character alongside the real sections. MongoDB
- * stores nested structures natively, so the driver round-trips a plain PHP
- * array without help — see the `content:repair` command, which cleans the junk
- * keys that cast left behind.
+ * Timestamp column names stay camelCase, matching the columns the migration
+ * creates and the rows the one-time import wrote.
  */
 class Content extends Model
 {
-    protected $connection = 'mongodb';
-
-    // `$table` is what mongodb/laravel-mongodb reads — naming this wrong makes
-    // Eloquent invent a pluralised collection instead of using the real one.
     protected $table = 'content';
 
     public const CREATED_AT = 'createdAt';
 
     public const UPDATED_AT = 'updatedAt';
 
-    /** The one document key the site reads. */
+    /** The one row key the site reads. */
     public const LANDING = 'landing';
 
     protected $fillable = ['key', 'data'];
+
+    protected function casts(): array
+    {
+        return [
+            'data' => 'array',
+        ];
+    }
 }

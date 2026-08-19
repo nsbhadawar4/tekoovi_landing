@@ -5,14 +5,21 @@ namespace App\Services;
 use App\Models\Media;
 use App\Repositories\ContentRepository;
 use Illuminate\Support\Facades\Log;
-use MongoDB\BSON\Binary;
+use Illuminate\Support\Facades\Storage;
 
 /**
- * Media storage — the port of `backend/repository/media.repository.ts` and
- * `backend/controllers/media.controller.ts`.
+ * Media storage.
  *
- * Images live in the `media` collection as their own documents, exactly as
- * before, and are served back through /api/media/{id}.
+ * Bytes go to the filesystem — `media/<id>.<ext>` on the configured disk, which
+ * is `public` by default — and MySQL keeps the metadata: id, mime type, path and
+ * size. That is the split cheap shared hosting wants: the database stays small
+ * and the images are ordinary files that can be backed up, moved to a CDN or
+ * served straight off disk.
+ *
+ * What did not change is the public contract. Every image is still addressed as
+ * /api/media/{id}, because that exact path is what content records store, and
+ * ids are still 24 hex characters, so paths written before this migration keep
+ * resolving to the same bytes.
  */
 class MediaService
 {
@@ -48,7 +55,8 @@ class MediaService
     /**
      * Store an image and return its public URL.
      *
-     * @throws \RuntimeException when the payload isn't a supported image
+     * @throws \RuntimeException when the payload isn't a supported image, or the
+     *                           file can't be written
      */
     public function store(string $dataUrl): string
     {
@@ -62,14 +70,35 @@ class MediaService
             throw new \RuntimeException('Image is too large.');
         }
 
-        // Subtype 0 (generic binary) is what Mongoose's Buffer wrote, so old
-        // and new documents are byte-for-byte the same shape.
-        $media = Media::create([
-            'contentType' => $parsed['contentType'],
-            'data' => new Binary($parsed['bytes'], Binary::TYPE_GENERIC),
-        ]);
+        return $this->put($this->newId(), $parsed['contentType'], $parsed['bytes']);
+    }
 
-        return $this->urls->urlFor((string) $media->getKey());
+    /**
+     * Write one image to disk and record it. Shared with the one-time MongoDB
+     * import, which supplies the id it has to keep.
+     *
+     * @throws \RuntimeException when the disk write fails
+     */
+    public function put(string $id, string $contentType, string $bytes): string
+    {
+        $disk = $this->disk();
+        $path = trim((string) config('media.directory', 'media'), '/').'/'.$id.'.'.$this->extensionFor($contentType);
+
+        if (! Storage::disk($disk)->put($path, $bytes)) {
+            throw new \RuntimeException('Could not write the image to storage.');
+        }
+
+        Media::query()->updateOrCreate(
+            ['id' => $id],
+            [
+                'contentType' => $contentType,
+                'path' => $path,
+                'size' => strlen($bytes),
+                'disk' => $disk,
+            ],
+        );
+
+        return $this->urls->urlFor($id);
     }
 
     /**
@@ -84,13 +113,27 @@ class MediaService
         }
 
         $media = Media::query()->find($id);
-        if (! $media || ! $media->data) {
+        if (! $media) {
+            return null;
+        }
+
+        $bytes = $this->read($media);
+
+        if ($bytes === null) {
+            // The row outlived its file — a half-finished restore, say. Log it
+            // and answer 404 rather than serving an empty image.
+            Log::warning('[media] file missing for stored record', [
+                'id' => $id,
+                'disk' => $media->disk,
+                'path' => $media->path,
+            ]);
+
             return null;
         }
 
         return [
             'contentType' => (string) $media->contentType,
-            'bytes' => $this->toBytes($media->data),
+            'bytes' => $bytes,
         ];
     }
 
@@ -104,7 +147,7 @@ class MediaService
                 'id' => (string) $media->getKey(),
                 'url' => $this->urls->urlFor((string) $media->getKey()),
                 'contentType' => (string) $media->contentType,
-                'size' => strlen($this->toBytes($media->data)),
+                'size' => (int) $media->size,
                 'createdAt' => $media->createdAt,
             ])
             ->all();
@@ -116,7 +159,20 @@ class MediaService
             return false;
         }
 
-        return Media::query()->where('_id', $id)->delete() > 0;
+        $media = Media::query()->find($id);
+        if (! $media) {
+            return false;
+        }
+
+        // The row goes first: a deleted record with a stray file is harmless,
+        // a live record pointing at nothing serves broken images.
+        $media->delete();
+
+        if ($media->path) {
+            Storage::disk((string) ($media->disk ?: $this->disk()))->delete((string) $media->path);
+        }
+
+        return true;
     }
 
     /**
@@ -166,30 +222,49 @@ class MediaService
 
     /* ---------------------------- plumbing ---------------------------- */
 
-    /** MongoDB ObjectIds are 24 hex characters — reject anything else early. */
+    /**
+     * Ids are 24 hex characters — the format the ids already in the content
+     * carry, so one check covers records from before and after this migration.
+     */
     public function isValidId(string $id): bool
     {
         return (bool) preg_match('/^[a-f\d]{24}$/i', $id);
     }
 
-    /**
-     * Normalise whatever the driver hands back — BSON Binary, Buffer-ish object
-     * or plain string — into raw bytes.
-     */
-    private function toBytes(mixed $raw): string
+    /** A fresh id in the same 24-hex format as the existing ones. */
+    public function newId(): string
     {
-        if ($raw instanceof Binary) {
-            return $raw->getData();
+        return bin2hex(random_bytes(12));
+    }
+
+    /** Where image files live. */
+    public function disk(): string
+    {
+        return (string) config('media.disk', 'public');
+    }
+
+    /** Read one record's bytes, or null when the file has gone. */
+    private function read(Media $media): ?string
+    {
+        $disk = Storage::disk((string) ($media->disk ?: $this->disk()));
+        $path = (string) $media->path;
+
+        if ($path === '' || ! $disk->exists($path)) {
+            return null;
         }
 
-        if (is_string($raw)) {
-            return $raw;
-        }
+        $bytes = $disk->get($path);
 
-        if (is_object($raw) && method_exists($raw, 'getData')) {
-            return (string) $raw->getData();
-        }
+        return is_string($bytes) && $bytes !== '' ? $bytes : null;
+    }
 
-        return '';
+    /** File extension for a mime type; the type list is in config/media.php. */
+    private function extensionFor(string $contentType): string
+    {
+        return match ($contentType) {
+            'image/jpeg' => 'jpg',
+            'image/svg+xml' => 'svg',
+            default => explode('/', $contentType)[1] ?? 'bin',
+        };
     }
 }

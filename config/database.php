@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mongodb'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -31,23 +31,6 @@ return [
     */
 
     'connections' => [
-
-        /*
-         * The live content store.
-         *
-         * Points at the same cluster and database the Next.js backend used, so
-         * the existing `content`, `media` and `users` collections are read and
-         * written exactly as before — no migration, no duplicate collections.
-         */
-        'mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => env('MONGODB_URI'),
-            'database' => env('MONGODB_DATABASE', 'tekoovi'),
-            'options' => [
-                // Fail fast with a clear error instead of hanging a request.
-                'serverSelectionTimeoutMS' => (int) env('MONGODB_TIMEOUT_MS', 8000),
-            ],
-        ],
 
         'sqlite' => [
             'driver' => 'sqlite',
