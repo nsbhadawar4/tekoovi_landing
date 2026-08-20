@@ -444,6 +444,33 @@
   transform: translateX(130%);
 }
 
+/* Slim, self-contained scrollbar for panes that scroll inside the page
+   (admin sidebar, section sheet, editor body). Overlays the content instead of
+   stealing layout width, so nothing shifts when the thumb appears. */
+.scroll-slim {
+  scrollbar-width: thin;
+  scrollbar-color: #2c2c3c transparent;
+  scrollbar-gutter: stable;
+}
+.scroll-slim::-webkit-scrollbar { width: 6px; height: 6px; }
+.scroll-slim::-webkit-scrollbar-track { background: transparent; }
+.scroll-slim::-webkit-scrollbar-thumb {
+  background: #2c2c3c;
+  border-radius: 999px;
+  border: 0;
+  transition: background 0.2s ease;
+}
+.scroll-slim::-webkit-scrollbar-thumb:hover { background: #40405a; }
+:root[data-theme="light"] .scroll-slim {
+  scrollbar-color: rgba(16, 17, 26, 0.2) transparent;
+}
+:root[data-theme="light"] .scroll-slim::-webkit-scrollbar-thumb {
+  background: rgba(16, 17, 26, 0.2);
+}
+:root[data-theme="light"] .scroll-slim::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 17, 26, 0.32);
+}
+
 /* Sliders stay swipeable without a visible scrollbar. */
 .no-scrollbar {
   scrollbar-width: none;

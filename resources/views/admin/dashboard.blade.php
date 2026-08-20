@@ -15,15 +15,15 @@
 @section('body')
     <div class="flex min-h-screen flex-col md:flex-row">
         {{-- ---------------- sidebar (tablet and up) ---------------- --}}
-        <aside class="hidden shrink-0 border-line bg-bg-2/50 backdrop-blur-xl md:block md:w-64 md:border-r">
-            <div class="flex items-center gap-2.5 px-5 py-5">
+        <aside class="hidden shrink-0 border-line bg-bg-2/50 backdrop-blur-xl md:sticky md:top-0 md:flex md:h-screen md:w-64 md:flex-col md:border-r">
+            <div class="flex shrink-0 items-center gap-2.5 px-5 py-5">
                 <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg btn-brand font-display text-sm font-bold text-white">T</span>
                 <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-ink">{{ \App\Support\Site::NAME }} Admin</p>
                     <p class="text-[11px] text-ink-3">Content studio</p>
                 </div>
             </div>
-            <nav class="flex max-h-[calc(100vh-88px)] flex-col gap-1 overflow-y-auto px-3 pb-4">
+            <nav class="scroll-slim flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain px-3 pb-4">
                 @foreach ($navigable as $key => $item)
                     @include('admin.partials.nav-button', ['key' => $key, 'item' => $item, 'active' => $key === $section])
                 @endforeach
@@ -103,7 +103,7 @@
                         <x-icon name="ChevronDown" data-section-nav-chevron class="h-4 w-4 shrink-0 text-ink-3 transition-transform duration-300" />
                     </button>
 
-                    <nav data-section-nav-sheet data-pop class="absolute inset-x-0 top-full z-40 hidden max-h-[62vh] overflow-y-auto border-b border-line bg-bg/95 p-3 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.95)] backdrop-blur-xl">
+                    <nav data-section-nav-sheet data-pop class="scroll-slim absolute inset-x-0 top-full z-40 hidden max-h-[62vh] overflow-y-auto overscroll-contain border-b border-line bg-bg/95 p-3 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.95)] backdrop-blur-xl">
                         <div class="grid grid-cols-1 gap-1 min-[430px]:grid-cols-2">
                             @foreach ($navigable as $key => $item)
                                 @include('admin.partials.nav-button', ['key' => $key, 'item' => $item, 'active' => $key === $section])

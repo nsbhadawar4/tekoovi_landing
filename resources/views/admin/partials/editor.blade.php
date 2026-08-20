@@ -66,7 +66,7 @@
             </button>
         </div>
 
-        <div data-editor-fields class="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-5 sm:px-6"></div>
+        <div data-editor-fields class="scroll-slim min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6"></div>
 
         <div class="flex gap-3 border-t border-line px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:justify-end sm:px-6">
             <button
