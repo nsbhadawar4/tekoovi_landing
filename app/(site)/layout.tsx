@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { getContent } from "@/backend/controllers/content.controller";
+import { getMenu } from "@/backend/services/public-content.service";
 import { visibleNavLinks } from "@/lib/data";
 import { DEFAULT_FONT, getFont } from "@/lib/fonts";
 import { normalizeTheme, themeInitScript } from "@/lib/theme";
@@ -43,7 +44,13 @@ const orgSchema = {
 export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const content = await getContent();
+  // Menus are CMS-managed; each falls back to the built-in list until one is
+  // saved, so the header and footer are never empty.
+  const [content, headerMenu, footerMenu] = await Promise.all([
+    getContent(),
+    getMenu("header"),
+    getMenu("footer"),
+  ]);
 
   // Admin-selectable site font. The default keeps the designed Inter/Jakarta
   // look untouched; any other choice overrides both the body and heading font
@@ -80,7 +87,7 @@ export default async function SiteLayout({
         calendly={content.contact.calendly}
         logoImage={content.settings?.logoImage}
         showThemeToggle={showThemeToggle}
-        links={visibleNavLinks(content.pageSections)}
+        links={visibleNavLinks(content.pageSections, headerMenu)}
       />
       <main>{children}</main>
       {/* Closing conversion panel — shows on every page that has somewhere to
@@ -95,6 +102,7 @@ export default async function SiteLayout({
         services={content.services}
         logoImage={content.settings?.logoImage}
         pageSections={content.pageSections}
+        menuItems={footerMenu}
       />
       <StickyCta calendly={content.contact.calendly} />
       <BackToTop />

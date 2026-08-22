@@ -34,7 +34,14 @@ function CoverFallback({ title }: { title: string }) {
   );
 }
 
-export function BlogList({ blogs }: { blogs: Blog[] }) {
+export function BlogList({
+  blogs,
+  heading,
+}: {
+  blogs: Blog[];
+  /** Set on a category page; the blog index leaves it out. */
+  heading?: string;
+}) {
   const [featured, ...rest] = blogs;
 
   return (
@@ -52,17 +59,18 @@ export function BlogList({ blogs }: { blogs: Blog[] }) {
       <section className="relative pt-32 pb-8 md:pt-36 md:pb-12">
         <Container className="text-center">
           <Reveal>
-            <Badge>Blog</Badge>
+            <Badge>{heading ? "Category" : "Blog"}</Badge>
           </Reveal>
           <Reveal delay={0.06}>
             <h1 className="text-ink-gradient mx-auto mt-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-              Insights from the studio
+              {heading ?? "Insights from the studio"}
             </h1>
           </Reveal>
           <Reveal delay={0.12}>
             <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-ink-2 md:text-lg">
-              Field notes on design, engineering and shipping AI products —
-              written by the people who build them.
+              {heading
+                ? `Every article filed under ${heading}.`
+                : "Field notes on design, engineering and shipping AI products — written by the people who build them."}
             </p>
           </Reveal>
         </Container>

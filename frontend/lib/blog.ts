@@ -3,8 +3,14 @@ import { slugify } from "@/lib/utils";
 
 export const BLOG_BASE = "/blog";
 
+/**
+ * URL segment for a post.
+ *
+ * CMS posts carry an explicit slug the admin can edit; legacy entries from the
+ * landing document derive one from the title, exactly as before.
+ */
 export function blogSlug(blog: Blog): string {
-  return slugify(blog.title, blog.id);
+  return blog.slug || slugify(blog.title, blog.id);
 }
 
 export function blogHref(blog: Blog): string {

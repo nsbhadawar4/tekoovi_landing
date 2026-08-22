@@ -7,6 +7,7 @@ import {
   type Social,
 } from "@/backend/types";
 import { visibleNavLinks } from "@/lib/data";
+import type { MenuItem } from "@/backend/models/menu.model";
 import { Logo } from "@/components/ui/logo";
 import { Container } from "@/components/ui/section";
 
@@ -16,6 +17,7 @@ export function Footer({
   services,
   logoImage,
   pageSections,
+  menuItems,
 }: {
   contact: Contact;
   socials: Social[];
@@ -23,12 +25,14 @@ export function Footer({
   logoImage?: string;
   /** Landing-page blocks switched on/off in the admin. */
   pageSections?: Record<string, boolean>;
+  /** Footer menu from the CMS; falls back to the built-in list when empty. */
+  menuItems?: MenuItem[];
 }) {
   const year = new Date().getFullYear();
 
   // Footer links point at landing-page anchors, so a section switched off in
   // the admin takes its links with it rather than leaving a dead jump.
-  const navLinks = visibleNavLinks(pageSections);
+  const navLinks = visibleNavLinks(pageSections, menuItems);
   const showWorkLink = isBlockVisible(pageSections, "work");
   const showServices = isBlockVisible(pageSections, "services");
 

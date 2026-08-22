@@ -923,6 +923,11 @@ export interface SiteSettings {
 /** A blog post — listed on /blog, opened at /blog/[slug]. */
 export interface Blog extends Hideable {
   id: string;
+  /**
+   * URL segment for a CMS post. Legacy entries stored in the landing document
+   * have no slug and fall back to one derived from the title.
+   */
+  slug?: string;
   title: string;
   category: string;
   author: string;

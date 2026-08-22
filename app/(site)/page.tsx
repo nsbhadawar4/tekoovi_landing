@@ -1,4 +1,5 @@
 import { getContent } from "@/backend/controllers/content.controller";
+import { getPublishedPosts } from "@/backend/services/public-content.service";
 import { isBlockVisible } from "@/backend/types";
 import { Hero } from "@/components/sections/hero";
 import { TrustedBy } from "@/components/sections/trusted-by";
@@ -18,7 +19,9 @@ import { FAQ } from "@/components/sections/faq";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const content = await getContent();
+  // The blog teaser reads the posts collection; every other block still comes
+  // from the landing document.
+  const [content, posts] = await Promise.all([getContent(), getPublishedPosts()]);
 
   // Every block below is switched from the admin's "Page Sections" panel (and
   // from the toolbar of the section that fills it). Keys come from PAGE_BLOCKS.
@@ -49,7 +52,7 @@ export default async function Home() {
       {shows("founder") && (
         <Founder founder={content.founder} socials={content.socials} />
       )}
-      {shows("blog") && <BlogSection blogs={content.blogs ?? []} />}
+      {shows("blog") && <BlogSection blogs={posts} />}
       {shows("faq") && (
         <FAQ faqs={content.faqs} calendly={content.contact.calendly} />
       )}

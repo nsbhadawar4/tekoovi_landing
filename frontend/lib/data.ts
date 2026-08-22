@@ -1,22 +1,24 @@
+import type { MenuItem } from "@/backend/models/menu.model";
 import { isBlockVisible } from "@/backend/types";
 
 /* -------------------------------------------------------------- */
-/*  Static navigation.                                             */
+/*  Navigation.                                                    */
 /*                                                                 */
-/*  All editable page content now lives in backend/data/content.   */
-/*  json and is managed from /admin. These nav links are structural */
-/*  (each points at a section anchor id) so they stay in code.      */
+/*  Menus are managed in the admin (Site → Menus). These constants  */
+/*  are the fallback used when a menu has not been saved yet, so a  */
+/*  fresh install still has a working header instead of an empty    */
+/*  one.                                                            */
 /* -------------------------------------------------------------- */
 
 export type NavLink = {
   label: string;
   href: string;
   /**
-   * Landing-page block this link scrolls to (a key from PAGE_BLOCKS). When the
-   * block is switched off in the admin its anchor no longer exists, so the link
-   * goes with it. Links without a block are always shown.
+   * Landing-page block this link scrolls to. When that block is switched off
+   * its anchor no longer exists, so the link goes with it.
    */
   block?: string;
+  newTab?: boolean;
 };
 
 export const NAV_LINKS: NavLink[] = [
@@ -29,11 +31,30 @@ export const NAV_LINKS: NavLink[] = [
   { label: "FAQ", href: "#faq", block: "faq" },
 ];
 
-/** The nav links whose landing-page section is switched on. */
+/** Menu items from the database in the shape the header and footer expect. */
+export function toNavLinks(items: MenuItem[]): NavLink[] {
+  return items.map((item) => ({
+    label: item.label,
+    href: item.url,
+    block: item.block || undefined,
+    newTab: item.newTab,
+  }));
+}
+
+/**
+ * The links to render.
+ *
+ * Anything pointing at a switched-off landing-page block is dropped, which is
+ * what stops the header offering a jump to a section that isn't on the page.
+ */
 export function visibleNavLinks(
   pageSections?: Record<string, boolean>,
+  menuItems?: MenuItem[],
 ): NavLink[] {
-  return NAV_LINKS.filter(
+  const links =
+    menuItems && menuItems.length > 0 ? toNavLinks(menuItems) : NAV_LINKS;
+
+  return links.filter(
     (link) => !link.block || isBlockVisible(pageSections, link.block),
   );
 }
